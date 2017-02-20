@@ -6,14 +6,31 @@
   0px 18px 23px rgba(0,0,0,0.1);
 }
 
-body {
-  background-image: url("/images/Dnarrow.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
+#bg {
+  width: 100%;
+  max-width: 1920px;
+  background: url("/images/Dnarrow.png") no-repeat;
+  background-size: 100% 100%;
   background-position: center;
+  position: absolute;
+  /*display: block;*/
+  height: 100%;
+  max-height: 1080px;
+  z-index: -9999;
+  opacity: 0.7;
+
+}
+
+body {
+  /*background-image: url("/images/Dnarrow.png");*/
+  /*background-size: 100%;*/
+  /*background-repeat: no-repeat;*/
+  /*background-position: center;*/
   font-family: 'Lato', sans-serif;
   color: black;
-  /*opacity: 0.9;*/
+  background: #ECE9E6; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #ECE9E6 , #FFFFFF); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #ECE9E6 , #FFFFFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 h1 {
@@ -33,4 +50,20 @@ hr {
 
 .btn-success:hover{
   transform: scale(1.1);
+}
+
+i.icon {
+  font-size: 2em;
+}
+
+.container.main {
+  margin-top: 7.0em;
+}
+
+.item {
+  font-size: 1.5em;
+}
+
+.menu {
+  height: 50px;
 }
