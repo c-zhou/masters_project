@@ -18,7 +18,10 @@
 </div>
 
 <!--Can add multiple='multiple' if you want to allow multiple files at once-->
-<input type="file" id="upload-input" name="uploads[]">
+
+<form action="/upload" method="POST">
+    <input type="file" id="upload-input" name="uploads[]" multiple="multiple">
+</form>
 
 
 <script src="javascripts/upload.js"></script>

@@ -4,7 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var $ = require("jquery");
+var formidable = require("formidable"); // parses incoming form data (uploaded files)
+var fs = require("fs"); // used to rename file uploads
 
 var index = require('./routes/index');
 var about = require('./routes/about');
