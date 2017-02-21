@@ -68,3 +68,21 @@ i.icon {
   height: 50px;
   opacity: 0.9;
 }
+
+.twelve.wide {
+  text-align: center;
+}
+
+#upload-input {
+  display: none;
+}
+
+.huge.ui.orange.button:hover {
+  background-color: green;
+}
+
+.twelve h2 {
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+

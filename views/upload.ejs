@@ -1,7 +1,25 @@
 <% include ./partials/header %>
 
 <div class="ui main text container">
-    <h1>Upload page</h1>
+    <div class="ui grid">
+        <div class="twelve wide column">
+            <i class="massive circular upload icon"></i>
+            <h2>File Uploader</h2>
+            <div class="ui indicating progress">
+                <div class="bar"></div>
+                <div class="label">Uploading</div>
+            </div>
+            <button class="huge ui orange button">
+                <!--<i class="upload icon"></i>-->
+                Upload File
+            </button>
+        </div>
+    </div>
 </div>
 
+<!--Can add multiple='multiple' if you want to allow multiple files at once-->
+<input type="file" id="upload-input" name="uploads[]">
+
+
+<script src="javascripts/upload.js"></script>
 <% include ./partials/footer %>
