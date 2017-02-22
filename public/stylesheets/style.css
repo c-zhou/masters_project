@@ -49,7 +49,7 @@ hr {
 }
 
 .btn-success:hover{
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 i.icon {
@@ -78,7 +78,7 @@ i.icon {
 }
 
 .huge.ui.orange.button:hover {
-  background-color: green;
+  transform: scale(1.05);
 }
 
 .twelve h2 {
