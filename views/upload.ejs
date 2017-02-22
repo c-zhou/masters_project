@@ -1,11 +1,12 @@
 <% include ./partials/header %>
 
+
 <div class="ui main text container">
     <div class="ui grid">
         <div class="twelve wide column">
             <i class="massive circular upload icon"></i>
             <h2>File Uploader</h2>
-            <div class="ui indicating progress">
+            <div class="ui indicating progress active">
                 <div class="bar"></div>
                 <div class="label">Uploading</div>
             </div>
@@ -19,10 +20,10 @@
 
 <!--Can add multiple='multiple' if you want to allow multiple files at once-->
 
-<form action="/upload" method="POST">
-    <input type="file" id="upload-input" name="uploads[]" multiple="multiple">
-</form>
 
+<input type="file" id="upload-input" name="uploads[]" multiple="multiple">
 
 <script src="javascripts/upload.js"></script>
+
+
 <% include ./partials/footer %>

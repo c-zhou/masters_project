@@ -5,13 +5,13 @@
 var uploadBtn = $('.huge.ui.orange.button');
 
 // Triggers the hidden file input when user clicks on upload button
-uploadBtn.on("click", function(){
+$('.huge.ui.orange.button').on("click", function(){
 	$("#upload-input").click();
 });
 
 // Reset the progress bar to 0% when the user selects to upload another file
-uploadBtn.on("click", function(){
-	$("#upload-input").click();
+$('.huge.ui.orange.button').on("click", function(){
+	// $("#upload-input").click();
 	$(".bar").text("0%")
 		.width("0%");
 });
@@ -57,6 +57,9 @@ $("#upload-input").on("change", function(){
 					//	update the progress bar with the new percentage
 						$(".bar").text(percentComplete + "%")
 							.width(percentComplete + "%");
+
+						// updating the progress bar's percent so as to cause colour change
+						$(".indicating.progress").attr("data-percent", percentComplete);
 
 					//	once the upload reaches 100%, set the progress bar text to done
 						if (percentComplete === 100){
