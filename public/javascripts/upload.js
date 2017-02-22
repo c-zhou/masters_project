@@ -11,7 +11,6 @@ $('.huge.ui.orange.button').on("click", function(){
 
 // Reset the progress bar to 0% when the user selects to upload another file
 $('.huge.ui.orange.button').on("click", function(){
-	// $("#upload-input").click();
 	$(".bar").text("0%")
 		.width("0%");
 });
