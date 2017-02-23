@@ -1,9 +1,15 @@
-var express = require("express");
-var router = express.Router();
-var formidable = require("formidable"); // parses incoming form data (uploaded files)
-var fs = require("fs"); // used to rename file uploads
-var path = require('path');
+var express    = require('express'),
+    router     = express.Router(),
+    formidable = require('formidable'), // parses incoming form data (uploaded files)
+	fs         = require('fs'), // used to rename file uploads
+	path       = require('path'),
+	url        = require('url'),
+    http       = require('http'),
+    exec       = require('child_process').exec,
+    spawn      = require('child_process').spawn;
 
+
+var UPLOAD_DIR = path.join(__dirname, "../uploads/");
 
 // GET upload page
 router.get("/", function(req, res){
@@ -13,11 +19,6 @@ router.get("/", function(req, res){
 // POST uploading file
 router.post("/", function(req, res){
 	console.log("Post request received...");
-	// if(req.body.uploads.url){
-	// 	console.log("URL is not empty and truthy");
-	// } else {
-	// 	console.log("URL is empty and falsey");
-	// }
 	// create an incoming form object
 	var form = new formidable.IncomingForm();
 
@@ -33,7 +34,7 @@ router.post("/", function(req, res){
 	form.type = "multipart";
 
 	// store all uploads in the /uploads directory
-	form.uploadDir = path.join(__dirname, "../uploads");
+	form.uploadDir = path.join(__dirname, UPLOAD_DIR);
 
 	// Make sure file type is correct
 	form.on("fileBegin", function(name, file){
@@ -61,7 +62,42 @@ router.post("/", function(req, res){
 	});
 
 	// parse the incoming request containing the form data
-	form.parse(req);
+	form.parse(req, res, function(err, fields, files){
+		console.log("Parsing...");
+		if(fields.uploadURL){
+			console.log("The URL is " + fields.uploadURL);
+			downloadFile(fields.uploadURL);
+		}
+		if(files.uploadFile){
+			console.log("You are uploading " + files.uploadFile.name);
+		}
+	});
+
 });
+
+
+
+// function to download from URL
+function downloadFile(fileURL){
+	var options = {
+		host: url.parse(fileURL).host,
+		port: 80,
+		path: url.parse(fileURL).pathname
+	};
+
+	var fileName = options.path.split("/").pop();
+	var writeFile = fs.createWriteStream(UPLOAD_DIR + fileName);
+	console.log(UPLOAD_DIR + fileName);
+
+	 var request = http.get(options, function(res){
+		res.on('data', function(data){
+			writeFile.write(data);
+		})
+			.on('end', function(){
+				writeFile.end();
+				console.log(fileName + " downloaded to " + UPLOAD_DIR);
+			});
+	});
+}
 
 module.exports = router;

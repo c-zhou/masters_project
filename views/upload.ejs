@@ -16,9 +16,10 @@
             </button>
         </div>
         <div class="twelve wide column">
-            <form class="ui huge form" action="/upload" method="POST">
+            <!--<form id="upload-url" class="ui huge form" action="/upload" method="POST">-->
+            <form id="upload-url-form" class="ui huge form">
                 <div class="ui fluid action input">
-                    <input type="text" placeholder="Enter URL here" name="uploads[url]">
+                    <input id="uploadURL"type="text" placeholder="Enter URL here" name="uploadURL">
                     <button class="ui orange button">Upload</button>
                 </div>
             </form>
@@ -27,7 +28,7 @@
 </div>
 
 
-<input type="file" id="upload-input" name="uploads[file]" multiple="multiple"
+<input type="file" id="upload-input" name="uploadFile" multiple="multiple"
        accept=".fasta, .fasta.gz, .fastq, .fastq.gz">
 
 <script src="javascripts/upload.js"></script>

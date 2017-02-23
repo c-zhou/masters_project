@@ -28,7 +28,7 @@ $("#upload-input").on("change", function(){
 			var file = files[i];
 
 			// add the files to formData object for the data payload
-			formData.append("uploads[file]", file, file.name);
+			formData.append("uploadFile", file, file.name);
 			console.log(formData.keys());
 		}
 
@@ -72,9 +72,86 @@ $("#upload-input").on("change", function(){
 				return xhr;
 			}
 		});
-		// console.log(formData);
 	}
 });
 
 
+
+
+$("#upload-url-form").submit(function(event){
+	var text = $("#uploadURL");
+	console.log(text.val());
+
+	var formData = new FormData();
+
+	formData.append("uploadURL", text.val());
+
+	$.ajax({
+		url: "/upload",
+		type: "POST",
+		data: formData,
+		processData: false,
+		contentType: false,
+		success: function(){
+			console.log("you have request to download from URL");
+		}
+	});
+	// var files = $(this).get(0).files;
+	//
+	// if (files.length > 0){
+	// 	// One or more files selected, process upload
+	//
+	// 	var formData = new FormData();
+	//
+	// 	// loop through all the selected files
+	// 	for (var i = 0; i < files.length; i++){
+	// 		var file = files[i];
+	//
+	// 		// add the files to formData object for the data payload
+	// 		formData.append("uploads[file]", file, file.name);
+	// 		console.log(formData.keys());
+	// 	}
+	//
+	// 	// AJAX request that will POST the data to our /upload endpoint
+	// 	$.ajax({
+	// 		url: "/upload",
+	// 		type: "POST",
+	// 		data: formData,
+	// 		processData: false,
+	// 		contentType: false,
+	// 		success: function(data){
+	// 			console.log("upload successful!");
+	// 		},
+	// 		xhr: function(){
+	// 			// Logic to update the progress bar
+	// 			// create an XMLHttpRequest
+	// 			var xhr = new XMLHttpRequest();
+	//
+	// 			// listen to the 'progress' event
+	// 			xhr.upload.addEventListener('progress', function(evt){
+	//
+	// 				if (evt.lengthComputable){
+	// 					//	Calculate the percentage of upload complete
+	// 					var percentComplete = evt.loaded / evt.total;
+	// 					percentComplete = parseInt(percentComplete * 100);
+	//
+	// 					//	update the progress bar with the new percentage
+	// 					$(".bar").text(percentComplete + "%")
+	// 						.width(percentComplete + "%");
+	//
+	// 					// updating the progress bar's percent so as to cause colour change
+	// 					$(".indicating.progress").attr("data-percent", percentComplete);
+	//
+	// 					//	once the upload reaches 100%, set the progress bar text to done
+	// 					if (percentComplete === 100){
+	// 						$(".bar").html("Done");
+	// 					}
+	// 				}
+	// 			}, false);
+	//
+	// 			return xhr;
+	// 		}
+	// 	});
+	// }
+});
 
