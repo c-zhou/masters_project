@@ -77,11 +77,15 @@ i.icon {
   display: none;
 }
 
-.huge.ui.orange.button:hover {
+.huge.ui.green.button:hover {
   transform: scale(1.05);
 }
 
 .twelve h2 {
   padding-bottom: 20px;
   padding-top: 20px;
+}
+
+.ui.button {
+  font-size: 1.05em;
 }

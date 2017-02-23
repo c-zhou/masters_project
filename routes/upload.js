@@ -12,6 +12,12 @@ router.get("/", function(req, res){
 
 // POST uploading file
 router.post("/", function(req, res){
+	console.log("Post request received...");
+	// if(req.body.uploads.url){
+	// 	console.log("URL is not empty and truthy");
+	// } else {
+	// 	console.log("URL is empty and falsey");
+	// }
 	// create an incoming form object
 	var form = new formidable.IncomingForm();
 
@@ -32,6 +38,7 @@ router.post("/", function(req, res){
 	// Make sure file type is correct
 	form.on("fileBegin", function(name, file){
 		// TODO add error catch incase user uploads something other than FASTQ
+		// console.log(file);
 		console.log("File type = " + file.type);
 		console.log("File name = " + file.name);
 

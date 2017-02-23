@@ -1,16 +1,16 @@
 /**
  * Created by m.hall on 21/2/17.
  */
+// var uploadFileButton = $(".huge.ui.green.button");
 
-var uploadBtn = $('.huge.ui.orange.button');
 
 // Triggers the hidden file input when user clicks on upload button
-$('.huge.ui.orange.button').on("click", function(){
+$(".huge.ui.green.button").on("click", function(){
 	$("#upload-input").click();
 });
 
 // Reset the progress bar to 0% when the user selects to upload another file
-$('.huge.ui.orange.button').on("click", function(){
+$(".huge.ui.green.button").on("click", function(){
 	$(".bar").text("0%")
 		.width("0%");
 });
@@ -28,8 +28,10 @@ $("#upload-input").on("change", function(){
 			var file = files[i];
 
 			// add the files to formData object for the data payload
-			formData.append("uploads[]", file, file.name);
+			formData.append("uploads[file]", file, file.name);
+			console.log(formData.keys());
 		}
+
 		// AJAX request that will POST the data to our /upload endpoint
 		$.ajax({
 			url: "/upload",
@@ -70,6 +72,7 @@ $("#upload-input").on("change", function(){
 				return xhr;
 			}
 		});
+		// console.log(formData);
 	}
 });
 
