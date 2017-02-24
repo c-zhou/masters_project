@@ -76,26 +76,26 @@ $("#upload-input").on("change", function(){
 });
 
 
-
-
-$("#upload-url-form").submit(function(event){
-	var text = $("#uploadURL");
-	console.log(text.val());
-
-	var formData = new FormData();
-
-	formData.append("uploadURL", text.val());
-
-	$.ajax({
-		url: "/upload",
-		type: "POST",
-		data: formData,
-		processData: false,
-		contentType: false,
-		success: function(){
-			console.log("you have request to download from URL");
-		}
-	});
+//
+//
+// $("#upload-url-form").submit(function(event){
+// 	var text = $("#uploadURL");
+// 	console.log(text.val());
+//
+// 	var formData = new FormData();
+//
+// 	formData.append("uploadURL", text.val());
+//
+// 	$.ajax({
+// 		url: "/upload",
+// 		type: "POST",
+// 		data: formData,
+// 		processData: false,
+// 		contentType: false,
+// 		success: function(){
+// 			console.log("you have request to download from URL");
+// 		}
+// 	});
 	// var files = $(this).get(0).files;
 	//
 	// if (files.length > 0){
@@ -153,5 +153,5 @@ $("#upload-url-form").submit(function(event){
 	// 		}
 	// 	});
 	// }
-});
+// });
 

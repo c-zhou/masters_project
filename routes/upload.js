@@ -5,6 +5,7 @@ var express    = require('express'),
 	path       = require('path'),
 	url        = require('url'),
     http       = require('http'),
+	https      = require('https'),
     exec       = require('child_process').exec,
     spawn      = require('child_process').spawn;
 
@@ -19,61 +20,102 @@ router.get("/", function(req, res){
 // POST uploading file
 router.post("/", function(req, res){
 	console.log("Post request received...");
-	// create an incoming form object
-	var form = new formidable.IncomingForm();
+	console.log(req.xhr);
+	if (!req.xhr){
+		console.log(url.parse(req.body.uploadURL).pathname);
+		var dest = UPLOAD_DIR + req.body.uploadURL.split("/").pop();
+		console.log(dest);
+		download(req.body.uploadURL, dest, function(){
+			res.redirect('/upload');
+		})
+	} else {
+        // create an incoming form object
+        var form = new formidable.IncomingForm();
 
-	// sets encoding for incoming form fields
-	form.encoding = 'utf-8';
+        // sets encoding for incoming form fields
+        form.encoding = 'utf-8';
 
-	// if you want to keep the original file extension
-	form.keepExtensions = true;
+        // if you want to keep the original file extension
+        form.keepExtensions = true;
 
-	// specify that we want to allow the user to upload multiple files in a single request
-	form.multiples = true;
+        // specify that we want to allow the user to upload multiple files in a single request
+        form.multiples = true;
 
-	form.type = "multipart";
+        form.type = "multipart";
 
-	// store all uploads in the /uploads directory
-	form.uploadDir = path.join(__dirname, UPLOAD_DIR);
+        // store all uploads in the /uploads directory
+        form.uploadDir = UPLOAD_DIR;
 
-	// Make sure file type is correct
-	form.on("fileBegin", function(name, file){
-		// TODO add error catch incase user uploads something other than FASTQ
-		// console.log(file);
-		console.log("File type = " + file.type);
-		console.log("File name = " + file.name);
+        // Make sure file type is correct
+        form.on("fileBegin", function (name, file) {
+            // TODO add error catch incase user uploads something other than FASTQ
+            // console.log(file);
+            console.log("File type = " + file.type);
+            console.log("File name = " + file.name);
 
-	});
+        });
 
-	// every time a single file has been uploaded successfully
-	// rename it to it's original name
-	form.on("file", function(field, file){
-		fs.rename(file.path, path.join(form.uploadDir, file.name));
-	});
+        // every time a single file has been uploaded successfully
+        // rename it to it's original name
+        form.on("file", function (field, file) {
+            fs.rename(file.path, path.join(form.uploadDir, file.name));
+        });
 
-	// log any errors that occur
-	form.on("error", function(err){
-		console.log("An error has occured: \n" + err);
-	});
+        // log any errors that occur
+        form.on("error", function (err) {
+            console.log("An error has occured: \n" + err);
+        });
 
-	// once all the files have been uploaded, send a response to the client
-	form.on("end", function(){
-		res.end("success");
-	});
+        // once all the files have been uploaded, send a response to the client
+        form.on("end", function () {
+            res.end("success");
+        });
 
-	// parse the incoming request containing the form data
-	form.parse(req, res, function(err, fields, files){
-		console.log("Parsing...");
-		if(fields.uploadURL){
-			console.log("The URL is " + fields.uploadURL);
-			downloadFile(fields.uploadURL);
-		}
-		if(files.uploadFile){
-			console.log("You are uploading " + files.uploadFile.name);
-		}
-	});
-
+        // parse the incoming request containing the form data
+        form.parse(req);
+        // form.parse(req, res, function(err, fields, files){
+        // 	console.log("Parsing...");
+        // 	if(fields.uploadURL){
+        // 		console.log("The URL is " + fields.uploadURL);
+        // 		var fileName = url.parse(fileURL).pathname.split("/").pop();
+        // 		download(fields.uploadURL, UPLOAD_DIR + fileName, function(){
+        // 			res.redirect("/upload");
+        // 		});
+        // 	}
+        // 	if(files.uploadFile){
+        // 		console.log("You are uploading " + files.uploadFile.name);
+        // 	}
+        // });
+    }
 });
+
+
+// function for downloading from URL number 2
+var download = function(uploadURL, dest, cb){
+	var supportedLibraries = {
+		"http:": http,
+		"https:": https
+	};
+	var parsed = url.parse(uploadURL);
+	var lib = supportedLibraries[parsed.protocol || "http:"];
+	var file = fs.createWriteStream(dest);
+	var request = lib.get(uploadURL, function(response){
+		response.pipe(file);
+		file.on('finish', function(){
+			// close() is async, call cb after close completes
+			file.close(cb);
+		})
+			.on('error', function(err){
+				// delete the file async
+				fs.unlink(dest);
+				if (cb) {
+					cb(err.message);
+                }
+			});
+
+	});
+};
+
 
 
 
