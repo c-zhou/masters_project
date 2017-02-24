@@ -10,14 +10,14 @@
                 <div class="bar"></div>
                 <div class="label">Uploading</div>
             </div>
+            <!--Button that triggers the local file upload dialog box-->
             <button class="huge ui green button">
-                <!--<i class="upload icon"></i>-->
                 Upload Local File
             </button>
         </div>
         <div class="twelve wide column">
+            <!--Form for the user to specify a URL to a file they want to upload-->
             <form id="upload-url" class="ui huge form" action="/upload" method="POST">
-            <!--<form id="upload-url-form" class="ui huge form">-->
                 <div class="ui fluid action input">
                     <input id="uploadURL"type="text" placeholder="Enter URL here" name="uploadURL">
                     <button class="ui orange button">Upload</button>
@@ -27,10 +27,12 @@
     </div>
 </div>
 
-
+<!--input that handles the local file upload-->
+<!--the accept argument restricts the file types the user can upload-->
 <input type="file" id="upload-input" name="uploadFile" multiple="multiple"
        accept=".fasta, .fasta.gz, .fastq, .fastq.gz, .fa">
 
+<!--Script that handles the logic for a user wanting to upload a local file-->
 <script src="javascripts/upload.js"></script>
 
 
