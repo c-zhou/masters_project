@@ -4,12 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var formidable = require("formidable"); // parses incoming form data (uploaded files)
+var formidable = require('formidable'); // parses incoming form data (uploaded files)
 var fs = require("fs"); // used to rename file uploads
 
 var index = require('./routes/index');
 var about = require('./routes/about');
-var upload = require("./routes/upload");
+var upload = require('./routes/upload');
+var analysis = require('./routes/analysis');
 
 var app = express();
 
@@ -27,7 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/about', about);
-app.use("/upload", upload);
+app.use('/upload', upload);
+app.use('/analysis', analysis);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

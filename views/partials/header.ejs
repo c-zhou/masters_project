@@ -30,11 +30,9 @@
     <script>
         // script to control which tab is active
         var path = window.location.pathname.split("/").pop();
-        console.log(path);
         $('.pointing .item').each(function(i, obj){
             var href = obj.href.split("/").pop();
             if (href === path){
-                console.log($(this));
                 $(this).addClass("active");
             }
         });
