@@ -9,11 +9,10 @@
 #bg {
   width: 100%;
   max-width: 1920px;
-  background: url("/images/Dnarrow.png") no-repeat;
+  background: url("../images/Dnarrow.png") no-repeat;
   background-size: 100% 100%;
   background-position: center;
   position: absolute;
-  /*display: block;*/
   height: 100%;
   max-height: 1080px;
   z-index: -9999;
@@ -89,10 +88,3 @@ i.icon {
 .ui.button {
   font-size: 1.05em;
 }
-
-/*.header.item a {*/
-  /*text-decoration: none;*/
-/*}*/
-/*.header.item a:hover {*/
-  /*text-decoration: none;*/
-/*}*/

@@ -3,24 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Streamformatics</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.js"></script>
 
 </head>
 <body>
 
-    <div class="ui fixed menu">
+    <div class="ui pointing menu">
         <div class="ui container">
-            <a href="/analysis" class="header item">
+            <a href="/analysis" class="header item" data-tab="streamformatics">
                 <i class="random icon"></i>
                 Streamformatics
             </a>
-            <a href="/" class="item">Home</a>
-            <a href="/about" class="item">About</a>
-            <a href="/upload" class="item">MicroManage</a>
+            <a href="/" class="item" data-tab="home">Home</a>
+            <a href="/about" class="item" data-tab="about">About</a>
+            <a href="/upload" class="item" data-tab="micromanage">MicroManage</a>
         </div>
     </div>
+
+
+    <script>
+        // script to control which tab is active
+        var path = window.location.pathname.split("/").pop();
+        console.log(path);
+        $('.pointing .item').each(function(i, obj){
+            var href = obj.href.split("/").pop();
+            if (href === path){
+                console.log($(this));
+                $(this).addClass("active");
+            }
+        });
+    </script>
