@@ -16,13 +16,13 @@
 
     <div class="ui pointing menu">
         <div class="ui container">
-            <a href="/analysis" class="header item" data-tab="streamformatics">
+            <a href="/analysis" class="header item">
                 <i class="random icon"></i>
                 Streamformatics
             </a>
-            <a href="/" class="item" data-tab="home">Home</a>
-            <a href="/about" class="item" data-tab="about">About</a>
-            <a href="/upload" class="item" data-tab="micromanage">MicroManage</a>
+            <a href="/" class="item">Home</a>
+            <a href="/about" class="item">About</a>
+            <a href="/upload" class="item">MicroManage</a>
         </div>
     </div>
 
@@ -30,7 +30,7 @@
     <script>
         // script to control which tab is active
         var path = window.location.pathname.split("/").pop();
-        $('.pointing .item').each(function(i, obj){
+        $('.pointing.menu .item').each(function(i, obj){
             var href = obj.href.split("/").pop();
             if (href === path){
                 $(this).addClass("active");

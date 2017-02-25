@@ -10,7 +10,7 @@ var express    = require('express'),
     spawn      = require('child_process').spawn;
 
 
-var UPLOAD_DIR = path.join(__dirname, "../uploads/");
+const UPLOAD_DIR = path.join(__dirname, "../uploads/");
 
 // GET upload page
 router.get("/", function(req, res){
