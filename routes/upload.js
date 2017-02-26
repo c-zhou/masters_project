@@ -5,6 +5,7 @@ var express    = require('express'),
 	path       = require('path'),
 	url        = require('url'),
     http       = require('http'),
+	Client     = require('ftp'),
 	https      = require('https'),
     exec       = require('child_process').exec,
     spawn      = require('child_process').spawn;
@@ -53,17 +54,45 @@ router.post("/", function(req, res){
 // TODO add these functions into a middleware folder
 // function for downloading from URL
 var download = function(uploadURL, dest, cb){
+	console.log("download function called");
 	var supportedLibraries = {
 		"http:": http,
-		"https:": https
+		"https:": https,
+		// "ftp:": new Client()
+		"ftp:": http
 	};
 	var parsed = url.parse(uploadURL);
+	// console.log(parsed);
 	var lib = supportedLibraries[parsed.protocol || "http:"];
+
+	if (parsed.protocol === "ftp:"){
+		var split = uploadURL.split(":");
+		split[0] = "http";
+		uploadURL = split.join(":");
+		console.log(uploadURL);
+	}
 	var file = fs.createWriteStream(dest);
-	var request = lib.get(uploadURL, function(response){
-		response.pipe(file);
+	var request = lib.get(uploadURL, function(stream){
+		// variable to keep track of size of file
+		var total = stream.headers['content-length'];
+		var prog = 0;
+
+		stream.on('data', function(chunk){
+			prog += chunk.length;
+			var perc = parseInt(prog / total * 100);
+			console.log(perc + "% downloaded...");
+		});
+
+		stream.pipe(file);
+
+		// checks for how much has been written every second
+
+		// var timer = setTimeout(function(){console.log(file.bytesWritten)}, 1000);
+
 		file.on('finish', function(){
+			// clearInterval(timer);
 			// close() is async, call cb after close completes
+			console.log("FINISHED!");
 			file.close(cb);
 		})
 			.on('error', function(err){
@@ -73,7 +102,6 @@ var download = function(uploadURL, dest, cb){
 					cb(err.message);
                 }
 			});
-
 	});
 };
 
@@ -87,20 +115,6 @@ function getFile(req, res){
         type: "multipart",
         uploadDir: UPLOAD_DIR
 	});
-
-    // // sets encoding for incoming form fields
-    // form.encoding = 'utf-8';
-    //
-    // // if you want to keep the original file extension
-    // form.keepExtensions = true;
-    //
-    // // specify that we want to allow the user to upload multiple files in a single request
-    // form.multiples = true;
-    //
-    // form.type = "multipart";
-    //
-    // // store all uploads in the /uploads directory
-    // form.uploadDir = UPLOAD_DIR;
 
     // TODO add error catch incase user uploads something other than FASTQ
     // Make sure file type is correct
