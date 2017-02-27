@@ -1,0 +1,90 @@
+#content {
+  text-align: center;
+  padding-top: 25%;
+  text-shadow: 0px 4px 3px rgba(0,0,0,0.3),
+  0px 8px 13px rgba(0,0,0,0.1),
+  0px 18px 23px rgba(0,0,0,0.1);
+}
+
+#bg {
+  width: 100%;
+  max-width: 1920px;
+  background: url("../images/Dnarrow.png") no-repeat;
+background-size: 100% 100%;
+background-position: center;
+position: absolute;
+height: 100%;
+max-height: 1080px;
+z-index: -9999;
+opacity: 0.7;
+
+}
+
+body {
+    /*background-image: url("/images/Dnarrow.png");*/
+    /*background-size: 100%;*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
+    font-family: 'Lato', sans-serif;
+    color: black;
+    background: #ECE9E6; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #ECE9E6 , #FFFFFF); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #ECE9E6 , #FFFFFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 5em;
+}
+
+html {
+    height: 100%;
+}
+
+hr {
+    width: 400px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+.btn-success:hover{
+    transform: scale(1.05);
+}
+
+.upload.icon {
+  font-size: 2em;
+}
+
+.container.main {
+  margin-top: 7.0em;
+}
+
+.item {
+  font-size: 1.5em;
+}
+
+.menu {
+  height: 50px;
+  opacity: 0.9;
+}
+
+.twelve.wide {
+  text-align: center;
+}
+
+#upload-input {
+  display: none;
+}
+
+.huge.ui.green.button:hover {
+  transform: scale(1.05);
+}
+
+.twelve h2 {
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.ui.button {
+  font-size: 1.05em;
+}
