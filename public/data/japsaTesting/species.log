@@ -1,3 +1,9 @@
-R_HOME is not set. Please set all required environment variables before running this program.
-Unable to start R
-#Cannot load R
+#REngine ready
+#5869   4708
+#Species typing ready at Mon Feb 27 14:28:00 AEST 2017
+#Start analysing data at Mon Feb 27 14:28:40 AEST 2017
+#91 : Zika_virus, == 81.0
+#91 : Cafeteria_roenbergensis_virus_BV-PW1, == 1.0
+#91 : St._Louis_encephalitis_virus, == 1.0
+#91  4
+#RUNTIME	Mon Feb 27 14:30:12 AEST 2017	91.244	120	0.006

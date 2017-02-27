@@ -52,6 +52,7 @@ router.post("/", function(req, res){
 
 
 // TODO add these functions into a middleware folder
+// TODO look into using curl instead?
 // function for downloading from URL
 var download = function(uploadURL, dest, cb){
 	console.log("download function called");
