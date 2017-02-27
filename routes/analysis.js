@@ -68,7 +68,7 @@ router.post('/', function(req, res){
 	// handle STDOUT coming from child process. This should be the species typing output
 	speciesTyping.stdout.on('data', function(chunk){
 		console.log("STDOUT: " + chunk);
-		parseSpecTypingResults(chunk);
+		res.send(parseSpecTypingResults(chunk));
 	});
 
 	speciesTyping.on('close', function(code){
@@ -82,8 +82,10 @@ router.post('/', function(req, res){
 // function to parse species typing output
 function parseSpecTypingResults(stdout){
 	if (stdout.startsWith("time")){
-		console.log("Header detected");
-
+		var line = stdout.split("\n")[1].split("\t");
+		var species = line[4],
+		    prob    = line[5];
+		return "Species is " + species + " and probability is " + prob;
 	}
 }
 
