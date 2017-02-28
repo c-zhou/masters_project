@@ -7,8 +7,8 @@ var express  = require('express'),
     chokidar = require('chokidar'),
     router   = express.Router();
 
-const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
+const assert = require('assert');
 
 const SCRIPT_DIR = path.join(__dirname, '../public/data/japsaTesting/');
 const VIRUS_DB = path.join(__dirname, '../public/data/virusDB/');
@@ -25,6 +25,8 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res){
 	console.log("Post request received...");
+
+	var socket = req.app.get('socketio');
 
 	// arguments (in order) to be passed to the child process
 	var scriptArgs = ['speciesTypingMac.sh', 'testZika/', '../virusDB/'];
@@ -52,7 +54,8 @@ router.post('/', function(req, res){
 	// handle STDOUT coming from child process. This should be the species typing output
 	speciesTyping.stdout.on('data', function(chunk){
 		console.log("STDOUT: " + chunk);
-		res.render("analysis", {info: parseSpecTypingResults(chunk)});
+		socket.emit('stdout', parseSpecTypingResults(chunk));
+		// res.render("analysis", {info: parseSpecTypingResults(chunk)});
 	});
 
 	speciesTyping.on('close', function(code){
@@ -66,16 +69,36 @@ router.post('/', function(req, res){
 // function to parse species typing output
 function parseSpecTypingResults(stdout){
 	if (stdout.startsWith("time")){
-		var line = stdout.split("\n")[1].split("\t");
-		var species = line[4],
-		    prob    = line[5];
-		var info = {
-			species: species,
-			prob: prob
-		};
-		return info;
+		var lines = stdout.split("\n");
+
+		// removes the header line
+		lines.splice(0, 1);
+		return st2JSON(lines[0]);
+	} else {
+		return st2JSON(stdout.trim("\n"));
 	}
+}
+
+// parses a line into the required object
+function st2JSON(line){
+	var headings = [
+		"time", "step", "reads", "bases", "species", "prob", "err", "tAligned", "sAligned"
+	];
+	var results = line.split("\t");
+
+	// make sure the results have the same number of fields as the headings
+	var assertError = "Number of fields returned from Species-typing does not match the " +
+			"required number!";
+	assert.strictEqual(results.length, headings.length, assertError);
+
+	var output = {};
+
+	for (var i = 0; i < headings.length; i++){
+		output[headings[i]] = results[i];
+	}
+	return output;
 }
 
 
 module.exports = router;
+
