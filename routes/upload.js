@@ -28,17 +28,28 @@ router.post("/", function(req, res){
 		// set the path to the file, including the file's name
 		var dest = UPLOAD_DIR + req.body.uploadURL.split("/").pop();
 
-		// download the file at the URL
-		download(req.body.uploadURL, dest, function(err){
-			// handle error
-			if (err) {
-				// TODO handle errors properly
-				res.send(err.message);
+		// download file using curl
+		downloadFilecURL(req.body.uploadURL, function(err){
+			if (err){
+				res.send(err);
 			} else {
-                // refresh the page once the file is complete
-                res.redirect('/upload');
-            }
+				res.redirect("/upload");
+			}
 		});
+
+
+
+		// download the file at the URL
+		// download(req.body.uploadURL, dest, function(err){
+		// 	// handle error
+		// 	if (err) {
+		// 		// TODO handle errors properly
+		// 		res.send(err.message);
+		// 	} else {
+         //        // refresh the page once the file is complete
+         //        res.redirect('/upload');
+         //    }
+		// });
 	} else {
         // Getting to here indicates that the user has requested to upload a local file
 		// upload the file to the server
@@ -105,6 +116,52 @@ var download = function(uploadURL, dest, cb){
 			});
 	});
 };
+
+function downloadFilecURL(fileURL, cb){
+	// extract filename
+	var fileName = url.parse(fileURL).pathname.split("/").pop();
+
+	// create an instance of a writeable stream
+	var file = fs.createWriteStream(UPLOAD_DIR + fileName);
+
+	// execute curl using child process
+	var curl = spawn('curl', ['-#', fileURL]);
+
+	// add a a data event listener
+	curl.stdout.on('data', function(chunk){
+		file.write(chunk);
+	});
+
+	// add an end event listener
+	curl.stdout.on('end', function(){
+		file.end();
+		console.log(fileName + " downloaded to " + UPLOAD_DIR);
+	});
+
+	file.on('finish', function(){
+		console.log("FINISHED!");
+		file.close(cb);
+	});
+
+	file.on('error', function(err){
+		fs.unlink(UPLOAD_DIR + fileName);
+		if (cb){
+			cb(err);
+		}
+	});
+	// when the child process exits, check if there were any errors
+	curl.on('exit', function(code){
+		if (code !== 0){
+			cb("Failed: " + code);
+		}
+	});
+
+	curl.stderr.setEncoding('utf8');
+
+	curl.stderr.on('data', function(chunk){
+		console.log(chunk.trim());
+	});
+}
 
 // function to upload a user's specified local file
 function getFile(req, res){
