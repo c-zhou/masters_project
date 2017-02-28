@@ -6,8 +6,10 @@
         <input type="submit" class="ui blue button">
     </form>
 </div>
-
-
+<% if (info) { %>
+<h2><%= info.species%></h2>
+<h2><%= info.prob %></h2>
+<% } %>
 
 
 <% include ./partials/footer %>

@@ -19,25 +19,9 @@ const RUN_ST = SCRIPT_DIR + "speciesTypingMac.sh " + SCRIPT_DIR + "testZika/ " +
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('analysis');
+    res.render('analysis', {info: null});
 });
 
-// POST route
-// router.post('/', function(req, res, next){
-//     console.log("Post request received...");
-//     spawn(RUN_ST, function(err, stdout, stderr){
-//         if (err){
-//             console.log("Err: " + err);
-//         } else {
-//         	console.log("No errors...");
-//             console.log("STDOUT: " + stdout);
-//             console.log("STDERR: " + stderr);
-//             chokidar.watch(SCRIPT_DIR, {ignored: /(^|[\/\\])\../}).on('all', function(event, path){
-//                 console.log(event, path);
-//             });
-//         }
-//     });
-// });
 
 router.post('/', function(req, res){
 	console.log("Post request received...");
@@ -68,7 +52,7 @@ router.post('/', function(req, res){
 	// handle STDOUT coming from child process. This should be the species typing output
 	speciesTyping.stdout.on('data', function(chunk){
 		console.log("STDOUT: " + chunk);
-		res.send(parseSpecTypingResults(chunk));
+		res.render("analysis", {info: parseSpecTypingResults(chunk)});
 	});
 
 	speciesTyping.on('close', function(code){
@@ -85,7 +69,11 @@ function parseSpecTypingResults(stdout){
 		var line = stdout.split("\n")[1].split("\t");
 		var species = line[4],
 		    prob    = line[5];
-		return "Species is " + species + " and probability is " + prob;
+		var info = {
+			species: species,
+			prob: prob
+		};
+		return info;
 	}
 }
 
