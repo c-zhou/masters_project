@@ -15,7 +15,8 @@ const VIRUS_DB = path.join(__dirname, '../public/data/virusDB/');
 // command to run species typing
 const RUN_ST = SCRIPT_DIR + "speciesTypingMac.sh " + SCRIPT_DIR + "testZika/ " + VIRUS_DB;
 
-
+// require middleware with donut chart function
+var chart = require('../middleware/donut.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -26,6 +27,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res){
 	console.log("Post request received...");
 
+	// access the socket passed from the server
 	var socket = req.app.get('socketio');
 
 	// arguments (in order) to be passed to the child process
@@ -39,6 +41,7 @@ router.post('/', function(req, res){
 	// creating the child process
 	const speciesTyping = spawn('sh', scriptArgs, scriptOptions);
 
+	// encode the stdout as a string rather than a Buffer
 	speciesTyping.stdout.setEncoding('utf8');
 
 	// handle error in trying to run spawn command
@@ -53,8 +56,12 @@ router.post('/', function(req, res){
 
 	// handle STDOUT coming from child process. This should be the species typing output
 	speciesTyping.stdout.on('data', function(chunk){
+		chart([50, 25, 25], '/Users/m.hall/Documents/test.svg');
 		console.log("STDOUT: " + chunk);
-		socket.emit('stdout', parseSpecTypingResults(chunk));
+		var info = parseSpecTypingResults(chunk);
+		var prob = +info.prob * 100;
+		socket.emit('stdout', "Species: " + info.species +
+			"\nProbability: " + Math.round(prob * 100) / 100 + "%");
 		// res.render("analysis", {info: parseSpecTypingResults(chunk)});
 	});
 
@@ -93,6 +100,7 @@ function st2JSON(line){
 
 	var output = {};
 
+	// add headings as keys and associate their values from the parsed line
 	for (var i = 0; i < headings.length; i++){
 		output[headings[i]] = results[i];
 	}

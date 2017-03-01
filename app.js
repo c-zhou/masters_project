@@ -27,7 +27,10 @@ var io = require('socket.io')(server);
 var clients = 0;
 
 io.on('connection', function(socket){
+
+	// allows for accessing the socket within the req of a route
 	app.set('socketio', socket);
+
 	// clients++;
 	//
 	// io.sockets.emit('broadcast', {
