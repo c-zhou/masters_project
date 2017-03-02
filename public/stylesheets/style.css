@@ -157,6 +157,14 @@ polyline{
 
 
 
+#analysis-container {
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 200px;
+    bottom: 0px;
+}
+
 
 
 

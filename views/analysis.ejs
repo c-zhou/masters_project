@@ -1,23 +1,24 @@
 <% include ./partials/header %>
 
 
-<div class="ui main text container" id="analysis-container">
+<div class="ui main text container">
     <form action="/analysis" method="POST" class="ui form" id="start-form">
         <input type="submit" class="ui green button" value="Start">
         <input type="button" class="ui red button" value="Stop" id="stop-button">
     </form>
-</div>
 
+</div>
+<div id="analysis-container"></div>
 
 
 <script>
+// TODO - holding all data on clientside is probably not good. Change this to only hold most recent
+    var stopBtn         = $('#stop-button'),
+        queue           = [], // will hold all data received from server
+        interval        = 10000, // timer interval for plotting
+        socket          = io(),
+        plottingStarted = false;
 
-    var stopBtn = $('#stop-button');
-
-    var queue = [];
-    var plottingStarted = false;
-
-	var socket = io();
 
 	socket.on('connect', function(){
 		console.log("Socket connected from Client-side");
@@ -25,14 +26,22 @@
     });
 
 	socket.on('stdout', function(data){
+		// keep all data stored in queue array
 		queue.push(data);
+
+		// i.e is this is the first time data has been received
 		if (!plottingStarted){
+
+			// setup interval to trigger plotting every given interval
 			var chartTimer = setInterval(function(){
 				console.log("Timer triggered...");
 				console.log(queue[queue.length - 1]);
 				change(queue[queue.length - 1]);
-            }, 10000);
+            }, interval);
+
 			plottingStarted = true;
+
+			// initiate the stop button listener, only after the user has started analysis
 			onStop(chartTimer);
         }
     });
@@ -42,6 +51,7 @@
     }, 10000);
 
 
+	// function that stops all interval timers and kills child process when stop button pressed
 	function onStop(chartTimer){
 		stopBtn.click(function(event){
 			clearInterval(timer);
@@ -50,10 +60,7 @@
 		});
     }
 
-
-
-
-
+    // set the initial sizing variables for the chart
     var width        = 960,
         height       = 450,
         radius       = Math.min(width, height) / 2,
@@ -62,11 +69,7 @@
 
 
 	var svg = d3.select('#analysis-container')
-        .classed('svg-container', true)
         .append('svg')
-        .attr('preserveAspectRatio', 'xMinYMin meet')
-        .attr('viewBox', '0 0 ' + width + " " + height)
-        .classed('svg-content-responsive', true)
         .append('g');
 
 	svg.append('g')
@@ -111,6 +114,16 @@
 
 
 	function change(data){
+
+		var chartDiv = document.getElementById('analysis-container');
+
+		var width  = chartDiv.clientWidth,
+            height = chartDiv.clientHeight;
+
+		svg.attr('width', width)
+            .attr('height', height);
+
+		svg.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
 		// PIE SLICES
         var slice = svg.select('.slices')
@@ -250,7 +263,7 @@
 
 
 
-
+    window.addEventListener('resize', change(queue[queue.length - 1]))
 
 
 
