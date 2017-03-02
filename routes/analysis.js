@@ -71,29 +71,36 @@ router.post('/', function(req, res){
 });
 
 
+var headings = [
+	"time", "step", "reads", "bases", "species", "prob", "err", "tAligned", "sAligned"
+];
+
 // function to parse species typing output
 function parseSpecTypingResults(stdout){
-	if (stdout.startsWith("time")){
-		var lines = stdout.split("\n");
+	var lines = stdout.split("\n");
 
+	if (stdout.startsWith("time")) {
 		// removes the header line
 		lines.splice(0, 1);
-		return st2JSON(lines[0]);
-	} else {
-		return st2JSON(stdout.trim("\n"));
 	}
+	// function to check if any elements in the array are empty. i.e after split on \n
+	var isNotEmpty = function(item){ return (/\S/.test(item)); };
+
+	// filter out empty elements and then parse each line into an object
+	var resultsArr =  lines.filter(isNotEmpty).map(lineParser);
+	console.log(resultsArr);
+	return resultsArr;
 }
 
+
+
 // parses a line into the required object
-function st2JSON(line){
-	var headings = [
-		"time", "step", "reads", "bases", "species", "prob", "err", "tAligned", "sAligned"
-	];
+function lineParser(line){
 	var results = line.split("\t");
 
 	// make sure the results have the same number of fields as the headings
 	var assertError = "Number of fields returned from Species-typing does not match the " +
-			"required number!";
+			"required number! This is the line: " + results;
 	assert.strictEqual(results.length, headings.length, assertError);
 
 	var output = {};
@@ -108,11 +115,14 @@ function st2JSON(line){
 			}
 		} else {
 			if (headings[i] === "species"){
-				results[i] = results[i].split(" ").slice(0, 4).join(" ");
+				if (results[i].length > 30) {
+					results[i] = results[i].split(" ").slice(0, 4).join(" ");
+				}
 			}
 			output[headings[i]] = results[i];
 		}
 	}
+	// console.log(output);
 	return output;
 }
 

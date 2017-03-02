@@ -10,10 +10,27 @@
 
 
 <script>
+    var queue = [];
+    var plottingStarted = false;
+
 	var socket = io();
-	socket.on('stdout', function(data){
-		change([data]);
+
+	socket.on('connect', function(){
+		console.log("Socket connected from Client-side");
+		console.log(socket.id);
     });
+
+	socket.on('stdout', function(data){
+		queue.push(data);
+		if (!plottingStarted){
+			var timer = setInterval(change(queue[queue.length - 1]), 10000);
+			plottingStarted = true;
+        }
+
+//		change(data);
+    });
+
+
 
 
 
