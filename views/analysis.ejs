@@ -1,9 +1,9 @@
 <% include ./partials/header %>
 
 
-<div class="ui main text container">
-    <form action="/analysis" method="POST" class="ui form">
-        <input type="submit" class="ui blue button">
+<div class="ui main text container" id="analysis-container">
+    <form action="/analysis" method="POST" class="ui form" id="start-form">
+        <input type="submit" class="ui green button" value="Start">
         <input type="button" class="ui red button" value="Stop" id="stop-button">
     </form>
 </div>
@@ -54,9 +54,19 @@
 
 
 
+    var width        = 960,
+        height       = 450,
+        radius       = Math.min(width, height) / 2,
+        padAngle     = 0.01,
+        cornerRadius = 4;
 
-	var svg = d3.select('body')
+
+	var svg = d3.select('#analysis-container')
+        .classed('svg-container', true)
         .append('svg')
+        .attr('preserveAspectRatio', 'xMinYMin meet')
+        .attr('viewBox', '0 0 ' + width + " " + height)
+        .classed('svg-content-responsive', true)
         .append('g');
 
 	svg.append('g')
@@ -71,10 +81,6 @@
 	svg.append('g')
 		.attr('class', 'lines');
 
-	var width  = 960,
-        height = 450,
-        radius = Math.min(width, height) / 2;
-
 	var pie = d3.pie()
         .sort(null)
         .value(function(d){
@@ -83,7 +89,10 @@
 
 	var arc = d3.arc()
         .outerRadius(radius * 0.8)
-        .innerRadius(radius * 0.6);
+        .innerRadius(radius * 0.6)
+        .cornerRadius(cornerRadius)
+        .padAngle(padAngle);
+
 
 	var outerArc = d3.arc()
         .innerRadius(radius * 0.9)
