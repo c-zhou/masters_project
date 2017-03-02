@@ -4,12 +4,16 @@
 <div class="ui main text container">
     <form action="/analysis" method="POST" class="ui form">
         <input type="submit" class="ui blue button">
+        <input type="button" class="ui red button" value="Stop" id="stop-button">
     </form>
 </div>
 
 
 
 <script>
+
+    var stopBtn = $('#stop-button');
+
     var queue = [];
     var plottingStarted = false;
 
@@ -23,12 +27,29 @@
 	socket.on('stdout', function(data){
 		queue.push(data);
 		if (!plottingStarted){
-			var timer = setInterval(change(queue[queue.length - 1]), 10000);
+			var chartTimer = setInterval(function(){
+				console.log("Timer triggered...");
+				console.log(queue[queue.length - 1]);
+				change(queue[queue.length - 1]);
+            }, 10000);
 			plottingStarted = true;
+			onStop(chartTimer);
         }
-
-//		change(data);
     });
+
+	var timer = setInterval(function(){
+		socket.emit('love', "Client-side sends some lovin'");
+    }, 10000);
+
+
+	function onStop(chartTimer){
+		stopBtn.click(function(event){
+			clearInterval(timer);
+			clearInterval(chartTimer);
+			socket.emit('kill');
+		});
+    }
+
 
 
 

@@ -3,6 +3,7 @@
  */
 var express  = require('express'),
     path     = require('path'),
+    kill     = require('tree-kill'),
     fs       = require('fs'),
     chokidar = require('chokidar'),
     router   = express.Router();
@@ -29,6 +30,15 @@ router.post('/', function(req, res){
 
 	// access the socket passed from the server
 	var socket = req.app.get('socketio');
+
+	socket.on('love', function(msg){
+		console.log("Love message received on analysis route...");
+	});
+
+	// kill child process and all it's children when stop button is clicked.
+	socket.on('kill', function(){
+		kill(speciesTyping.pid);
+	});
 
 	// arguments (in order) to be passed to the child process
 	var scriptArgs = ['speciesTypingMac.sh', 'testZika/', '../virusDB/'];
@@ -58,15 +68,14 @@ router.post('/', function(req, res){
 	speciesTyping.stdout.on('data', function(chunk){
 		console.log("STDOUT: " + chunk);
 		var info = parseSpecTypingResults(chunk);
-		var prob = +info.prob * 100;
 		socket.emit('stdout', info);
-		// res.render("analysis", {info: parseSpecTypingResults(chunk)});
 	});
 
 	speciesTyping.on('close', function(code){
 		if (code !== 0){
 			console.log("Process exited with code " + code);
 		}
+		console.log("Child process has been closed.");
 	});
 });
 

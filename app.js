@@ -48,6 +48,9 @@ io.on('connection', function(socket){
 	// 		description: clients + " clients connected!"
 	// 	});
 	// });
+	socket.on('love', function(message){
+		console.log(message);
+	})
 });
 
 
