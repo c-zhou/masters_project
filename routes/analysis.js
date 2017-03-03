@@ -28,6 +28,8 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res){
 	console.log("Post request received...");
 
+	// TODO - remove all of the analysis from the post request
+
 	// access the socket passed from the server
 	var socket = req.app.get('socketio');
 
@@ -67,8 +69,17 @@ router.post('/', function(req, res){
 	// handle STDOUT coming from child process. This should be the species typing output
 	speciesTyping.stdout.on('data', function(chunk){
 		console.log("STDOUT: " + chunk);
-		var info = parseSpecTypingResults(chunk);
-		socket.emit('stdout', info);
+		// var info = parseSpecTypingResults(chunk);
+		var info = JSON.parse(chunk);
+
+		// parse the species label if it is longer than 30 characters
+		// info.data.forEach(function(entry){
+		// 	if(entry.species.length > 30){
+		// 		entry.species = entry.species.substr(0, 27) + "...";
+		// 	}
+		// });
+
+		socket.emit('stdout', info.data);
 	});
 
 	speciesTyping.on('close', function(code){
@@ -84,57 +95,68 @@ var headings = [
 	"time", "step", "reads", "bases", "species", "prob", "err", "tAligned", "sAligned"
 ];
 
-// function to parse species typing output
-function parseSpecTypingResults(stdout){
-	var lines = stdout.split("\n");
-
-	if (stdout.startsWith("time")) {
-		// removes the header line
-		lines.splice(0, 1);
-	}
-	// function to check if any elements in the array are empty. i.e after split on \n
-	var isNotEmpty = function(item){ return (/\S/.test(item)); };
-
-	// filter out empty elements and then parse each line into an object
-	var resultsArr =  lines.filter(isNotEmpty).map(lineParser);
-	console.log(resultsArr);
-	return resultsArr;
-}
-
-
-
-// parses a line into the required object
-function lineParser(line){
-	var results = line.split("\t");
-
-	// make sure the results have the same number of fields as the headings
-	var assertError = "Number of fields returned from Species-typing does not match the " +
-			"required number! This is the line: " + results;
-	assert.strictEqual(results.length, headings.length, assertError);
-
-	var output = {};
-
-	// add headings as keys and associate their values from the parsed line
-	for (var i = 0; i < headings.length; i++){
-		if (!isNaN(results[i])){
-			output[headings[i]] = +results[i];
-			if (headings[i] === "prob"){
-				// TODO - bug with some numbers not rounding properly i.e 99.770000000000001
-				output[headings[i]] = Math.round(output[headings[i]] * 10000) / 10000;
-			}
-		} else {
-			if (headings[i] === "species"){
-				if (results[i].length > 30) {
-					results[i] = results[i].split(" ").slice(0, 4).join(" ");
-				}
-			}
-			output[headings[i]] = results[i];
-		}
-	}
-	// console.log(output);
-	return output;
-}
 
 
 module.exports = router;
 
+
+
+
+
+
+
+
+
+
+// OLD functions for parsing species typing before we changed the output of the japsa program
+// keeping these here for now incase their need arises again.
+// function to parse species typing output
+// function parseSpecTypingResults(stdout){
+// 	var lines = stdout.split("\n");
+//
+// 	if (stdout.startsWith("time")) {
+// 		// removes the header line
+// 		lines.splice(0, 1);
+// 	}
+// 	// function to check if any elements in the array are empty. i.e after split on \n
+// 	var isNotEmpty = function(item){ return (/\S/.test(item)); };
+//
+// 	// filter out empty elements and then parse each line into an object
+// 	var resultsArr =  lines.filter(isNotEmpty).map(lineParser);
+// 	console.log(resultsArr);
+// 	return resultsArr;
+// }
+//
+//
+//
+// // parses a line into the required object
+// function lineParser(line){
+// 	var results = line.split("\t");
+//
+// 	// make sure the results have the same number of fields as the headings
+// 	var assertError = "Number of fields returned from Species-typing does not match the " +
+// 		"required number! This is the line: " + results;
+// 	assert.strictEqual(results.length, headings.length, assertError);
+//
+// 	var output = {};
+//
+// 	// add headings as keys and associate their values from the parsed line
+// 	for (var i = 0; i < headings.length; i++){
+// 		if (!isNaN(results[i])){
+// 			output[headings[i]] = +results[i];
+// 			if (headings[i] === "prob"){
+// 				// TODO - bug with some numbers not rounding properly i.e 99.770000000000001
+// 				output[headings[i]] = Math.round(output[headings[i]] * 10000) / 10000;
+// 			}
+// 		} else {
+// 			if (headings[i] === "species"){
+// 				if (results[i].length > 30) {
+// 					results[i] = results[i].split(" ").slice(0, 4).join(" ");
+// 				}
+// 			}
+// 			output[headings[i]] = results[i];
+// 		}
+// 	}
+// 	// console.log(output);
+// 	return output;
+// }

@@ -15,7 +15,7 @@
 // TODO - holding all data on clientside is probably not good. Change this to only hold most recent
     var stopBtn         = $('#stop-button'),
         queue           = [], // will hold all data received from server
-        interval        = 10000, // timer interval for plotting
+        interval        = 5000, // timer interval for plotting
         socket          = io(),
         plottingStarted = false;
 
@@ -67,6 +67,12 @@
         padAngle     = 0.01,
         cornerRadius = 4;
 
+    // will format numbers to percentage to 2 decimal places
+    var numberFormatPerc = d3.format(',.2%');
+
+    // will format as float to 4 decimal places
+    var floatFormat = d3.format('.4r')
+
 
 	var svg = d3.select('#analysis-container')
         .append('svg')
@@ -87,7 +93,7 @@
 	var pie = d3.pie()
         .sort(null)
         .value(function(d){
-        	return d.prob;
+        	return floatFormat(d.prob);
         });
 
 	var arc = d3.arc()
@@ -153,7 +159,7 @@
         	div.style('left', d3.event.pageX + 10 + 'px')
                 .style('top', d3.event.pageY - 25 + 'px')
                 .style('display', 'inline-block')
-                .html(d.data.species + '<br>' + d.data.prob * 100 + '%');
+                .html(d.data.species + '<br>' + numberFormatPerc(d.data.prob));
         });
 
         slice.on('mouseout', function(d){
@@ -192,14 +198,24 @@
         var text = svg.select('.labelName')
             .selectAll('text')
             .data(pie(data), function(d){
-            	return d.data.species;
+	            var species = d.data.species;
+	            // parse the species label if it is longer than 30 characters
+	            if(d.data.species.length > 30){
+		            species = d.data.species.substr(0, 27) + "...";
+	            }
+	            return species
             });
 
         text.enter()
             .append('text')
             .attr('dy', '0.35em')
             .text(function(d){
-            	return d.data.species + ': ' + d.value * 100 + '%'
+	            var species = d.data.species;
+	            // parse the species label if it is longer than 30 characters
+	            if(d.data.species.length > 30){
+		            species = d.data.species.substr(0, 27) + "...";
+	            }
+            	return species + ': ' + d.value * 100 + '%'
             });
 
         function midAngle(d){
@@ -228,7 +244,12 @@
                 };
             })
             .text(function(d){
-            	return d.data.species + ': ' + d.value * 100 + '%';
+            	var species = d.data.species;
+	            // parse the species label if it is longer than 30 characters
+	            if(d.data.species.length > 30){
+		            species = d.data.species.substr(0, 27) + "...";
+	            }
+            	return species + ': ' + d.value * 100 + '%';
             });
 
         text.exit()
@@ -239,7 +260,14 @@
 
         var polyline = svg.select('.lines')
             .selectAll('polyline')
-            .data(pie(data), function(d){ return d.data.species; });
+            .data(pie(data), function(d){
+	            var species = d.data.species;
+	            // parse the species label if it is longer than 30 characters
+	            if(d.data.species.length > 30){
+		            species = d.data.species.substr(0, 27) + "...";
+	            }
+            	return species;
+            });
 
         polyline.enter()
             .append('polyline');
