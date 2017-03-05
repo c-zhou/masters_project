@@ -2,10 +2,13 @@
 
 
 <div class="ui main text container">
-    <form action="/analysis" method="POST" class="ui form" id="start-form">
-        <input type="submit" class="ui green button" value="Start">
-        <input type="button" class="ui red button" value="Stop" id="stop-button">
-    </form>
+        <form action="/analysis/start" method="POST" class="ui form" id="start-form">
+         <!--<form class="ui form" id="start-form" style="position: absolute;">-->
+            <input type="text" placeholder="Enter path to reads" class="ui text"
+                   name="readsPath" id="readsPath">
+            <input type="submit" class="ui green button" value="Start">
+            <input type="button" class="ui red button" value="Stop" id="stop-button">
+         </form>
 
 </div>
 <div id="analysis-container"></div>
@@ -296,6 +299,9 @@
 
 
 </script>
+
+<script src="/javascripts/analysis.js"></script>
+
 
 <% include ./partials/footer %>
 

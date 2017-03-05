@@ -19,76 +19,108 @@ const RUN_ST = SCRIPT_DIR + "speciesTypingMac.sh " + SCRIPT_DIR + "testZika/ " +
 // require middleware with donut chart function
 // var chart = require('../middleware/donut.js');
 
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
+
+
     res.render('analysis', {info: null});
+    startSpeciesTyping(socket);
 });
 
 
-router.post('/', function(req, res){
-	console.log("Post request received...");
+router.post('/start', function(req, res){
+    console.log("");
+    console.log("");
+    console.log("Starting analysis...");
 
-	// TODO - remove all of the analysis from the post request
+    // access the socket passed from the server
+    var socket = req.app.get('socketio');
 
-	// access the socket passed from the server
-	var socket = req.app.get('socketio');
 
-	socket.on('love', function(msg){
-		console.log("Love message received on analysis route...");
-	});
+    // run start script
+    startSpeciesTyping(socket);
 
-	// kill child process and all it's children when stop button is clicked.
-	socket.on('kill', function(){
-		kill(speciesTyping.pid);
-	});
+    var path = req.query.readsPath;
 
-	// arguments (in order) to be passed to the child process
-	var scriptArgs = ['speciesTypingMac.sh', 'testZika/', '../virusDB/'];
-
-	var scriptOptions = {
-		// this is the directory which the child process will be run on
-		cwd: SCRIPT_DIR
-	};
-
-	// creating the child process
-	const speciesTyping = spawn('sh', scriptArgs, scriptOptions);
-
-	// encode the stdout as a string rather than a Buffer
-	speciesTyping.stdout.setEncoding('utf8');
-
-	// handle error in trying to run spawn command
-	speciesTyping.on('error', function(err){
-		console.log("Spawn has error: " + err);
-	});
-
-	// handle STDERR coming from child process
-	speciesTyping.stderr.on('data', function(chunk){
-		// console.log("STDERR: " + chunk);
-	});
-
-	// handle STDOUT coming from child process. This should be the species typing output
-	speciesTyping.stdout.on('data', function(chunk){
-		console.log("STDOUT: " + chunk);
-		// var info = parseSpecTypingResults(chunk);
-		var info = JSON.parse(chunk);
-
-		// parse the species label if it is longer than 30 characters
-		// info.data.forEach(function(entry){
-		// 	if(entry.species.length > 30){
-		// 		entry.species = entry.species.substr(0, 27) + "...";
-		// 	}
-		// });
-
-		socket.emit('stdout', info.data);
-	});
-
-	speciesTyping.on('close', function(code){
-		if (code !== 0){
-			console.log("Process exited with code " + code);
-		}
-		console.log("Child process has been closed.");
-	});
+    console.log('');
+    console.log(req.query);
+	console.log('PATH IS', path);
 });
+
+
+// on stop, res.send(JSON of last entry - later)
+
+
+router.post('/stop', function(req, res){
+    // stop socket
+    socket.emit('kill');
+});
+
+
+function startSpeciesTyping(socket) {
+
+    // TODO - remove all of the analysis from the post request
+
+    socket.on('love', function(msg){
+        console.log("Love message received on analysis route...");
+    });
+
+    // kill child process and all it's children when stop button is clicked.
+    socket.on('kill', function(){
+        kill(speciesTyping.pid);
+    });
+
+    // arguments (in order) to be passed to the child process
+    var scriptArgs = ['speciesTypingMac.sh', 'testZika/', '../virusDB/'];
+
+    var scriptOptions = {
+        // this is the directory which the child process will be run on
+        cwd: SCRIPT_DIR
+    };
+
+    // creating the child process
+    const speciesTyping = spawn('sh', scriptArgs, scriptOptions);
+
+    // encode the stdout as a string rather than a Buffer
+    speciesTyping.stdout.setEncoding('utf8');
+
+    // handle error in trying to run spawn command
+    speciesTyping.on('error', function(err){
+        console.log("Spawn has error: " + err);
+    });
+
+    // handle STDERR coming from child process
+    speciesTyping.stderr.on('data', function(chunk){
+        // console.log("STDERR: " + chunk);
+    });
+
+    // handle STDOUT coming from child process. This should be the species typing output
+    speciesTyping.stdout.on('data', function(chunk){
+        console.log("STDOUT: " + chunk);
+        // var info = parseSpecTypingResults(chunk);
+        var info = JSON.parse(chunk);
+
+        // parse the species label if it is longer than 30 characters
+        // info.data.forEach(function(entry){
+        // 	if(entry.species.length > 30){
+        // 		entry.species = entry.species.substr(0, 27) + "...";
+        // 	}
+        // });
+
+        socket.emit('stdout', info.data);
+    });
+
+    speciesTyping.on('close', function(code){
+        if (code !== 0){
+            console.log("Process exited with code " + code);
+        }
+        console.log("Child process has been closed.");
+    });
+}
+
 
 
 var headings = [

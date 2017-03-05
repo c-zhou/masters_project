@@ -31,23 +31,6 @@ io.on('connection', function(socket){
 	// allows for accessing the socket within the req of a route
 	app.set('socketio', socket);
 
-	// clients++;
-	//
-	// io.sockets.emit('broadcast', {
-	// 	description: clients + " clients connected!"
-	// });
-	//
-	// socket.on('clientEvent', function(data){
-	// 	console.log(data);
-	// });
-	//
-	// socket.on('disconnect', function(){
-	// 	clients--;
-	//
-	// 	io.sockets.emit('broadcast', {
-	// 		description: clients + " clients connected!"
-	// 	});
-	// });
 	socket.on('love', function(message){
 		console.log(message);
 	})
