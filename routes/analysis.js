@@ -101,7 +101,10 @@ module.exports = router;
 
 
 
-
+/* GET home page. */
+router.get('/:userPath', function(req, res, next) {
+    res.render('analysis', {info: null});
+});
 
 
 
