@@ -22,19 +22,24 @@ app.set('port', port);
 var server = http.createServer(app);
 var io = require('socket.io')(server);
 
-// app.set('socketio', io);
 
-var clients = 0;
+// export io object so it can be used in the analysis route
+module.exports = io;
 
-io.on('connection', function(socket){
 
-	// allows for accessing the socket within the req of a route
-	app.set('socketio', socket);
 
-	socket.on('love', function(message){
-		console.log(message);
-	})
-});
+
+
+
+// io.on('connection', function(socket){
+//
+// 	// allows for accessing the socket within the req of a route
+// 	app.set('socketio', socket);
+//
+// 	socket.on('love', function(message){
+// 		console.log(message);
+// 	})
+// });
 
 
 // Listen on provided port, on all network interfaces.

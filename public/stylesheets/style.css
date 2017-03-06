@@ -157,7 +157,7 @@ polyline{
 
 
 
-#analysis-container {
+#chartContainer {
     position: fixed;
     left: 0px;
     right: 0px;
@@ -184,7 +184,7 @@ polyline{
     display: none;
 }
 
-#analysis-container {
+#chartContainer {
     display: none;
 }
 
