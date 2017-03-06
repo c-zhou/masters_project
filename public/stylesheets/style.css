@@ -167,6 +167,30 @@ polyline{
 
 
 
+/*=========================================*/
+/*ANALYSIS ROUTE STYLES*/
+/*=========================================*/
+
+/*Hide text box, chart div, and start/stop buttons initially*/
+#readPathsForm {
+    display: none;
+}
+
+#startAnalysis {
+    display: none;
+}
+
+#stopAnalysis {
+    display: none;
+}
+
+#analysis-container {
+    display: none;
+}
+
+
+
+
 
 /*=========================================*/
 /*ROBOTO FONT*/

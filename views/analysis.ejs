@@ -2,15 +2,23 @@
 
 
 <div class="ui main text container">
-        <form action="/analysis/start" method="POST" class="ui form" id="start-form">
-         <!--<form class="ui form" id="start-form" style="position: absolute;">-->
-            <input type="text" placeholder="Enter path to reads" class="ui text"
-                   name="readsPath" id="readsPath">
-            <input type="submit" class="ui green button" value="Start">
-            <input type="button" class="ui red button" value="Stop" id="stop-button">
-         </form>
+
+    <!--Button to open connection and reveal path box-->
+    <button class="ui blue button" id="getStarted">Get Started</button>
+
+        <!--Form to submit the path to the folder to watch-->
+    <form class="ui form" id="readPathsForm">
+        <input type="text" placeholder="Enter path to reads" class="ui text"
+               name="readsPath" id="readsPath">
+        <input type="submit" class="ui green button" id="submitReadsPath">
+    </form>
+
+    <!--buttons to start and stop the species typing-->
+    <button class="ui green button" id="startAnalysis">Start Analysis</button>
+    <button class="ui red button" id="stopAnalysis">Stop Analysis</button>
 
 </div>
+
 <div id="analysis-container"></div>
 
 

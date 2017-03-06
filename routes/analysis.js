@@ -22,13 +22,13 @@ const RUN_ST = SCRIPT_DIR + "speciesTypingMac.sh " + SCRIPT_DIR + "testZika/ " +
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-
-
-
-    res.render('analysis', {info: null});
-    startSpeciesTyping(socket);
+router.get('/', function(req, res) {
+    res.render('analysis');
 });
+
+
+
+
 
 
 router.post('/start', function(req, res){
