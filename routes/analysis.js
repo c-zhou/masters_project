@@ -11,14 +11,10 @@ var io       = require('../app.js'),
 
 const spawn = require('child_process').spawn;
 const assert = require('assert');
-
 const SCRIPT_DIR = path.join(__dirname, '../public/data/japsaTesting/');
-// const VIRUS_DB = path.join(__dirname, '../public/data/virusDB/');
 
-// require middleware with donut chart function
-// var chart = require('../middleware/donut.js');
 
-/* GET home page. */
+/* GET analysis page. */
 router.get('/', function(req, res) {
     res.render('analysis');
 });
@@ -49,11 +45,19 @@ io.of('/analysis').on('connection', function(socket){
 
 
 function startSpeciesTyping(socket, scriptArgs) {
-    // TODO - remove all of the analysis from the post request
+    // flag to track when writing has started to allow correct formatting of file
+    var hasWritingStarted = false,
+        dataToWrite;
 
     // kill child process and all it's children when stop button is clicked.
     socket.on('kill', function(){
-        kill(speciesTyping.pid);
+        // kill(speciesTyping.pid);
+        console.log("The client has requested to kill the child process");
+
+        // close the writable stream
+        writeAnalysisFile.end(']', function(){
+            console.log("The log file has been closed.");
+        });
     });
 
     var scriptOptions = {
@@ -63,6 +67,11 @@ function startSpeciesTyping(socket, scriptArgs) {
 
     // creating the child process
     const speciesTyping = spawn('sh', scriptArgs, scriptOptions);
+
+	// open file for writing data to
+	var writePath = SCRIPT_DIR + 'speciesTyping' + speciesTyping.pid + '.log';
+	var writeAnalysisFile = fs.createWriteStream(writePath);
+	writeAnalysisFile.write('[');
 
     // encode the stdout as a string rather than a Buffer
     speciesTyping.stdout.setEncoding('utf8');
@@ -79,18 +88,26 @@ function startSpeciesTyping(socket, scriptArgs) {
 
     // handle STDOUT coming from child process. This should be the species typing output
     speciesTyping.stdout.on('data', function(chunk){
-        console.log("STDOUT: " + chunk);
-        // var info = parseSpecTypingResults(chunk);
+        // parse chunk into JSON format
         var info = JSON.parse(chunk);
 
-        // parse the species label if it is longer than 30 characters
-        // info.data.forEach(function(entry){
-        // 	if(entry.species.length > 30){
-        // 		entry.species = entry.species.substr(0, 27) + "...";
-        // 	}
-        // });
-
+        // send chunk to client-side
         socket.emit('stdout', info.data);
+
+        // if this is the first time writing data, dont add a comma to the start
+        if (hasWritingStarted){
+            dataToWrite = ',' + chunk;
+        } else {
+            dataToWrite = chunk;
+            hasWritingStarted = true;
+        }
+
+        // write chunk to file
+        writeAnalysisFile.write(dataToWrite, function(err, written, string){
+           if(err){
+               console.log(err);
+           }
+        });
     });
 
     speciesTyping.on('close', function(code){

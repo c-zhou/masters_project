@@ -412,7 +412,7 @@ $.fn.checkbox = function(parameters) {
               module.uncheckOthers();
             }
             if(!module.is.indeterminate() && module.is.checked()) {
-              module.debug('Input is already checked, skipping input property change');
+              module.debug('Input is already checked, skipping input property drawChart');
               return;
             }
             module.verbose('Setting state to checked', input);
@@ -445,7 +445,7 @@ $.fn.checkbox = function(parameters) {
               .addClass(className.indeterminate)
             ;
             if( module.is.indeterminate() ) {
-              module.debug('Input is already indeterminate, skipping input property change');
+              module.debug('Input is already indeterminate, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to indeterminate');
@@ -460,7 +460,7 @@ $.fn.checkbox = function(parameters) {
               .removeClass(className.indeterminate)
             ;
             if( module.is.determinate() ) {
-              module.debug('Input is already determinate, skipping input property change');
+              module.debug('Input is already determinate, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to determinate');
@@ -474,7 +474,7 @@ $.fn.checkbox = function(parameters) {
               .addClass(className.disabled)
             ;
             if( module.is.disabled() ) {
-              module.debug('Input is already disabled, skipping input property change');
+              module.debug('Input is already disabled, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to disabled');
@@ -487,7 +487,7 @@ $.fn.checkbox = function(parameters) {
             module.verbose('Removing disabled class');
             $module.removeClass(className.disabled);
             if( module.is.enabled() ) {
-              module.debug('Input is already enabled, skipping input property change');
+              module.debug('Input is already enabled, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to enabled');
@@ -517,8 +517,8 @@ $.fn.checkbox = function(parameters) {
               inputElement = $input[0]
             ;
             if(inputElement) {
-              module.verbose('Triggering native change event');
-              events.initEvent('change', true, false);
+              module.verbose('Triggering native drawChart event');
+              events.initEvent('drawChart', true, false);
               inputElement.dispatchEvent(events);
             }
           }

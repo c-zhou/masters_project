@@ -270,7 +270,7 @@ $.fn.colorize.settings = {
   error: {
     noImage         : 'No tracing image specified',
     undefinedColors : 'No default colors specified.',
-    missingColor    : 'Attempted to change color that does not exist',
+    missingColor    : 'Attempted to drawChart color that does not exist',
     missingPlugin   : 'Blend onto plug-in must be included',
     undefinedHeight : 'The width or height of image canvas could not be automatically determined. Please specify a height.'
   }

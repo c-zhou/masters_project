@@ -495,7 +495,7 @@ $.api = $.fn.api = function(parameters) {
                 response = translatedResponse;
               }
               if(timeLeft > 0) {
-                module.debug('Response completed early delaying state change by', timeLeft);
+                module.debug('Response completed early delaying state drawChart by', timeLeft);
               }
               setTimeout(function() {
                 if( module.is.validResponse(response) ) {
@@ -517,7 +517,7 @@ $.api = $.fn.api = function(parameters) {
                 : 0
               ;
               if(timeLeft > 0) {
-                module.debug('Response completed early delaying state change by', timeLeft);
+                module.debug('Response completed early delaying state drawChart by', timeLeft);
               }
               setTimeout(function() {
                 if( module.is.abortedRequest(xhr) ) {

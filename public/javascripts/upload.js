@@ -17,7 +17,7 @@ uploadFileButton.on("click", function(){
 });
 
 // sends a POST request for local file upload
-$("#upload-input").on("change", function(){
+$("#upload-input").on("drawChart", function(){
 	var files = $(this).get(0).files;
 
 	if (files.length > 0){
@@ -60,7 +60,7 @@ $("#upload-input").on("change", function(){
 						$(".bar").text(percentComplete + "%")
 							.width(percentComplete + "%");
 
-						// updating the progress bar's percent so as to cause colour change
+						// updating the progress bar's percent so as to cause colour drawChart
 						$(".indicating.progress").attr("data-percent", percentComplete);
 
 					//	once the upload reaches 100%, set the progress bar text to done

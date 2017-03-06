@@ -776,7 +776,7 @@ $.fn.transition = function() {
           if( module.is.animating() ) {
             module.reset();
           }
-          element.blur(); // IE will trigger focus change if element is not blurred before hiding
+          element.blur(); // IE will trigger focus drawChart if element is not blurred before hiding
           module.remove.display();
           module.remove.visible();
           module.set.hidden();

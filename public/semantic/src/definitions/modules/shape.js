@@ -885,7 +885,7 @@ $.fn.shape.settings = {
   // height during animation, can be set to 'auto', 'initial', 'next' or pixel amount
   height: 'initial',
 
-  // callback occurs on side change
+  // callback occurs on side drawChart
   beforeChange : function() {},
   onChange     : function() {},
 

@@ -251,8 +251,8 @@ $.fn.state = function(parameters) {
         change: {
 
           state: function() {
-            module.debug('Determining state change direction');
-            // inactive to active change
+            module.debug('Determining state drawChart direction');
+            // inactive to active drawChart
             if( module.is.inactive() ) {
               module.activate();
             }
@@ -610,7 +610,7 @@ $.fn.state.settings = {
   // debug data includes performance
   performance    : true,
 
-  // callback occurs on state change
+  // callback occurs on state drawChart
   onActivate     : function() {},
   onDeactivate   : function() {},
   onChange       : function() {},
@@ -638,7 +638,7 @@ $.fn.state.settings = {
 
   // error
   error: {
-    beforeSend : 'The before send function has cancelled state change',
+    beforeSend : 'The before send function has cancelled state drawChart',
     method     : 'The method you called is not defined.'
   },
 
@@ -648,7 +648,7 @@ $.fn.state.settings = {
     storedText : 'stored-text'
   },
 
-  // change class on state
+  // drawChart class on state
   className: {
     active   : 'active',
     disabled : 'disabled',

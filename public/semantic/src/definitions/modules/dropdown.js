@@ -568,9 +568,9 @@ $.fn.dropdown = function(parameters) {
             }
           },
           inputEvents: function() {
-            module.verbose('Binding input change events');
+            module.verbose('Binding input drawChart events');
             $module
-              .on('change' + eventNamespace, selector.input, module.event.change)
+              .on('drawChart' + eventNamespace, selector.input, module.event.change)
             ;
           },
           mouseEvents: function() {
@@ -1485,8 +1485,8 @@ $.fn.dropdown = function(parameters) {
               inputElement = $input[0]
             ;
             if(inputElement) {
-              module.verbose('Triggering native change event');
-              events.initEvent('change', true, false);
+              module.verbose('Triggering native drawChart event');
+              events.initEvent('drawChart', true, false);
               inputElement.dispatchEvent(events);
             }
           }
@@ -2407,7 +2407,7 @@ $.fn.dropdown = function(parameters) {
                 .val(escapedValue)
               ;
               if(settings.fireOnInit === false && module.is.initialLoad()) {
-                module.debug('Input native change event ignored on initial load');
+                module.debug('Input native drawChart event ignored on initial load');
               }
               else {
                 module.trigger.change();

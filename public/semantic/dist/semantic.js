@@ -845,7 +845,7 @@ $.fn.form = function(parameters) {
                   module.validate.field( validationRules );
                 }
               }
-              else if(settings.on == 'blur' || settings.on == 'change') {
+              else if(settings.on == 'blur' || settings.on == 'drawChart') {
                 if(validationRules) {
                   module.validate.field( validationRules );
                 }
@@ -857,7 +857,7 @@ $.fn.form = function(parameters) {
                 $fieldGroup = $field.closest($group),
                 validationRules = module.get.validation($field)
               ;
-              if(validationRules && (settings.on == 'change' || ( $fieldGroup.hasClass(className.error) && settings.revalidate) )) {
+              if(validationRules && (settings.on == 'drawChart' || ( $fieldGroup.hasClass(className.error) && settings.revalidate) )) {
                 clearTimeout(module.timer);
                 module.timer = setTimeout(function() {
                   module.debug('Revalidating field', $field,  module.get.validation($field));
@@ -887,7 +887,7 @@ $.fn.form = function(parameters) {
           },
           changeEvent: function(type, $input) {
             if(type == 'checkbox' || type == 'radio' || type == 'hidden' || $input.is('select')) {
-              return 'change';
+              return 'drawChart';
             }
             else {
               return module.get.inputEvent();
@@ -3125,7 +3125,7 @@ $.fn.checkbox = function(parameters) {
               module.uncheckOthers();
             }
             if(!module.is.indeterminate() && module.is.checked()) {
-              module.debug('Input is already checked, skipping input property change');
+              module.debug('Input is already checked, skipping input property drawChart');
               return;
             }
             module.verbose('Setting state to checked', input);
@@ -3158,7 +3158,7 @@ $.fn.checkbox = function(parameters) {
               .addClass(className.indeterminate)
             ;
             if( module.is.indeterminate() ) {
-              module.debug('Input is already indeterminate, skipping input property change');
+              module.debug('Input is already indeterminate, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to indeterminate');
@@ -3173,7 +3173,7 @@ $.fn.checkbox = function(parameters) {
               .removeClass(className.indeterminate)
             ;
             if( module.is.determinate() ) {
-              module.debug('Input is already determinate, skipping input property change');
+              module.debug('Input is already determinate, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to determinate');
@@ -3187,7 +3187,7 @@ $.fn.checkbox = function(parameters) {
               .addClass(className.disabled)
             ;
             if( module.is.disabled() ) {
-              module.debug('Input is already disabled, skipping input property change');
+              module.debug('Input is already disabled, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to disabled');
@@ -3200,7 +3200,7 @@ $.fn.checkbox = function(parameters) {
             module.verbose('Removing disabled class');
             $module.removeClass(className.disabled);
             if( module.is.enabled() ) {
-              module.debug('Input is already enabled, skipping input property change');
+              module.debug('Input is already enabled, skipping input property drawChart');
               return;
             }
             module.debug('Setting state to enabled');
@@ -3230,8 +3230,8 @@ $.fn.checkbox = function(parameters) {
               inputElement = $input[0]
             ;
             if(inputElement) {
-              module.verbose('Triggering native change event');
-              events.initEvent('change', true, false);
+              module.verbose('Triggering native drawChart event');
+              events.initEvent('drawChart', true, false);
               inputElement.dispatchEvent(events);
             }
           }
@@ -4822,9 +4822,9 @@ $.fn.dropdown = function(parameters) {
             }
           },
           inputEvents: function() {
-            module.verbose('Binding input change events');
+            module.verbose('Binding input drawChart events');
             $module
-              .on('change' + eventNamespace, selector.input, module.event.change)
+              .on('drawChart' + eventNamespace, selector.input, module.event.change)
             ;
           },
           mouseEvents: function() {
@@ -5739,8 +5739,8 @@ $.fn.dropdown = function(parameters) {
               inputElement = $input[0]
             ;
             if(inputElement) {
-              module.verbose('Triggering native change event');
-              events.initEvent('change', true, false);
+              module.verbose('Triggering native drawChart event');
+              events.initEvent('drawChart', true, false);
               inputElement.dispatchEvent(events);
             }
           }
@@ -6661,7 +6661,7 @@ $.fn.dropdown = function(parameters) {
                 .val(escapedValue)
               ;
               if(settings.fireOnInit === false && module.is.initialLoad()) {
-                module.debug('Input native change event ignored on initial load');
+                module.debug('Input native drawChart event ignored on initial load');
               }
               else {
                 module.trigger.change();
@@ -15386,7 +15386,7 @@ $.fn.shape.settings = {
   // height during animation, can be set to 'auto', 'initial', 'next' or pixel amount
   height: 'initial',
 
-  // callback occurs on side change
+  // callback occurs on side drawChart
   beforeChange : function() {},
   onChange     : function() {},
 
@@ -17600,7 +17600,7 @@ $.fn.tab = function(parameters) {
               }
             }
             $.address
-              .bind('change', module.event.history.change)
+              .bind('drawChart', module.event.history.change)
             ;
           }
         },
@@ -17632,7 +17632,7 @@ $.fn.tab = function(parameters) {
                 pageTitle = settings.templates.determineTitle(tabPath) || false
               ;
               module.performance.display();
-              module.debug('History change event', tabPath, event);
+              module.debug('History drawChart event', tabPath, event);
               historyEvent = event;
               if(tabPath !== undefined) {
                 module.changeTab(tabPath);
@@ -19132,7 +19132,7 @@ $.fn.transition = function() {
           if( module.is.animating() ) {
             module.reset();
           }
-          element.blur(); // IE will trigger focus change if element is not blurred before hiding
+          element.blur(); // IE will trigger focus drawChart if element is not blurred before hiding
           module.remove.display();
           module.remove.visible();
           module.set.hidden();
@@ -19947,7 +19947,7 @@ $.api = $.fn.api = function(parameters) {
                 response = translatedResponse;
               }
               if(timeLeft > 0) {
-                module.debug('Response completed early delaying state change by', timeLeft);
+                module.debug('Response completed early delaying state drawChart by', timeLeft);
               }
               setTimeout(function() {
                 if( module.is.validResponse(response) ) {
@@ -19969,7 +19969,7 @@ $.api = $.fn.api = function(parameters) {
                 : 0
               ;
               if(timeLeft > 0) {
-                module.debug('Response completed early delaying state change by', timeLeft);
+                module.debug('Response completed early delaying state drawChart by', timeLeft);
               }
               setTimeout(function() {
                 if( module.is.abortedRequest(xhr) ) {
@@ -20871,8 +20871,8 @@ $.fn.state = function(parameters) {
         change: {
 
           state: function() {
-            module.debug('Determining state change direction');
-            // inactive to active change
+            module.debug('Determining state drawChart direction');
+            // inactive to active drawChart
             if( module.is.inactive() ) {
               module.activate();
             }
@@ -21230,7 +21230,7 @@ $.fn.state.settings = {
   // debug data includes performance
   performance    : true,
 
-  // callback occurs on state change
+  // callback occurs on state drawChart
   onActivate     : function() {},
   onDeactivate   : function() {},
   onChange       : function() {},
@@ -21258,7 +21258,7 @@ $.fn.state.settings = {
 
   // error
   error: {
-    beforeSend : 'The before send function has cancelled state change',
+    beforeSend : 'The before send function has cancelled state drawChart',
     method     : 'The method you called is not defined.'
   },
 
@@ -21268,7 +21268,7 @@ $.fn.state.settings = {
     storedText : 'stored-text'
   },
 
-  // change class on state
+  // drawChart class on state
   className: {
     active   : 'active',
     disabled : 'disabled',

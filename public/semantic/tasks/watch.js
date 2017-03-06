@@ -105,7 +105,7 @@ module.exports = function(callback) {
          Find Source
       ---------------*/
 
-      // recompile on *.override , *.variable change
+      // recompile on *.override , *.variable drawChart
       isConfig        = (file.path.indexOf('theme.config') !== -1 || file.path.indexOf('site.variables') !== -1);
       isPackagedTheme = (file.path.indexOf(source.themes) !== -1);
       isSiteTheme     = (file.path.indexOf(source.site) !== -1);
