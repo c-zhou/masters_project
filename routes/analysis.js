@@ -50,35 +50,25 @@ function startSpeciesTyping(socket, scriptArgs) {
         dataToWrite;
 
     socket.on('disconnect', function(){
+        console.log("Socket disconnected");
         // TODO - run test to see if CP and stream are already closed
-	    kill(speciesTyping.pid, 'SIGTERM', function(err){
-	        if(err){
-	            console.log(err);
-            } else {
-	            console.log("Child process killed.");
-            }
-        });
-
-	    // close the writable stream
-	    writeAnalysisFile.end(']', function(){
-		    console.log("The log file has been closed.");
-	    });
+        if (writeAnalysisFile.closed && !speciesTyping.connected){
+            // write stream and CP are both closed.
+        } else if (writeAnalysisFile.closed && speciesTyping.connected) {
+            // write stream closed but CP open still.
+	        onCloseOrKill(speciesTyping.pid, null);
+        } else if (!writeAnalysisFile.closed && speciesTyping.connected) {
+            // write stream and CP both open.
+            onCloseOrKill(speciesTyping.pid, writeAnalysisFile);
+        } else {
+            // write stream open but CP is closed.
+            onCloseOrKill(null, writeAnalysisFile);
+        }
     });
 
     // kill child process and all it's children when stop button is clicked.
     socket.on('kill', function(){
-        kill(speciesTyping.pid, 'SIGTERM', function(err){
-            if(err){
-                console.log(err);
-            } else {
-	            console.log("Child process killed.");
-            }
-        });
-
-        // close the writable stream
-        writeAnalysisFile.end(']', function(){
-            console.log("The log file has been closed.");
-        });
+        onCloseOrKill(speciesTyping.pid, writeAnalysisFile);
         // TODO - cause some type of redirection or dashboard to appear
     });
 
@@ -110,6 +100,7 @@ function startSpeciesTyping(socket, scriptArgs) {
 
     // handle STDOUT coming from child process. This should be the species typing output
     speciesTyping.stdout.on('data', function(chunk){
+        console.log("stdout received...");
         // parse chunk into JSON format
         var info = JSON.parse(chunk);
 
@@ -135,9 +126,29 @@ function startSpeciesTyping(socket, scriptArgs) {
     speciesTyping.on('close', function(code){
         if (code){
             console.log("Process exited with code " + code);
+        } else {
+            console.log("Child process is closed/killed");
         }
-        console.log("Child process has been closed.");
     });
+}
+
+
+function onCloseOrKill(pid, wStream){
+    // kill/close the child process
+    if (pid) {
+	    kill(pid, 'SIGTERM', function (err) {
+		    if (err) {
+			    console.log(err);
+		    }
+	    });
+    }
+
+	// close the writable stream
+    if (wStream) {
+	    wStream.end(']', function () {
+		    console.log("The log file has been closed.");
+	    });
+    }
 }
 
 
