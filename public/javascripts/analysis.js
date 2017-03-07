@@ -65,7 +65,6 @@ startAnalysisButton.click(function(){
 // close the websocket.
 stopAnalysisButton.click(function(){
 	socket.emit('kill');
-	// TODO - stop timers
 });
 
 

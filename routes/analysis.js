@@ -49,15 +49,37 @@ function startSpeciesTyping(socket, scriptArgs) {
     var hasWritingStarted = false,
         dataToWrite;
 
+    socket.on('disconnect', function(){
+        // TODO - run test to see if CP and stream are already closed
+	    kill(speciesTyping.pid, 'SIGTERM', function(err){
+	        if(err){
+	            console.log(err);
+            } else {
+	            console.log("Child process killed.");
+            }
+        });
+
+	    // close the writable stream
+	    writeAnalysisFile.end(']', function(){
+		    console.log("The log file has been closed.");
+	    });
+    });
+
     // kill child process and all it's children when stop button is clicked.
     socket.on('kill', function(){
-        // kill(speciesTyping.pid);
-        console.log("The client has requested to kill the child process");
+        kill(speciesTyping.pid, 'SIGTERM', function(err){
+            if(err){
+                console.log(err);
+            } else {
+	            console.log("Child process killed.");
+            }
+        });
 
         // close the writable stream
         writeAnalysisFile.end(']', function(){
             console.log("The log file has been closed.");
         });
+        // TODO - cause some type of redirection or dashboard to appear
     });
 
     var scriptOptions = {
@@ -111,7 +133,7 @@ function startSpeciesTyping(socket, scriptArgs) {
     });
 
     speciesTyping.on('close', function(code){
-        if (code !== 0){
+        if (code){
             console.log("Process exited with code " + code);
         }
         console.log("Child process has been closed.");
