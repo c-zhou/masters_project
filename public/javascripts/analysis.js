@@ -246,7 +246,13 @@ function drawChart(data){
 	legend.append('text')
 		.attr('x', legendRectSize + legendSpacing)
 		.attr('y', legendRectSize - legendSpacing)
-		.text(function(d){ return d; });
+		.text(function(d){
+			// parse the species label if it is longer than 30 characters
+			if(d.length > 30){
+				d = d.substr(0, 27) + "...";
+			}
+			return d;
+		});
 
 	// TEXT LABELS
 

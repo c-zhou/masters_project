@@ -9,9 +9,9 @@
         <!--Form to submit the path to the folder to watch-->
     <form class="ui form" id="readPathsForm">
         <input type="text" placeholder="Enter path to reads" class="ui text"
-               name="readsPath" id="readsPath">
+               name="readsPath" id="readsPath" required>
         <input type="text" placeholder="Enter path to virus database" class="ui text"
-               name="virusPath" id="virusPath">
+               name="virusPath" id="virusPath" required>
         <input type="submit" class="ui green button" id="submitReadsPath">
     </form>
 
@@ -24,7 +24,6 @@
 <div id="chartContainer"></div>
 
 <script src="/javascripts/analysis.js"></script>
-
 
 <% include ./partials/footer %>
 
