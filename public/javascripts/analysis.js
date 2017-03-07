@@ -8,7 +8,7 @@
 //============================================================
 
 var getStartedButton    = $('#getStarted'),
-    fadeTime            = 600,
+    fadeTime            = 400,
     readPathsForm       = $('#readPathsForm'),
     startAnalysisButton = $('#startAnalysis'),
     chartContainer      = $('#chartContainer'),
@@ -131,6 +131,7 @@ function plot(socket){
 
 	svg = d3.select('#chartContainer')
 		.append('svg')
+		.attr('class', 'shadow')
 		.append('g');
 
 	svg.append('g')
@@ -162,8 +163,8 @@ function plot(socket){
 		.innerRadius(radius * 0.9)
 		.outerRadius(radius * 0.9);
 
-	legendRectSize = radius * 0.05;
-	legendSpacing  = radius * 0.02;
+	legendRectSize = radius * 0.08;
+	legendSpacing  = radius * 0.1;
 
 	div = d3.select('body')
 		.append('div')
@@ -240,12 +241,14 @@ function drawChart(data){
 	legend.append('rect')
 		.attr('width', legendRectSize)
 		.attr('height', legendRectSize)
+		.attr('rx', 20)
+		.attr('ry', 20)
 		.style('fill', colour)
 		.style('stroke', colour);
 
 	legend.append('text')
-		.attr('x', legendRectSize + legendSpacing)
-		.attr('y', legendRectSize - legendSpacing)
+		.attr('x', 30)
+		.attr('y', 12)
 		.text(function(d){
 			// parse the species label if it is longer than 30 characters
 			if(d.length > 30){
@@ -276,7 +279,7 @@ function drawChart(data){
 			if(d.data.species.length > 30){
 				species = d.data.species.substr(0, 27) + "...";
 			}
-			return species + ': ' + d.value * 100 + '%'
+			return species + ': ' + numberFormatPerc(d.value);
 		});
 
 	function midAngle(d){
