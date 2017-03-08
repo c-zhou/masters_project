@@ -3,7 +3,7 @@
  */
 // TODO: update progress bar for upload from URL
 
-var uploadFileButton = $(".huge.ui.green.button");
+var uploadFileButton = $('.huge.ui.green.button');
 
 // Triggers the hidden file input when user clicks on upload button
 uploadFileButton.on("click", function(){
@@ -17,7 +17,7 @@ uploadFileButton.on("click", function(){
 });
 
 // sends a POST request for local file upload
-$("#upload-input").on("drawChart", function(){
+$("#upload-input").on("change", function(){
 	var files = $(this).get(0).files;
 
 	if (files.length > 0){

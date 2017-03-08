@@ -63,59 +63,58 @@ router.post("/", function(req, res){
 
 
 // TODO add these functions into a middleware folder
-// TODO look into using curl instead?
-// function for downloading from URL
-var download = function(uploadURL, dest, cb){
-	console.log("download function called");
-	var supportedLibraries = {
-		"http:": http,
-		"https:": https,
-		// "ftp:": new Client()
-		"ftp:": http
-	};
-	var parsed = url.parse(uploadURL);
-	// console.log(parsed);
-	var lib = supportedLibraries[parsed.protocol || "http:"];
-
-	if (parsed.protocol === "ftp:"){
-		var split = uploadURL.split(":");
-		split[0] = "http";
-		uploadURL = split.join(":");
-		console.log(uploadURL);
-	}
-	var file = fs.createWriteStream(dest);
-	var request = lib.get(uploadURL, function(stream){
-		// variable to keep track of size of file
-		var total = stream.headers['content-length'];
-		var prog = 0;
-
-		stream.on('data', function(chunk){
-			prog += chunk.length;
-			var perc = parseInt(prog / total * 100);
-			console.log(perc + "% downloaded...");
-		});
-
-		stream.pipe(file);
-
-		// checks for how much has been written every second
-
-		// var timer = setTimeout(function(){console.log(file.bytesWritten)}, 1000);
-
-		file.on('finish', function(){
-			// clearInterval(timer);
-			// close() is async, call cb after close completes
-			console.log("FINISHED!");
-			file.close(cb);
-		})
-			.on('error', function(err){
-				// delete the file async
-				fs.unlink(dest);
-				if (cb) {
-					cb(err.message);
-                }
-			});
-	});
-};
+// function for downloading from URL - archived. will delete if curl continues to work.
+// var download = function(uploadURL, dest, cb){
+// 	console.log("download function called");
+// 	var supportedLibraries = {
+// 		"http:": http,
+// 		"https:": https,
+// 		// "ftp:": new Client()
+// 		"ftp:": http
+// 	};
+// 	var parsed = url.parse(uploadURL);
+// 	// console.log(parsed);
+// 	var lib = supportedLibraries[parsed.protocol || "http:"];
+//
+// 	if (parsed.protocol === "ftp:"){
+// 		var split = uploadURL.split(":");
+// 		split[0] = "http";
+// 		uploadURL = split.join(":");
+// 		console.log(uploadURL);
+// 	}
+// 	var file = fs.createWriteStream(dest);
+// 	var request = lib.get(uploadURL, function(stream){
+// 		// variable to keep track of size of file
+// 		var total = stream.headers['content-length'];
+// 		var prog = 0;
+//
+// 		stream.on('data', function(chunk){
+// 			prog += chunk.length;
+// 			var perc = parseInt(prog / total * 100);
+// 			console.log(perc + "% downloaded...");
+// 		});
+//
+// 		stream.pipe(file);
+//
+// 		// checks for how much has been written every second
+//
+// 		// var timer = setTimeout(function(){console.log(file.bytesWritten)}, 1000);
+//
+// 		file.on('finish', function(){
+// 			// clearInterval(timer);
+// 			// close() is async, call cb after close completes
+// 			console.log("FINISHED!");
+// 			file.close(cb);
+// 		})
+// 			.on('error', function(err){
+// 				// delete the file async
+// 				fs.unlink(dest);
+// 				if (cb) {
+// 					cb(err.message);
+//                 }
+// 			});
+// 	});
+// };
 
 function downloadFilecURL(fileURL, cb){
 	// extract filename

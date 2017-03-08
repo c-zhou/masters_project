@@ -51,7 +51,6 @@ function startSpeciesTyping(socket, scriptArgs) {
 
     socket.on('disconnect', function(){
         console.log("Socket disconnected");
-        // TODO - run test to see if CP and stream are already closed
         if (writeAnalysisFile.closed && !speciesTyping.connected){
             // write stream and CP are both closed.
         } else if (writeAnalysisFile.closed && speciesTyping.connected) {

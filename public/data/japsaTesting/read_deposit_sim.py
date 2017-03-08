@@ -26,8 +26,8 @@ def get_fast5_files(dirs):
     """
     output_list = []
 
-    for directory in dirs:
-        dir_files = []
+    for directory in list(dirs):
+        # walk down into any subfolders of the given directory
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.endswith(".fast5"):
@@ -37,13 +37,14 @@ def get_fast5_files(dirs):
 
 
 all_files = get_fast5_files(src_dirs)
+# shuffle the list of files - simulates a real experiment
 random.shuffle(all_files)
 print("{0} files in total.".format(len(all_files)))
 
 for file in all_files:
     dst = os.path.join(dest_dir, file.split("/")[-1])
     copyfile(file, dst)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 #/Users/m.hall/Downloads/FCH_731ebola
