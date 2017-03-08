@@ -20,6 +20,7 @@ router.get("/", function(req, res){
 
 // POST uploading file
 router.post("/", function(req, res){
+	console.log("Post request received...");
 	// check if the post request has come from the local file upload or URL upload form
 	// req.xhr A Boolean property that is true if the request’s X-Requested-With header field is
 	// “XMLHttpRequest”, indicating that the request was issued by a client library such as jQuery.
@@ -175,14 +176,15 @@ function getFile(req, res){
 
     // TODO add error catch incase user uploads something other than FASTQ
     // Make sure file type is correct
-    // form.on("fileBegin", function (name, file) {
-    //     // console.log("File type = " + file.type);
-    //     // console.log("File name = " + file.name);
-    // });
+    form.on("fileBegin", function (name, file) {
+        console.log("File type = " + file.type);
+        console.log("File name = " + file.name);
+    });
 
     // every time a single file has been uploaded successfully
     // rename it to it's original name
     form.on("file", function (field, file) {
+    	console.log("File: " + file.path);
         fs.rename(file.path, path.join(form.uploadDir, file.name));
     });
 

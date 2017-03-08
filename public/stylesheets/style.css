@@ -171,6 +171,94 @@ polyline{
 }
 
 
+
+/*=========================================*/
+/*Drag and Drop box*/
+/*=========================================*/
+
+.box {
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    background-color: #8da7be;
+    padding: 150px 40px;
+    -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.25) );
+    filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.2) );
+}
+
+.box__file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+
+}
+
+.box__file + label {
+    font-size: 1.5em;
+    color: #57585b;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.1) );
+    filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.1) );
+}
+
+.box__file + label * {
+    pointer-events: none;
+}
+
+.box__file:focus + label,
+.box__file + label:hover {
+    /*background-color: #8198ad;*/
+    transform: scale(1.02);
+}
+
+.box__file:focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+    display: none;
+}
+
+.box.has-advanced-upload {
+    background-color: #8da7be;
+    outline: 2px dashed #57585b;
+    outline-offset: -10px;
+}
+
+.box.has-advanced-upload .box__dragndrop {
+    display: inline;
+}
+
+.box.is-dragover {
+    background-color: #8198AD;
+
+}
+
+.box.is-uploading .box__input {
+    visibility: none;
+}
+
+.box.is-uploading .box__uploading {
+    display: block;
+}
+
+.box__button {
+    display: none;
+}
+
+.no-js .box__button {
+    display: block;
+}
+
 /*=========================================*/
 /*ANALYSIS ROUTE STYLES*/
 /*=========================================*/
