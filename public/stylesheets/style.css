@@ -212,9 +212,11 @@ polyline{
 
 .box__file:focus + label,
 .box__file + label:hover {
-    /*background-color: #8198ad;*/
+    /*color: #595a5d;*/
     transform: scale(1.02);
 }
+
+
 
 .box__file:focus + label {
     outline: 1px dotted #000;
@@ -257,6 +259,11 @@ polyline{
 
 .no-js .box__button {
     display: block;
+}
+
+/*change colour of url upload button*/
+#url-upload-button {
+    background-color: #E28614;
 }
 
 /*=========================================*/
