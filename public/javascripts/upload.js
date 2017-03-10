@@ -1,6 +1,19 @@
 /**
  * Created by m.hall on 21/2/17.
  */
+var progress    = $('#progress'),
+    progressBar = $('#progress__bar');
+
+// this function needs to be defined first as code below depends on it being available
+var isAdvancedUpload = function() {
+	var div = document.createElement('div');
+	// testing if browser supports drag and drop events
+	return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) &&
+		// check the FormData interface which is forming a programmatic object of the files
+		'FormData' in window &&
+		// detect if browser supports DataTransfer object for file uploading
+		'FileReader' in window;
+};
 
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
@@ -9,32 +22,11 @@
 var $form     = $('.box'),
     $input    = $form.find('input[type="file"]'),
     $label    = $form.find('label'),
-    $errorMsg = "FILE UPLOAD ERROR",
-    showFiles = function(files) {
-	    $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace('{count', files.length) : files[0].name);
-    };
-
-var progress    = $('#progress'),
-    progressBar = $('#progress__bar');
-
-var urlForm = $('#upload-url'),
-    urlEntry = $('#url-entry');
-
-
-var isAdvancedUpload = function() {
-	var div = document.createElement('div');
-	// testing if browser supports drag and drop events
-	return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) &&
-			// check the FormData interface which is forming a programmatic object of the files
-		'FormData' in window &&
-			// detect if browser supports DataTransfer object for file uploading
-		'FileReader' in window;
-}();
-
+    $errorMsg = "FILE UPLOAD ERROR";
 
 
 // allows us to style the form depending on whether the browser supports drag and drop
-if (isAdvancedUpload) {
+if (isAdvancedUpload()) {
 	$form.addClass('has-advanced-upload');
 
 	//This part deals with adding and removing classes to the form on the different states like when
@@ -64,7 +56,11 @@ $form.on('submit', function(e) {
 	$form.addClass('is-uploading')
 		.removeClass('is-error');
 
-	if (isAdvancedUpload) {
+	// Reset the progress bar to 0% when the user selects to upload another file
+	$("#progress__bar").text("0%")
+		.width("0%");
+
+	if (isAdvancedUpload()) {
 		// ajax for modern browsers
 		e.preventDefault();
 
@@ -124,20 +120,20 @@ $input.on('change', function(e) {
 	showFiles(e.target.files);
 });
 
-// Reset the progress bar to 0% when the user selects to upload another file
-$form.on("submit", function(){
-	$("#progress__bar").text("0%")
-		.width("0%");
-});
-
 
 // ============================================================================
 // UPLOAD FROM URL FORM LOGIC
 // ============================================================================
+var urlForm = $('#upload-url'),
+    urlEntry = $('#url-entry');
 
 // when user presses the upload button on the URL input box...
 urlForm.submit(function(e) {
 	e.preventDefault();
+
+	// Reset the progress bar to 0% when the user selects to upload another file
+	$("#progress__bar").text("0%")
+		.width("0%");
 
 	var data = { urls: [] };
 
@@ -200,4 +196,13 @@ var ajaxXHR = function(){ // logic to update progress bar
 	}, false);
 
 	return xhr;
+};
+
+showFiles = function(files) {
+	var len = files.length;
+	if (len > 1) {
+		$label.text(($input.attr('data-multiple-caption') || '').replace('{count}', len))
+	} else {
+		$label.text(files[0].name)
+	}
 };
