@@ -2,6 +2,7 @@
  * Created by m.hall on 21/2/17.
  */
 var progress    = $('#progress'),
+    stopBtn     = $('#stopUploadButton'),
     progressBar = $('#progress__bar');
 
 // this function needs to be defined first as code below depends on it being available
@@ -14,6 +15,8 @@ var isAdvancedUpload = function() {
 		// detect if browser supports DataTransfer object for file uploading
 		'FileReader' in window;
 };
+
+
 
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
@@ -63,6 +66,9 @@ $form.on('submit', function(e) {
 	// Reset the progress bar to 0% when the user selects to upload another file
 	$("#progress__bar").text("0%")
 		.width("0%");
+
+	// enable stop button
+	enableStopButton();
 
 	if (isAdvancedUpload()) {
 		// ajax for modern browsers
@@ -155,11 +161,15 @@ urlForm.submit(function(e) {
 	// could loop through text and push to data.url for multiple URLS
 	data.urls.push(urlEntry.val());
 
+	// enable stop button
+	enableStopButton();
+
 	// open socket to server to send/receive data and add listeners/emitters
 	openSocket();
 
 	// send the data to the server using the 'urls' event
 	socket.emit('urls', data);
+
 });
 
 function openSocket() {
@@ -178,6 +188,9 @@ function openSocket() {
 	});
 
 	// emitter for stop button press
+	stopBtn.click(function() {
+		socket.disconnect(true);
+	});
 
 	// disable/enable upload logic
 
@@ -185,11 +198,17 @@ function openSocket() {
 }
 
 
-
-
 // ============================================================================
 // FUNCTIONS
 // ============================================================================
+
+function enableStopButton() {
+	stopBtn.prop('disabled', false);
+}
+
+function disableStopButton() {
+	stopBtn.prop('disabled', true);
+}
 
 function disableUpload() {
 	urlUploadBtn.prop('disabled', true)

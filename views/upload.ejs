@@ -4,11 +4,16 @@
 <div class="ui main text container">
     <div class="ui grid">
         <!--PROGRESS BAR-->
-        <div class="twelve wide column">
-            <div class="ui indicating progress active" id="progress">
+        <div class="ten wide column" id="progressDiv">
+            <div class="ui large indicating progress active" id="progress">
                 <div class="bar" id="progress__bar"></div>
                 <div class="label" id="progress__label"></div>
             </div>
+        </div>
+
+        <!--BUTTON TO STOP UPLOAD-->
+        <div class="two wide column" id="stopUploadDiv">
+            <button class="ui red button" id="stopUploadButton" disabled>Stop</button>
         </div>
 
         <!--DRAG AND DROP BOX-->

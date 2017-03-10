@@ -283,6 +283,21 @@ input:-webkit-autofill {
     margin-top: 50px;
 }
 
+#stopUploadDiv {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+}
+
+#progressDiv {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#stopUploadButton {
+    width: 100%;
+}
+
 /*=========================================*/
 /*ANALYSIS ROUTE STYLES*/
 /*=========================================*/

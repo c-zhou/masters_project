@@ -76,7 +76,7 @@ function downloadFilecURL(socket, urls, cb){
 
 	socket.on('disconnect', function() {
 		console.log("Socket disconnected...");
-		if (curl.connected) {
+		// if (curl.connected) {
 			kill(curl.pid, 'SIGTERM', function (err) {
 				if (err) {
 					console.log(err);
@@ -84,7 +84,7 @@ function downloadFilecURL(socket, urls, cb){
 					console.log("Curl process killed!");
 				}
 			});
-		}
+		// }
 	});
 
 	curl.on('close', function(code, signal) {
