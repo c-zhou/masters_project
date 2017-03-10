@@ -125,7 +125,8 @@ $input.on('change', function(e) {
 // UPLOAD FROM URL FORM LOGIC
 // ============================================================================
 var urlForm = $('#upload-url'),
-    urlEntry = $('#url-entry');
+    urlEntry = $('#url-entry'),
+	socket;
 
 // when user presses the upload button on the URL input box...
 urlForm.submit(function(e) {
@@ -140,17 +141,34 @@ urlForm.submit(function(e) {
 	// could loop through text and push to data.url for multiple URLS
 	data.urls.push(urlEntry.val());
 
-	// open socket to server to send/receive data
-	var socket = io.connect(location.href);
+	// open socket to server to send/receive data and add listeners/emitters
+	openSocket();
 
 	// send the data to the server using the 'urls' event
 	socket.emit('urls', data);
+});
+
+function openSocket() {
+	socket = io.connect(location.href);
 
 	// when receiving progress from curl from the server, update the progress bar
 	socket.on('progress', function(prog) {
 		updateProgressBar(prog)
 	});
-});
+
+	// listener for completion to clear text
+	socket.on('downloadComplete', function() {
+		urlEntry.val("");
+	});
+
+	// emitter for stop button press
+
+	// disable/enable upload logic
+
+	//check file type is ok
+}
+
+
 
 
 // ============================================================================

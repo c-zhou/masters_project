@@ -172,6 +172,19 @@ polyline{
 
 
 
+/*Prevents autofill from changing the colour of the input box to yellow*/
+@-webkit-keyframes autofill {
+    to {
+        color: #666;
+        background: transparent;
+    }
+}
+/*Prevents autofill from changing the colour of the input box to yellow*/
+input:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
 /*=========================================*/
 /*Drag and Drop box*/
 /*=========================================*/

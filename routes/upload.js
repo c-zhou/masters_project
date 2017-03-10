@@ -28,21 +28,14 @@ router.post("/", function(req, res){
 
 // websocket to handle upload by URL request
 io.of('/upload').on('connection', function(socket){
-	var scriptArgs;
-
 	// this event contains the path the user entered for where their reads are located
 	socket.on('urls', function(data) {
 		var urls = data.urls;
-		downloadFilecURL(socket, urls);
-	});
-
-	// this event is triggered when the user clicks the start button to begin species typing
-	socket.on('startAnalysis', function(){
-		console.log("Starting species typing...");
-
-		// call function which handles initiating the child process for species typing
-		// and all of the socket events/emitters needed to send the stdout to the client
-		startSpeciesTyping(socket, scriptArgs);
+		downloadFilecURL(socket, urls, function(err) {
+			if (err) {
+				console.log(err);
+			}
+		});
 	});
 });
 
@@ -77,6 +70,7 @@ function downloadFilecURL(socket, urls, cb){
 	// add an end event listener
 	curl.stdout.on('end', function(){
 		console.log("download complete");
+		socket.emit('downloadComplete');
 		prevChunk = 0;
 	});
 
