@@ -271,17 +271,18 @@ function downloadFilecURL(socket, urls, cb){
 
 
 		if (chunk.indexOf('%') > -1) {
+			// extract the number from the line
 			var percComplete = chunk.split('#').join('').trim().replace('%', '');
 
+			// some lines dont contain numbers so change them to null otherwise
 			percComplete = parseInt(percComplete) || null;
 
-			// console.log(percComplete);
-
+			// make sure there is an integer present and that it isnt lower than the last
+			// there is some random numbers occasionally that are missing the first digit
 			if (percComplete && percComplete >= prevChunk){
 				socket.emit('progress', percComplete);
 				prevChunk = percComplete
 			}
-
 		}
 
 	});

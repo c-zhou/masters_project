@@ -1,51 +1,11 @@
 /**
  * Created by m.hall on 21/2/17.
  */
-// TODO: update progress bar for upload from URL
 
-// var uploadFileButton = $('.huge.ui.green.button');
-//
-// // Triggers the hidden file input when user clicks on upload button
-// uploadFileButton.on("click", function(){
-// 	$("#upload-input").click();
-// });
-//
+// ============================================================================
+// UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
+// ============================================================================
 
-//
-// // sends a POST request for local file upload
-// $("#upload-input").on("change", function(){
-// 	var files = $(this).get(0).files;
-//
-// 	if (files.length > 0){
-// 		// One or more files selected, process upload
-//
-// 		var formData = new FormData();
-//
-// 		// loop through all the selected files
-// 		for (var i = 0; i < files.length; i++){
-// 			var file = files[i];
-//
-// 			// add the files to formData object for the data payload
-// 			formData.append("uploadFile", file, file.name);
-// 		}
-//
-// 		// AJAX request that will POST the data to our /upload endpoint
-// 		$.ajax({
-// 			url: "/upload",
-// 			type: "POST",
-// 			data: formData,
-// 			processData: false,
-// 			contentType: false,
-// 			success: function(data){
-// 				console.log("upload successful!");
-// 			},
-
-// 		});
-// 	}
-// });
-
-
-// Drag and drop box
 var $form     = $('.box'),
     $input    = $form.find('input[type="file"]'),
     $label    = $form.find('label'),
@@ -108,15 +68,14 @@ $form.on('submit', function(e) {
 		// ajax for modern browsers
 		e.preventDefault();
 
-		// colects data from all the form inputs
+		// collects data from all the form inputs
 		var ajaxData = new FormData();
 
-		if (droppedFiles) {
+		if (droppedFiles) { // add all files to the form that will be sent to the server
 			$.each(droppedFiles, function(i, file) {
 				ajaxData.append($input.attr('name'), file, file.name);
 			});
 		}
-		console.log("Ajax data = " + ajaxData);
 
 		$.ajax({
 			url: '/upload',
@@ -125,46 +84,10 @@ $form.on('submit', function(e) {
 			cache: false,
 			processData: false,
 			contentType: false,
-			complete: function() {
-				$form.removeClass('is-uploading');
-			},
-			success: function(data, textStatus) {
-				$form.addClass(data === 'success' ? 'is-success' : 'is-error');
-				if (data !== 'success') console.log("Error " + data + textStatus);
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				console.log(textStatus);
-				console.log(errorThrown);
-
-			},
-			xhr: function(){
-				// Logic to update the progress bar
-				var xhr = new XMLHttpRequest();
-
-				// listen to the 'progress' event
-				xhr.upload.addEventListener('progress', function(e){
-
-					if (e.lengthComputable){
-						//	Calculate the percentage of upload complete
-						var percentComplete = e.loaded / e.total;
-						percentComplete = parseInt(percentComplete * 100);
-						updateProgressBar(percentComplete);
-						// //	update the progress bar with the new percentage
-						// progressBar.text(percentComplete + "%")
-						// 	.width(percentComplete + "%");
-						//
-						// // updating the progress bar's percent so as to cause colour drawChart
-						// progress.attr('data-percent', percentComplete);
-						//
-						// //	once the upload reaches 100%, set the progress bar text to done
-						// if (percentComplete === 100){
-						// 	progressBar.html("Done");
-						// }
-					}
-				}, false);
-
-				return xhr;
-			}
+			complete: function() { $form.removeClass('is-uploading'); },
+			success: ajaxSuccess,
+			error: ajaxErrorHandler,
+			xhr: ajaxXHR
 		});
 	} else {
 		// ajax for legacy browsers
@@ -193,94 +116,50 @@ $form.on('drop', function(e) {
 	$form.trigger('submit');
 });
 
+// starts upload of file as soon as it is dropped.
 $input.on('change', function(e) {
 	$form.trigger('submit');
-});
 
-// display the files the client has selected to upload
-
-$input.on('change', function(e) {
+	// display the files the client has selected to upload
 	showFiles(e.target.files);
 });
 
+// Reset the progress bar to 0% when the user selects to upload another file
+$form.on("submit", function(){
+	$("#progress__bar").text("0%")
+		.width("0%");
+});
 
+
+// ============================================================================
+// UPLOAD FROM URL FORM LOGIC
+// ============================================================================
+
+// when user presses the upload button on the URL input box...
 urlForm.submit(function(e) {
 	e.preventDefault();
 
-	console.log(urlEntry.val());
+	var data = { urls: [] };
 
-	var data = {
-		urls: []
-	};
-
-	// could loop through text and push to data.url
-
+	// could loop through text and push to data.url for multiple URLS
 	data.urls.push(urlEntry.val());
 
-
+	// open socket to server to send/receive data
 	var socket = io.connect(location.href);
 
+	// send the data to the server using the 'urls' event
 	socket.emit('urls', data);
 
+	// when receiving progress from curl from the server, update the progress bar
 	socket.on('progress', function(prog) {
-		// console.log(prog);
 		updateProgressBar(prog)
 	});
-
-
-	// $.ajax({
-	// 	url: '/upload',
-	// 	type: 'POST',
-	// 	data: JSON.stringify(data),
-	// 	cache: false,
-	// 	processData: false,
-	// 	contentType: 'application/json',
-	// 	complete: function() {
-	// 		console.log("COMPLETE!");
-	// 		// remove text from the url entry textbox
-	// 		urlEntry.val('');
-	// 	},
-	// 	success: function(data, textStatus) {
-	// 		console.log("SUCCESS!");
-	// 	},
-	// 	error: function(jqXHR, textStatus, errorThrown) {
-	// 		console.log(textStatus);
-	// 		console.log(errorThrown);
-	//
-	// 	},
-	// 	xhr: function() {
-	// 		// Logic to update the progress bar
-	// 		var xhr = new XMLHttpRequest();
-	//
-	// 		// listen to the 'progress' event
-	// 		xhr.addEventListener('progress', function (e, chunk) {
-	// 			console.log(chunk);
-	//
-	// 			if (e.lengthComputable) {
-	// 				//	Calculate the percentage of upload complete
-	// 				var percentComplete = e.loaded / e.total;
-	// 				percentComplete = parseInt(percentComplete * 100);
-	//
-	// 				//	update the progress bar with the new percentage
-	// 				progressBar.text(percentComplete + "%")
-	// 					.width(percentComplete + "%");
-	//
-	// 				// updating the progress bar's percent so as to cause colour drawChart
-	// 				progress.attr('data-percent', percentComplete);
-	//
-	// 				//	once the upload reaches 100%, set the progress bar text to done
-	// 				if (percentComplete === 100) {
-	// 					progressBar.html("Done");
-	// 				}
-	// 			}
-	// 		}, false);
-	//
-	// 		return xhr;
-	// 	}
-	// });
-
-
 });
+
+
+// ============================================================================
+// FUNCTIONS
+// ============================================================================
 
 function updateProgressBar(val) {
 	//	update the progress bar with the new percentage
@@ -296,9 +175,29 @@ function updateProgressBar(val) {
 	}
 }
 
+var ajaxErrorHandler = function(jqXHR, textStatus, errorThrown) {
+	console.log(textStatus);
+	console.log(errorThrown);
+};
 
-// Reset the progress bar to 0% when the user selects to upload another file
-$form.on("submit", function(){
-	$("#progress__bar").text("0%")
-		.width("0%");
-});
+var ajaxSuccess = function(data, textStatus) {
+	$form.addClass(data === 'success' ? 'is-success' : 'is-error');
+	if (data !== 'success') console.log("Error " + data + textStatus);
+};
+
+var ajaxXHR = function(){ // logic to update progress bar
+	var xhr = new XMLHttpRequest();
+
+	// listen to the 'progress' event
+	xhr.upload.addEventListener('progress', function(e){
+
+		if (e.lengthComputable){
+			//	Calculate the percentage of upload complete and update progress bar
+			var percentComplete = e.loaded / e.total;
+			percentComplete = parseInt(percentComplete * 100);
+			updateProgressBar(percentComplete);
+		}
+	}, false);
+
+	return xhr;
+};
