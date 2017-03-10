@@ -189,6 +189,10 @@ input:-webkit-autofill {
 /*Drag and Drop box*/
 /*=========================================*/
 
+#fileFieldset {
+    border: none;
+}
+
 .box {
     text-align: center;
     width: 100%;
@@ -229,13 +233,6 @@ input:-webkit-autofill {
     transform: scale(1.02);
 }
 
-
-
-.box__file:focus + label {
-    outline: 1px dotted #000;
-    outline: -webkit-focus-ring-color auto 5px;
-}
-
 .box__dragndrop,
 .box__uploading,
 .box__success,
@@ -266,8 +263,9 @@ input:-webkit-autofill {
     display: block;
 }
 
-.box__button {
+.box__button.ui.button {
     display: none;
+    background-color: #E28614;
 }
 
 .no-js .box__button {
@@ -277,6 +275,12 @@ input:-webkit-autofill {
 /*change colour of url upload button*/
 #url-upload-button {
     background-color: #E28614;
+}
+
+#button-container {
+    position: absolute;
+    margin-left: 174px;
+    margin-top: 50px;
 }
 
 /*=========================================*/

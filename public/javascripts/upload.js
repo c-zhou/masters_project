@@ -22,6 +22,8 @@ var isAdvancedUpload = function() {
 var $form     = $('.box'),
     $input    = $form.find('input[type="file"]'),
     $label    = $form.find('label'),
+    boxBtn    = $('.box__button'),
+    fieldSet  = $('#fileFieldset'),
     $errorMsg = "FILE UPLOAD ERROR";
 
 
@@ -53,6 +55,8 @@ if (isAdvancedUpload()) {
 $form.on('submit', function(e) {
 	if ($form.hasClass('is-uploading')) return false;
 
+	disableUpload();
+
 	$form.addClass('is-uploading')
 		.removeClass('is-error');
 
@@ -80,7 +84,12 @@ $form.on('submit', function(e) {
 			cache: false,
 			processData: false,
 			contentType: false,
-			complete: function() { $form.removeClass('is-uploading'); },
+			complete: function() {
+				$form.removeClass('is-uploading');
+				boxBtn.hide();
+				enableUpload();
+				$label.html('<strong>Choose a file</strong> <span class="box__dragndrop"> or drag it here</span>.');
+			},
 			success: ajaxSuccess,
 			error: ajaxErrorHandler,
 			xhr: ajaxXHR
@@ -109,28 +118,33 @@ $form.on('submit', function(e) {
 $form.on('drop', function(e) {
 	droppedFiles = e.originalEvent.dataTransfer.files;
 	showFiles(droppedFiles);
-	$form.trigger('submit');
+	boxBtn.show();
 });
 
 // starts upload of file as soon as it is dropped.
 $input.on('change', function(e) {
-	$form.trigger('submit');
-
+	droppedFiles = e.target.files;
 	// display the files the client has selected to upload
 	showFiles(e.target.files);
+
+	// show the upload button
+	boxBtn.show();
 });
 
 
 // ============================================================================
 // UPLOAD FROM URL FORM LOGIC
 // ============================================================================
-var urlForm = $('#upload-url'),
-    urlEntry = $('#url-entry'),
+var urlForm      = $('#upload-url'),
+    urlEntry     = $('#url-entry'),
+    urlUploadBtn = $('#url-upload-button'),
 	socket;
 
 // when user presses the upload button on the URL input box...
 urlForm.submit(function(e) {
 	e.preventDefault();
+
+	disableUpload();
 
 	// Reset the progress bar to 0% when the user selects to upload another file
 	$("#progress__bar").text("0%")
@@ -159,6 +173,8 @@ function openSocket() {
 	// listener for completion to clear text
 	socket.on('downloadComplete', function() {
 		urlEntry.val("");
+
+		enableUpload();
 	});
 
 	// emitter for stop button press
@@ -174,6 +190,20 @@ function openSocket() {
 // ============================================================================
 // FUNCTIONS
 // ============================================================================
+
+function disableUpload() {
+	urlUploadBtn.prop('disabled', true)
+		.toggleClass('loading');
+	fieldSet.prop('disabled', true);
+	$form.addClass('loading');
+}
+
+function enableUpload() {
+	urlUploadBtn.prop('disabled', false)
+		.toggleClass('loading');
+	fieldSet.prop('disabled', false);
+	$form.removeClass('loading');
+}
 
 function updateProgressBar(val) {
 	//	update the progress bar with the new percentage

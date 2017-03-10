@@ -13,28 +13,34 @@
 
         <!--DRAG AND DROP BOX-->
         <div class="twelve wide column">
-            <form class="box" method="POST" action="/upload" enctype="multipart/form-data">
-                <div class="box__input">
-                    <input type="file" class="box__file" name="files[]" id="file"
-                           data-multiple-caption="{count} files selected" multiple >
-                    <label for="file">
-                        <strong>Choose a file</strong>
-                        <span class="box__dragndrop"> or drag it here</span>.
-                    </label>
-                    <button class="box__button" type="submit">Upload</button>
-                </div>
-                <div class="box__uploading">Uploading&hellip;</div>
-                <div class="box__success">Done!</div>
-                <div class="box__error">Error! <span></span>.</div>
+            <form class="box ui form" method="POST" action="/upload" enctype="multipart/form-data">
+                <fieldset id="fileFieldset">
+                    <div class="box__input">
+                        <input type="file" class="box__file" name="files[]" id="file"
+                               data-multiple-caption="{count} files selected" multiple >
+                        <label for="file" id="label">
+                            <strong>Choose a file</strong>
+                            <span class="box__dragndrop"> or drag it here</span>.
+                        </label>
+                        <div id="button-container">
+                            <button id="box-button" class="box__button ui button"
+                                    type="submit">Upload</button>
+                        </div>
+                    </div>
+                    <div class="box__uploading">Uploading&hellip;</div>
+                    <div class="box__success">Done!</div>
+                    <div class="box__error">Error! <span></span>.</div>
+                </fieldset>
             </form>
         </div>
 
         <!--UPLOAD FROM URL FORM-->
         <div class="twelve wide column">
-            <form id="upload-url" class="ui huge form" action="/upload" method="POST">
+            <form id="upload-url" class="ui large form" action="/upload" method="POST">
                 <div class="ui fluid action input">
-                    <input id="url-entry" type="text" placeholder="Enter URL here" name="uploadURL">
-                    <button class="ui orange button" type="submit"
+                    <input id="url-entry" type="url" placeholder="Enter URL here"
+                           name="uploadURL" required>
+                    <button class="ui button" type="submit"
                             id="url-upload-button">Upload</button>
                 </div>
             </form>
