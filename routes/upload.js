@@ -1,15 +1,16 @@
-var express    = require('express'),
-    router     = express.Router(),
-    io         = require('../app.js'),
-    formidable = require('formidable'), // parses incoming form data (uploaded files)
-	fs         = require('fs'), // used to rename file uploads
-	path       = require('path'),
-	kill       = require('tree-kill'),
-	url        = require('url'),
-    http       = require('http'),
-    spawn      = require('child_process').spawn;
+const spawn      = require('child_process').spawn,
+	  UPLOAD_DIR = path.join(__dirname, "../uploads/");
 
-const UPLOAD_DIR = path.join(__dirname, "../uploads/");
+var io         = require('../app.js'),
+    fs         = require('fs'), // used to rename file uploads
+    url        = require('url'),
+    http       = require('http'),
+    path       = require('path'),
+    kill       = require('tree-kill'),
+    express    = require('express'),
+    router     = express.Router(),
+    formidable = require('formidable'); // parses incoming form data (uploaded files)
+
 
 // GET upload page
 router.get("/", function(req, res){
@@ -48,7 +49,8 @@ module.exports = router;
 // TODO add these functions into a middleware folder
 
 function downloadFilecURL(socket, urls, cb){
-	var curlArgs = ['-#'];
+	var curlArgs  = ['-#'],
+        prevChunk = 0;
 
 	urls.forEach(function(item) {
 		// extract filename
@@ -74,9 +76,40 @@ function downloadFilecURL(socket, urls, cb){
 		prevChunk = 0;
 	});
 
+    curl.on('close', function(code, signal) {
+        if (code){ cb("Curl closed with code " + code); }
+        else if (signal){ cb("Curl closed with signal " + signal); }
+        else { console.log("Curl closed...") }
+        // disconnect the websocket
+        socket.disconnect(true);
+    });
+
+    // when the child process exits, check if there were any errors
+    curl.on('exit', function(code, signal){
+        if (code){ cb("Curl exited with code " + code); }
+        else if (signal){ cb("Curl exited with signal " + signal); }
+        else { console.log("Curl exited...") }
+    });
+
+    curl.stderr.on('data', function(chunk){
+        if (chunk.indexOf('%') > -1) {
+            // extract the number from the line
+            var percComplete = chunk.split('#').join('').trim().replace('%', '');
+
+            // some lines dont contain numbers so change them to null otherwise
+            percComplete = parseInt(percComplete) || null;
+
+            // make sure there is an integer present and that it isnt lower than the last
+            // there is some random numbers occasionally that are missing the first digit
+            if (percComplete && percComplete >= prevChunk){
+                socket.emit('progress', percComplete);
+                prevChunk = percComplete
+            }
+        }
+    });
+
 	socket.on('disconnect', function() {
 		console.log("Socket disconnected...");
-		// if (curl.connected) {
 			kill(curl.pid, 'SIGTERM', function (err) {
 				if (err) {
 					console.log(err);
@@ -84,7 +117,6 @@ function downloadFilecURL(socket, urls, cb){
 					console.log("Curl process killed!");
 				}
 			});
-		// }
 	});
 
 	socket.on('kill', function() {
@@ -96,40 +128,6 @@ function downloadFilecURL(socket, urls, cb){
 			});
 		}
 		socket.disconnect(true);
-	});
-
-	curl.on('close', function(code, signal) {
-		if (code){ cb("Curl closed with code " + code); }
-		else if (signal){ cb("Curl closed with signal " + signal); }
-		else { console.log("Curl closed...") }
-		// disconnect the websocket
-		socket.disconnect(true);
-	});
-
-	// when the child process exits, check if there were any errors
-	curl.on('exit', function(code, signal){
-		if (code){ cb("Curl exited with code " + code); }
-		else if (signal){ cb("Curl exited with signal " + signal); }
-		else { console.log("Curl exited...") }
-	});
-
-	var prevChunk = 0;
-
-	curl.stderr.on('data', function(chunk){
-		if (chunk.indexOf('%') > -1) {
-			// extract the number from the line
-			var percComplete = chunk.split('#').join('').trim().replace('%', '');
-
-			// some lines dont contain numbers so change them to null otherwise
-			percComplete = parseInt(percComplete) || null;
-
-			// make sure there is an integer present and that it isnt lower than the last
-			// there is some random numbers occasionally that are missing the first digit
-			if (percComplete && percComplete >= prevChunk){
-				socket.emit('progress', percComplete);
-				prevChunk = percComplete
-			}
-		}
 	});
 }
 

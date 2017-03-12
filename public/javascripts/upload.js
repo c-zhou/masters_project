@@ -1,15 +1,18 @@
 /**
  * Created by m.hall on 21/2/17.
  */
-var progress    = $('#progress'),
-    stopBtn     = $('#stopUploadButton'),
-    progressBar = $('#progress__bar');
-
-var $form     = $('.box'),
-    $input    = $form.find('input[type="file"]'),
-    $label    = $form.find('label'),
-    boxBtn    = $('.box__button'),
-    fieldSet  = $('#fileFieldset'),
+var $form        = $('.box'),
+    $input       = $form.find('input[type="file"]'),
+    socket,
+    boxBtn       = $('.box__button'),
+    $label       = $form.find('label'),
+    stopBtn      = $('#stopUploadButton'),
+    urlForm      = $('#upload-url'),
+    progress     = $('#progress'),
+    urlEntry     = $('#url-entry'),
+    fieldSet     = $('#fileFieldset'),
+	progressBar  = $('#progress__bar'),
+	urlUploadBtn = $('#url-upload-button'),
     fileUploadXHR;
 
 // this function needs to be defined first as code below depends on it being available
@@ -22,11 +25,6 @@ var isAdvancedUpload = function() {
 		// detect if browser supports DataTransfer object for file uploading
 		'FileReader' in window;
 };
-
-var urlForm      = $('#upload-url'),
-    urlEntry     = $('#url-entry'),
-    urlUploadBtn = $('#url-upload-button'),
-    socket;
 
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
@@ -67,7 +65,6 @@ $form.on('submit', function(e) {
 
 	updateProgressBar(0);
 
-	// enable stop button
 	enableStopButton();
 
 	if (isAdvancedUpload()) {
@@ -130,6 +127,7 @@ $form.on('drop', function(e) {
 // starts upload of file as soon as it is dropped.
 $input.on('change', function(e) {
 	droppedFiles = e.target.files;
+
 	// display the files the client has selected to upload
 	showFiles(e.target.files);
 
@@ -142,7 +140,6 @@ stopBtn.click(function(e) {
 		// abort xhr request
 		fileUploadXHR.abort();
 		disableStopButton();
-		// resetProgressBar();
 		updateProgressBar(0);
 	}
 });
@@ -199,7 +196,6 @@ function openSocket() {
     stopBtn.click(function() {
         disableStopButton();
         socket.emit('kill');
-        // resetProgressBar();
         updateProgressBar(0);
         enableUpload();
         urlEntry.val("");
