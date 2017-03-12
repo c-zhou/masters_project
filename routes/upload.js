@@ -145,11 +145,25 @@ function getFile(req, res){
 
     // log any errors that occur
     form.on("error", function (err) {
-        throw err;
+    	if (err.message === 'Request aborted') {
+    		console.log('You have requested to cancel the file upload!');
+
+    		// CANCEL THE UPLOAD OF THE FORM using fs.unlink()
+            // fs.unlink(file.path);
+			form.openedFiles.forEach(function(f) {
+				fs.unlink(f.path, function(err) {
+					console.log(err);
+				});
+			})
+
+		} else {
+            throw err;
+        }
     });
 
     // once all the files have been uploaded, send a response to the client
     form.on("end", function () {
+    	console.log("File upload ended");
         res.end("success");
     });
 

@@ -27,7 +27,8 @@ var $form     = $('.box'),
     $label    = $form.find('label'),
     boxBtn    = $('.box__button'),
     fieldSet  = $('#fileFieldset'),
-    $errorMsg = "FILE UPLOAD ERROR";
+    $errorMsg = "FILE UPLOAD ERROR",
+	fileUploadXHR;
 
 
 // allows us to style the form depending on whether the browser supports drag and drop
@@ -83,7 +84,7 @@ $form.on('submit', function(e) {
 			});
 		}
 
-		$.ajax({
+		fileUploadXHR = $.ajax({
 			url: '/upload',
 			type: 'POST',
 			data: ajaxData,
@@ -135,6 +136,15 @@ $input.on('change', function(e) {
 
 	// show the upload button
 	boxBtn.show();
+});
+
+stopBtn.click(function(e) {
+	if (fileUploadXHR) {
+		// abort xhr request
+		console.log("FileuploadXHR is true");
+		fileUploadXHR.abort();
+		disableStopButton();
+	}
 });
 
 
@@ -191,8 +201,6 @@ function openSocket() {
 	stopBtn.click(function() {
 		socket.disconnect(true);
 	});
-
-	// disable/enable upload logic
 
 	//check file type is ok
 }
