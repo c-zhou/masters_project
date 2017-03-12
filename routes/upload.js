@@ -22,7 +22,7 @@ router.post("/", function(req, res){
 
 	// if request is received from an ajax form (i.e the file uploader)
 	if (req.xhr) {
-		getFile(req, res);
+		uploadLocalFile(req, res);
 	}
 });
 
@@ -87,6 +87,17 @@ function downloadFilecURL(socket, urls, cb){
 		// }
 	});
 
+	socket.on('kill', function() {
+		// unlink all downloaded files (and those to come) from the system
+		for (var i = 2; i < curlArgs.length; i += 3) {
+			var fileName = curlArgs[i];
+			fs.unlink(fileName, function(err) {
+				if (err) { console.log(err); }
+			});
+		}
+		socket.disconnect(true);
+	});
+
 	curl.on('close', function(code, signal) {
 		if (code){ cb("Curl closed with code " + code); }
 		else if (signal){ cb("Curl closed with signal " + signal); }
@@ -123,7 +134,7 @@ function downloadFilecURL(socket, urls, cb){
 }
 
 // function to upload a user's specified local file
-function getFile(req, res){
+function uploadLocalFile(req, res){
     // create an incoming form object
     var form = new formidable.IncomingForm({
         encoding: 'utf-8',
@@ -145,17 +156,17 @@ function getFile(req, res){
 
     // log any errors that occur
     form.on("error", function (err) {
+    	// if the user presses the STOP button
     	if (err.message === 'Request aborted') {
     		console.log('You have requested to cancel the file upload!');
 
-    		// CANCEL THE UPLOAD OF THE FORM using fs.unlink()
-            // fs.unlink(file.path);
+    		// loop through all of the files that were submitted and cancel and delete them
 			form.openedFiles.forEach(function(f) {
 				fs.unlink(f.path, function(err) {
-					console.log(err);
+					if (err) { console.log(err); }
 				});
-			})
-
+			});
+			res.redirect('/upload');
 		} else {
             throw err;
         }

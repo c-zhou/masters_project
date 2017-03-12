@@ -5,6 +5,13 @@ var progress    = $('#progress'),
     stopBtn     = $('#stopUploadButton'),
     progressBar = $('#progress__bar');
 
+var $form     = $('.box'),
+    $input    = $form.find('input[type="file"]'),
+    $label    = $form.find('label'),
+    boxBtn    = $('.box__button'),
+    fieldSet  = $('#fileFieldset'),
+    fileUploadXHR;
+
 // this function needs to be defined first as code below depends on it being available
 var isAdvancedUpload = function() {
 	var div = document.createElement('div');
@@ -16,20 +23,14 @@ var isAdvancedUpload = function() {
 		'FileReader' in window;
 };
 
-
+var urlForm      = $('#upload-url'),
+    urlEntry     = $('#url-entry'),
+    urlUploadBtn = $('#url-upload-button'),
+    socket;
 
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
 // ============================================================================
-
-var $form     = $('.box'),
-    $input    = $form.find('input[type="file"]'),
-    $label    = $form.find('label'),
-    boxBtn    = $('.box__button'),
-    fieldSet  = $('#fileFieldset'),
-    $errorMsg = "FILE UPLOAD ERROR",
-	fileUploadXHR;
-
 
 // allows us to style the form depending on whether the browser supports drag and drop
 if (isAdvancedUpload()) {
@@ -64,9 +65,7 @@ $form.on('submit', function(e) {
 	$form.addClass('is-uploading')
 		.removeClass('is-error');
 
-	// Reset the progress bar to 0% when the user selects to upload another file
-	$("#progress__bar").text("0%")
-		.width("0%");
+	updateProgressBar(0);
 
 	// enable stop button
 	enableStopButton();
@@ -141,35 +140,27 @@ $input.on('change', function(e) {
 stopBtn.click(function(e) {
 	if (fileUploadXHR) {
 		// abort xhr request
-		console.log("FileuploadXHR is true");
 		fileUploadXHR.abort();
 		disableStopButton();
+		// resetProgressBar();
+		updateProgressBar(0);
 	}
 });
-
 
 // ============================================================================
 // UPLOAD FROM URL FORM LOGIC
 // ============================================================================
-var urlForm      = $('#upload-url'),
-    urlEntry     = $('#url-entry'),
-    urlUploadBtn = $('#url-upload-button'),
-	socket;
 
 // when user presses the upload button on the URL input box...
 urlForm.submit(function(e) {
-	e.preventDefault();
+    e.preventDefault();
+
+    var data = { urls: [] };
 
 	disableUpload();
 
 	// Reset the progress bar to 0% when the user selects to upload another file
-	$("#progress__bar").text("0%")
-		.width("0%");
-
-	var data = { urls: [] };
-
-	// could loop through text and push to data.url for multiple URLS
-	data.urls.push(urlEntry.val());
+	updateProgressBar(0);
 
 	// enable stop button
 	enableStopButton();
@@ -177,38 +168,45 @@ urlForm.submit(function(e) {
 	// open socket to server to send/receive data and add listeners/emitters
 	openSocket();
 
+    // could loop through text and push to data.url for multiple URLS
+    data.urls.push(urlEntry.val());
+
 	// send the data to the server using the 'urls' event
 	socket.emit('urls', data);
 
 });
 
-function openSocket() {
-	socket = io.connect(location.href);
-
-	// when receiving progress from curl from the server, update the progress bar
-	socket.on('progress', function(prog) {
-		updateProgressBar(prog)
-	});
-
-	// listener for completion to clear text
-	socket.on('downloadComplete', function() {
-		urlEntry.val("");
-
-		enableUpload();
-	});
-
-	// emitter for stop button press
-	stopBtn.click(function() {
-		socket.disconnect(true);
-	});
-
-	//check file type is ok
-}
-
-
 // ============================================================================
 // FUNCTIONS
 // ============================================================================
+
+function openSocket() {
+    socket = io.connect(location.href);
+
+    // when receiving progress from curl from the server, update the progress bar
+    socket.on('progress', function(prog) {
+        updateProgressBar(prog)
+    });
+
+    // listener for completion to clear text
+    socket.on('downloadComplete', function() {
+        urlEntry.val("");
+
+        enableUpload();
+    });
+
+    // emitter for stop button press
+    stopBtn.click(function() {
+        disableStopButton();
+        socket.emit('kill');
+        // resetProgressBar();
+        updateProgressBar(0);
+        enableUpload();
+        urlEntry.val("");
+    });
+
+    //check file type is ok
+}
 
 function enableStopButton() {
 	stopBtn.prop('disabled', false);
@@ -234,7 +232,7 @@ function enableUpload() {
 
 function updateProgressBar(val) {
 	//	update the progress bar with the new percentage
-	progressBar.text(val + "%")
+	progressBar.text((val === 0) ? "" :  val + "%")
 		.width(val + "%");
 
 	// updating the progress bar's percent so as to cause colour drawChart
@@ -273,7 +271,7 @@ var ajaxXHR = function(){ // logic to update progress bar
 	return xhr;
 };
 
-showFiles = function(files) {
+var showFiles = function(files) {
 	var len = files.length;
 	if (len > 1) {
 		$label.text(($input.attr('data-multiple-caption') || '').replace('{count}', len))
