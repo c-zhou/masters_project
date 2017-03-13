@@ -12,7 +12,7 @@ import sys
 import os
 import random
 import time
-SLEEP_TIME = 0.05 # number of seconds to wait between each copy of file
+SLEEP_TIME = 0.025 # number of seconds to wait between each copy of file
 
 dest_dir = sys.argv[-1]
 
