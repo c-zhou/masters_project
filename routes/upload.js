@@ -1,6 +1,3 @@
-const spawn      = require('child_process').spawn,
-	  UPLOAD_DIR = path.join(__dirname, "../uploads/");
-
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
     url        = require('url'),
@@ -10,6 +7,9 @@ var io         = require('../app.js'),
     express    = require('express'),
     router     = express.Router(),
     formidable = require('formidable'); // parses incoming form data (uploaded files)
+
+const spawn      = require('child_process').spawn,
+      UPLOAD_DIR = path.join(__dirname, "../uploads/");
 
 
 // GET upload page
