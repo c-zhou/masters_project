@@ -9,12 +9,7 @@ var io         = require('../app.js'),
     formidable = require('formidable'); // parses incoming form data (uploaded files)
 
 const spawn      = require('child_process').spawn,
-<<<<<<< HEAD
     UPLOAD_DIR = path.join(__dirname, "../uploads/");
-=======
-      UPLOAD_DIR = path.join(__dirname, "../uploads/");
->>>>>>> 962e9b2319ad8a5ff35bc952c97bfd94e62c6134
-
 
 // GET upload page
 router.get("/", function(req, res){
