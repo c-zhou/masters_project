@@ -3,22 +3,76 @@
 
 <div class="ui main text container">
     <div class="ui grid">
-        <!--PROGRESS BAR-->
-        <div class="ten wide column" id="progressDiv">
-            <div class="ui large indicating progress active" id="progress">
-                <div class="bar" id="progress__bar"></div>
-                <div class="label" id="progress__label"></div>
+
+        <div class="sixteen wide column">
+            <div class="ui three steps">
+                <div class="disabled step">
+                    <i class="file text icon"></i>
+                    <div class="content">
+                        <div class="title">Metadata</div>
+                        <div class="description">Details of your sample</div>
+                    </div>
+                </div>
+                <div class="active step">
+                    <i class="hand pointer icon"></i>
+                    <div class="content">
+                        <div class="title">Select File</div>
+                        <div class="description">Pick file or enter URL</div>
+                    </div>
+                </div>
+                <div class="disabled step">
+                    <i class="checkmark icon"></i>
+                    <div class="content">
+                        <div class="title">Upload Complete</div>
+                        <div class="description">What next?</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!--BUTTON TO STOP UPLOAD-->
-        <div class="two wide column" id="stopUploadDiv">
-            <button class="ui red button" id="stopUploadButton" disabled>Stop</button>
+        <div class="row" id="metadata-elements">
+        <!--METADATA FORM-->
+            <div class="sixteen wide column">
+                <form action="/upload" method="post" class="ui form">
+                    <div class="field">
+                        <label>First Name</label>
+                        <input type="text" name="first-name" placeholder="First Name">
+                    </div>
+                    <div class="field">
+                        <label>Last Name</label>
+                        <input type="text" name="last-name" placeholder="Last Name">
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden">
+                            <label>I agree to the Terms and Conditions</label>
+                        </div>
+                    </div>
+                    <button class="ui button" type="submit">Submit</button>
+                </form>
+            </div>
         </div>
 
+        <div class="row" id="upload-progress-elements">
+            <!--PROGRESS BAR-->
+            <div class="fourteen wide column" id="progressDiv">
+                <div class="ui large indicating progress active" id="progress">
+                    <div class="bar" id="progress__bar"></div>
+                    <div class="label" id="progress__label"></div>
+                </div>
+            </div>
+
+
+            <!--BUTTON TO STOP UPLOAD-->
+            <div class="two wide column" id="stopUploadDiv">
+                <button class="ui red button" id="stopUploadButton" disabled>Stop</button>
+            </div>
+        </div>
+
+
         <!--DRAG AND DROP BOX-->
-        <div class="twelve wide column">
-            <form class="box ui form" method="POST" action="/upload" enctype="multipart/form-data">
+        <div class="sixteen wide column" id="upload-file-elements">
+            <div class="row"><div class="column"><form class="box ui form" method="POST" action="/upload" enctype="multipart/form-data">
                 <fieldset id="fileFieldset">
                     <div class="box__input">
                         <input type="file" class="box__file" name="files[]" id="file"
@@ -36,11 +90,11 @@
                     <div class="box__success">Done!</div>
                     <div class="box__error">Error! <span></span>.</div>
                 </fieldset>
-            </form>
+            </form></div></div>
         </div>
 
         <!--UPLOAD FROM URL FORM-->
-        <div class="twelve wide column">
+        <div class="sixteen wide column" id="upload-url-elements">
             <form id="upload-url" class="ui large form" action="/upload" method="POST">
                 <div class="ui fluid action input">
                     <input id="url-entry" type="url" placeholder="Enter URL here"
