@@ -36,15 +36,15 @@
                 <form class="ui form" id="metadata-form">
                     <div class="field">
                         <label>First Name</label>
-                        <input type="text" name="first-name" placeholder="First Name">
+                        <input type="text" name="name[first]" placeholder="First Name">
                     </div>
                     <div class="field">
                         <label>Last Name</label>
-                        <input type="text" name="last-name" placeholder="Last Name">
+                        <input type="text" name="name[last]" placeholder="Last Name">
                     </div>
                     <div class="field">
                         <div class="ui checkbox">
-                            <input type="checkbox" tabindex="0" class="hidden">
+                            <input type="checkbox" tabindex="0" name="tcs">
                             <label>I agree to the Terms and Conditions</label>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
             <div class="row"><div class="column"><form class="box ui form" method="POST" action="/upload" enctype="multipart/form-data">
                 <fieldset id="fileFieldset">
                     <div class="box__input">
-                        <input type="file" class="box__file" name="files[]" id="file"
+                        <input type="file" class="box__file" name="localFiles" id="file"
                                data-multiple-caption="{count} files selected" multiple >
                         <label for="file" id="label">
                             <strong>Choose a file</strong>

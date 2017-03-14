@@ -39,6 +39,8 @@ var isAdvancedUpload = function() {
 // METADATA FORM
 // ============================================================================
 
+var metadata;
+
 // on metadata form submit, show file selectors, hide all others
 metadataForm.submit(function(e) {
 	e.preventDefault();
@@ -97,6 +99,7 @@ $form.on('submit', function(e) {
 
 		// collects data from all the form inputs
 		var ajaxData = new FormData();
+		ajaxData.append('metadata', metadataForm.serialize());
 
 		if (droppedFiles) { // add all files to the form that will be sent to the server
 			$.each(droppedFiles, function(i, file) {

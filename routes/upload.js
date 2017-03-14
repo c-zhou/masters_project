@@ -1,15 +1,20 @@
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
+    qs         = require('qs'), // package to parse serialized form data
     url        = require('url'),
     http       = require('http'),
     path       = require('path'),
     kill       = require('tree-kill'),
     express    = require('express'),
     router     = express.Router(),
+    jsonfile   = require('jsonfile'),
+    Metadata   = require('../models/metadata'); // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
 
-const spawn      = require('child_process').spawn,
-    UPLOAD_DIR = path.join(__dirname, "../uploads/");
+const spawn       = require('child_process').spawn,
+      UPLOAD_DIR  = path.join(__dirname, "../uploads/");
+
+jsonfile.spaces = 4; // setup format for writing json
 
 // GET upload page
 router.get("/", function(req, res){
@@ -141,18 +146,27 @@ function uploadLocalFile(req, res){
         uploadDir: UPLOAD_DIR
 	});
 
+	var data,
+	    filePaths = [];
+
     // TODO add error catch incase user uploads something other than FASTQ
     // Make sure file type is correct
     // ...
 
+	form.on('field', function(name, value) {
+		data = qs.parse(value); // parse the serialised data into an object
+	});
+
     // every time a single file has been uploaded successfully
     // rename it to it's original name
-    form.on("file", function (field, file) {
-        fs.rename(file.path, path.join(form.uploadDir, file.name));
+    form.on('file', function (name, file) {
+    	var newFilePath = path.join(form.uploadDir, file.name);
+        fs.rename(file.path, newFilePath);
+        filePaths.push(newFilePath);
     });
 
     // log any errors that occur
-    form.on("error", function (err) {
+    form.on('error', function (err) {
     	// if the user presses the STOP button
     	if (err.message === 'Request aborted') {
     		console.log('You have requested to cancel the file upload!');
@@ -170,8 +184,12 @@ function uploadLocalFile(req, res){
     });
 
     // once all the files have been uploaded, send a response to the client
-    form.on("end", function () {
+    form.on('end', function () {
     	console.log("File upload ended");
+    	var md = new Metadata(filePaths, data);
+    	console.log(md);
+    	var mdFileName = path.join(form.uploadDir, 'sampleID_' + md.id) + '.json';
+    	jsonfile.writeFileSync(mdFileName, md);
         res.end("success");
     });
 
