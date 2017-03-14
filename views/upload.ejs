@@ -6,21 +6,21 @@
 
         <div class="sixteen wide column">
             <div class="ui three steps">
-                <div class="disabled step">
+                <div class="active step" id="metadata-step">
                     <i class="file text icon"></i>
                     <div class="content">
                         <div class="title">Metadata</div>
                         <div class="description">Details of your sample</div>
                     </div>
                 </div>
-                <div class="active step">
+                <div class="disabled step" id="file-step">
                     <i class="hand pointer icon"></i>
                     <div class="content">
                         <div class="title">Select File</div>
                         <div class="description">Pick file or enter URL</div>
                     </div>
                 </div>
-                <div class="disabled step">
+                <div class="disabled step" id="complete-step">
                     <i class="checkmark icon"></i>
                     <div class="content">
                         <div class="title">Upload Complete</div>
@@ -33,7 +33,7 @@
         <div class="row" id="metadata-elements">
         <!--METADATA FORM-->
             <div class="sixteen wide column">
-                <form action="/upload" method="post" class="ui form">
+                <form action="" class="ui form" id="metadata-form">
                     <div class="field">
                         <label>First Name</label>
                         <input type="text" name="first-name" placeholder="First Name">
@@ -103,6 +103,15 @@
                             id="url-upload-button">Upload</button>
                 </div>
             </form>
+        </div>
+
+        <!--COMPLETE OPTIONS-->
+        <div class="sixteen wide column" id="complete-options">
+            <div class="ui buttons">
+                <button class="ui button">Submit another</button>
+                <div class="or"></div>
+                <button class="ui button"><i class="dashboard icon"></i>Go to dashboard</button>
+            </div>
         </div>
 
     </div>

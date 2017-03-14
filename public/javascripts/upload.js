@@ -26,6 +26,42 @@ var isAdvancedUpload = function() {
 		'FileReader' in window;
 };
 
+
+// ============================================================================
+// STEP THROUGH LOGIC
+// ============================================================================
+var metadataForm = $('#metadata-form'),
+    progressDiv = $('#upload-progress-elements'),
+    fileDiv = $('#upload-file-elements'),
+    urlDiv = $('#upload-url-elements'),
+    completeDiv = $('#complete-options'),
+	metadataStep = $('#metadata-step'),
+	fileStep = $('#file-step'),
+	completeStep = $('#complete-step');
+
+// on page load
+	// show metadata form, hide all others
+// done in CSS
+
+// on metadata form submit
+	// show file selectors, hide all others
+metadataForm.submit(function(e) {
+
+});
+
+// on file upload start
+	// show progress bar, hide all others
+
+// on file upload complete
+	// show complete form, hide all others
+
+
+
+
+
+
+
+
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
 // ============================================================================

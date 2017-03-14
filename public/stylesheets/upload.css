@@ -1,0 +1,122 @@
+
+.box {
+text-align: center;
+width: 100%;
+margin: 0 auto;
+border-radius: 15px;
+position: relative;
+background-color: #8da7be;
+padding: 150px 40px;
+-webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.25) );
+filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.2) );
+}
+
+.box__file {
+width: 0.1px;
+height: 0.1px;
+opacity: 0;
+overflow: hidden;
+position: absolute;
+z-index: -1;
+
+}
+
+.box__file + label {
+font-size: 1.5em;
+color: #57585b;
+display: inline-block;
+cursor: pointer;
+-webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.1) );
+filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.1) );
+}
+
+.box__file + label * {
+pointer-events: none;
+}
+
+.box__file:focus + label,
+.box__file + label:hover {
+/*color: #595a5d;*/
+transform: scale(1.02);
+}
+
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+display: none;
+}
+
+.box.has-advanced-upload {
+background-color: #8da7be;
+/*outline: 2px dashed #57585b;*/
+box-shadow: inset 0 0 30pt #57585b;
+/*outline-offset: -10px;*/
+}
+
+.box.has-advanced-upload .box__dragndrop {
+display: inline;
+}
+
+.box.is-dragover {
+background-color: #8198AD;
+
+}
+
+.box.is-uploading .box__input {
+visibility: none;
+}
+
+.box.is-uploading .box__uploading {
+display: block;
+}
+
+.box__button.ui.button {
+display: none;
+background-color: #E28614;
+}
+
+.no-js .box__button {
+display: block;
+}
+
+/*change colour of url upload button*/
+#url-upload-button {
+background-color: #E28614;
+}
+
+#button-container {
+position: absolute;
+margin-left: 174px;
+margin-top: 50px;
+}
+
+#fileFieldset {
+    border: none;
+}
+
+#stopUploadDiv {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+}
+
+#progressDiv {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#stopUploadButton {
+    width: 100%;
+}
+
+/*============================================================================*/
+/*on page load, show metadata form, hide all others*/
+#upload-progress-elements,
+#upload-file-elements,
+#upload-url-elements,
+#complete-options {
+    display: none;
+}
+/*============================================================================*/
+

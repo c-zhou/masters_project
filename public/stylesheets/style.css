@@ -1,31 +1,5 @@
-#content {
-  text-align: center;
-  padding-top: 25%;
-  text-shadow: 0px 4px 3px rgba(0,0,0,0.3),
-  0px 8px 13px rgba(0,0,0,0.1),
-  0px 18px 23px rgba(0,0,0,0.1);
-}
-
-#bg {
-  width: 100%;
-  max-width: 1920px;
-  background: url("../images/Dnarrow.png") no-repeat;
-    background-size: 100% 100%;
-  background-position: center;
-  position: absolute;
-  height: 100%;
-  max-height: 1080px;
-  z-index: -9999;
-  opacity: 0.7;
-
-}
-
-body {
-    font-family: 'Roboto', sans-serif;
-    color: black;
-    background: #ECE9E6; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #ECE9E6 , #FFFFFF); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #ECE9E6 , #FFFFFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+html {
+    height: 100%;
 }
 
 h1 {
@@ -33,144 +7,20 @@ h1 {
     font-size: 5em;
 }
 
-html {
-    height: 100%;
-}
-
+/* on the landing page */
 hr {
     width: 400px;
     border-top: 1px solid black;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
+border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 
-.btn-success:hover{
-    transform: scale(1.05);
+body {
+font-family: 'Roboto', sans-serif;
+color: black;
+background: #ECE9E6; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #ECE9E6 , #FFFFFF); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #ECE9E6 , #FFFFFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
-
-.upload.icon {
-  font-size: 2em;
-}
-
-.container.main {
-  margin-top: 7.0em;
-}
-
-.item {
-  font-size: 1.5em;
-}
-
-.menu {
-  height: 50px;
-  opacity: 0.9;
-}
-
-.twelve.wide {
-  text-align: center;
-}
-
-#upload-input {
-  display: none;
-}
-
-.huge.ui.green.button:hover {
-  transform: scale(1.05);
-}
-
-.twelve h2 {
-  padding-bottom: 20px;
-  padding-top: 20px;
-}
-
-.ui.button {
-  font-size: 1.05em;
-}
-
-
-
-/*Donut chart styling*/
-svg {
-    width: 100%;
-    height: 100%;
-}
-
-path.slice{
-    stroke-width:2px;
-}
-
-polyline{
-    opacity: .3;
-    stroke: black;
-    stroke-width: 2px;
-    fill: none;
-}
-
-.labelValue
-{
-    font-size: 60%;
-    opacity: .5;
-
-}
-
-.legend text {
-    font-size: 0.8em;
-}
-
-.toolTip {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    position: absolute;
-    display: none;
-    width: auto;
-    height: auto;
-    background: none repeat scroll 0 0 white;
-    border: 0 none;
-    border-radius: 8px 8px 8px 8px;
-    box-shadow: -3px 3px 15px #888888;
-    color: black;
-    padding: 5px;
-    text-align: center;
-}
-
-
-#start-form {
-    text-align: center;
-}
-
-
-
-
-/*Make SVG responsive*/
-.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%; /* aspect ratio */
-    vertical-align: top;
-    overflow: hidden;
-}
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
-}
-
-
-
-
-#chartContainer {
-    position: fixed;
-    left: 0px;
-    right: 0px;
-    top: 200px;
-    bottom: 0px;
-}
-
-.shadow {
-    -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.5) );
-    filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.25) );
-}
-
-
 
 /*Prevents autofill from changing the colour of the input box to yellow*/
 @-webkit-keyframes autofill {
@@ -185,141 +35,49 @@ input:-webkit-autofill {
     -webkit-animation-fill-mode: both;
 }
 
-/*=========================================*/
-/*Drag and Drop box*/
-/*=========================================*/
-
-#fileFieldset {
-    border: none;
+.container.main {
+margin-top: 7.0em;
 }
 
-.box {
-    text-align: center;
-    width: 100%;
-    margin: 0 auto;
-    border-radius: 15px;
-    position: relative;
-    background-color: #8da7be;
-    padding: 150px 40px;
-    -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.25) );
-    filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.2) );
+/* size of the navbar items */
+.menu .container .item {
+font-size: 1.5em;
 }
 
-.box__file {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-
+/* navbar */
+.pointing.menu {
+height: 50px;
+opacity: 0.9;
 }
 
-.box__file + label {
-    font-size: 1.5em;
-    color: #57585b;
-    display: inline-block;
-    cursor: pointer;
-    -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.1) );
-    filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.1) );
+/*On the landing page, holds the centerpiece*/
+#content {
+text-align: center;
+padding-top: 25%;
+text-shadow: 0px 4px 3px rgba(0,0,0,0.3),
+0px 8px 13px rgba(0,0,0,0.1),
+0px 18px 23px rgba(0,0,0,0.1);
 }
 
-.box__file + label * {
-    pointer-events: none;
+/*div that holds the background image on the landing page*/
+#bg {
+width: 100%;
+max-width: 1920px;
+background: url("../images/Dnarrow.png") no-repeat;
+background-size: 100% 100%;
+background-position: center;
+position: absolute;
+height: 100%;
+max-height: 1080px;
+z-index: -9999;
+opacity: 0.7;
 }
 
-.box__file:focus + label,
-.box__file + label:hover {
-    /*color: #595a5d;*/
-    transform: scale(1.02);
-}
 
-.box__dragndrop,
-.box__uploading,
-.box__success,
-.box__error {
-    display: none;
-}
 
-.box.has-advanced-upload {
-    background-color: #8da7be;
-    /*outline: 2px dashed #57585b;*/
-    box-shadow: inset 0 0 30pt #57585b;
-    /*outline-offset: -10px;*/
-}
 
-.box.has-advanced-upload .box__dragndrop {
-    display: inline;
-}
 
-.box.is-dragover {
-    background-color: #8198AD;
 
-}
-
-.box.is-uploading .box__input {
-    visibility: none;
-}
-
-.box.is-uploading .box__uploading {
-    display: block;
-}
-
-.box__button.ui.button {
-    display: none;
-    background-color: #E28614;
-}
-
-.no-js .box__button {
-    display: block;
-}
-
-/*change colour of url upload button*/
-#url-upload-button {
-    background-color: #E28614;
-}
-
-#button-container {
-    position: absolute;
-    margin-left: 174px;
-    margin-top: 50px;
-}
-
-#stopUploadDiv {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 0;
-}
-
-#progressDiv {
-    margin-right: 0;
-    padding-right: 0;
-}
-
-#stopUploadButton {
-    width: 100%;
-}
-
-/*=========================================*/
-/*ANALYSIS ROUTE STYLES*/
-/*=========================================*/
-
-/*Hide text box, chart div, and start/stop buttons initially*/
-#readPathsForm {
-    display: none;
-}
-
-#startAnalysis {
-    display: none;
-}
-
-#stopAnalysis {
-    display: none;
-}
-
-#chartContainer {
-    display: none;
-}
 
 
 

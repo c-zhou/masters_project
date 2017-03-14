@@ -1,0 +1,93 @@
+
+/*Donut chart styling*/
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+polyline{
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}
+
+path.slice{
+    stroke-width:2px;
+}
+
+.legend text {
+    font-size: 0.8em;
+}
+
+.labelValue
+{
+font-size: 60%;
+opacity: .5;
+}
+
+
+.toolTip {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: absolute;
+    display: none;
+    width: auto;
+    height: auto;
+    background: none repeat scroll 0 0 white;
+    border: 0 none;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: -3px 3px 15px #888888;
+    color: black;
+    padding: 5px;
+    text-align: center;
+}
+
+
+/*Make SVG responsive*/
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+.shadow {
+    -webkit-filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.5) );
+    filter: drop-shadow( 0px 3px 3px rgba(0,0,0,.25) );
+}
+
+#chartContainer {
+position: fixed;
+left: 0px;
+right: 0px;
+top: 200px;
+bottom: 0px;
+}
+
+/*===========================================================*/
+/*Hide text box, chart div, and start/stop buttons initially*/
+#readPathsForm {
+    display: none;
+}
+
+#startAnalysis {
+    display: none;
+}
+
+#stopAnalysis {
+    display: none;
+}
+
+#chartContainer {
+    display: none;
+}
+/*===========================================================*/
