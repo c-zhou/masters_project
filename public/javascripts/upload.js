@@ -5,14 +5,22 @@ var $form        = $('.box'),
     $input       = $form.find('input[type="file"]'),
     socket,
     boxBtn       = $('.box__button'),
+    urlDiv       = $('#upload-url-elements'),
     $label       = $form.find('label'),
     stopBtn      = $('#stopUploadButton'),
     urlForm      = $('#upload-url'),
+    fileDiv      = $('#upload-file-elements'),
     progress     = $('#progress'),
     urlEntry     = $('#url-entry'),
+    fileStep     = $('#file-step'),
     fieldSet     = $('#fileFieldset'),
 	progressBar  = $('#progress__bar'),
+	completeDiv  = $('#complete-options'),
+	progressDiv  = $('#upload-progress-elements'),
+	metadataForm = $('#metadata-form'),
+	completeStep = $('#complete-step'),
 	urlUploadBtn = $('#url-upload-button'),
+	metadataStep = $('#metadata-step'),
     fileUploadXHR;
 
 // this function needs to be defined first as code below depends on it being available
@@ -28,38 +36,15 @@ var isAdvancedUpload = function() {
 
 
 // ============================================================================
-// STEP THROUGH LOGIC
+// METADATA FORM
 // ============================================================================
-var metadataForm = $('#metadata-form'),
-    progressDiv = $('#upload-progress-elements'),
-    fileDiv = $('#upload-file-elements'),
-    urlDiv = $('#upload-url-elements'),
-    completeDiv = $('#complete-options'),
-	metadataStep = $('#metadata-step'),
-	fileStep = $('#file-step'),
-	completeStep = $('#complete-step');
 
-// on page load
-	// show metadata form, hide all others
-// done in CSS
-
-// on metadata form submit
-	// show file selectors, hide all others
+// on metadata form submit, show file selectors, hide all others
 metadataForm.submit(function(e) {
-
+	e.preventDefault();
+	[metadataForm, fileDiv, urlDiv].forEach(nextView);
+	[metadataStep, fileStep].forEach(nextStep);
 });
-
-// on file upload start
-	// show progress bar, hide all others
-
-// on file upload complete
-	// show complete form, hide all others
-
-
-
-
-
-
 
 
 // ============================================================================
@@ -103,6 +88,9 @@ $form.on('submit', function(e) {
 
 	enableStopButton();
 
+	// on file upload start, show progress bar, hide all others
+	fileFormSubmit(e);
+
 	if (isAdvancedUpload()) {
 		// ajax for modern browsers
 		e.preventDefault();
@@ -128,6 +116,8 @@ $form.on('submit', function(e) {
 				boxBtn.hide();
 				enableUpload();
 				$label.html('<strong>Choose a file</strong> <span class="box__dragndrop"> or drag it here</span>.');
+				// on file upload complete, show complete form, hide all others
+				toCompleteFormView();
 			},
 			success: ajaxSuccess,
 			error: ajaxErrorHandler,
@@ -149,6 +139,7 @@ $form.on('submit', function(e) {
 			if (!data.success) console.log(data.error);
 			$form.removeAttr('target');
 			$iframe.remove();
+			toCompleteFormView();
 		});
 	}
 });
@@ -198,6 +189,9 @@ urlForm.submit(function(e) {
 	// enable stop button
 	enableStopButton();
 
+	// on file upload start, show progress bar, hide all others
+	fileFormSubmit(e);
+
 	// open socket to server to send/receive data and add listeners/emitters
 	openSocket();
 
@@ -226,6 +220,8 @@ function openSocket() {
         urlEntry.val("");
 
         enableUpload();
+	    // on file upload complete, show complete form, hide all others
+        toCompleteFormView();
     });
 
     // emitter for stop button press
@@ -311,3 +307,23 @@ var showFiles = function(files) {
 		$label.text(files[0].name)
 	}
 };
+
+function toCompleteFormView() {
+	[fileStep, completeStep].forEach(nextStep);
+	[progressDiv, completeDiv].forEach(nextView);
+	$('#complete-step .checkmark').addClass('green');
+}
+
+function nextStep(el) {
+	el.toggleClass('active').toggleClass('disabled');
+}
+
+function nextView(el) {
+	el.toggle('slow');
+}
+
+function fileFormSubmit(e) {
+	e.preventDefault();
+	[progressDiv, urlDiv, fileDiv].forEach(nextView);
+}
+
