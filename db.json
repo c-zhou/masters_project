@@ -35,5 +35,54 @@
                 "last": "hall"
             }
         }
+    },
+    {
+        "id": 1489556824076,
+        "filePaths": [
+            "ftp://ftp.sra.ebi.ac.uk/vol1/ERA412/ERA412821/oxfordnanopore_native/cowpox_the_rest.tar.gz"
+        ],
+        "data": {
+            "name": {
+                "first": "Mirandaaaaaaaaaaaaaaarrrrrrrrr",
+                "last": "Pitt"
+            },
+            "tcs": "on"
+        }
+    },
+    {
+        "id": 1489562053203,
+        "filePaths": [
+            "https://yt3.ggpht.com/-v0soe-ievYE/AAAAAAAAAAI/AAAAAAAAAAA/OixOH_h84Po/s900-c-k-no-mo-rj-c0xffffff/photo.jpg"
+        ],
+        "data": {
+            "name": {
+                "first": "michael",
+                "last": "hall"
+            }
+        }
+    },
+    {
+        "id": 1489562554796,
+        "filePaths": [
+            "/Users/m.hall/Dropbox/Documents/Streamformatics/uploads/C6-Lets-Run-Some-Javascript.zip"
+        ],
+        "data": {
+            "name": {
+                "first": "michael",
+                "last": "hall"
+            }
+        }
+    },
+    {
+        "id": 1489562566141,
+        "filePaths": [
+            "https://yt3.ggpht.com/-v0soe-ievYE/AAAAAAAAAAI/AAAAAAAAAAA/OixOH_h84Po/s900-c-k-no-mo-rj-c0xffffff/photo.jpg"
+        ],
+        "data": {
+            "name": {
+                "first": "michael",
+                "last": "hall"
+            }
+        }
     }
 ]

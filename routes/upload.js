@@ -13,7 +13,7 @@ var io         = require('../app.js'),
 
 const path        = require('path'),
 	  spawn       = require('child_process').spawn,
-      UPLOAD_DIR  = path.join(__dirname, "../uploads/");
+      UPLOAD_DIR  = path.join(__dirname, "../../uploads/");
 
 // GET upload page
 router.get("/", function(req, res){

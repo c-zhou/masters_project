@@ -11,7 +11,7 @@ var io       = require('../app.js'),
 
 const spawn = require('child_process').spawn;
 const assert = require('assert');
-const SCRIPT_DIR = path.join(__dirname, '../public/data/japsaTesting/');
+const SCRIPT_DIR = path.join(__dirname, '../public/scripts/');
 
 
 /* GET analysis page. */
