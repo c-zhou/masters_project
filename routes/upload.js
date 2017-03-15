@@ -1,9 +1,9 @@
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
     qs         = require('qs'), // package to parse serialized form data
+    db         = require('../db.json'),
     url        = require('url'),
     http       = require('http'),
-    path       = require('path'),
     kill       = require('tree-kill'),
     express    = require('express'),
     router     = express.Router(),
@@ -11,10 +11,9 @@ var io         = require('../app.js'),
     Metadata   = require('../models/metadata'); // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
 
-const spawn       = require('child_process').spawn,
+const path        = require('path'),
+	  spawn       = require('child_process').spawn,
       UPLOAD_DIR  = path.join(__dirname, "../uploads/");
-
-jsonfile.spaces = 4; // setup format for writing json
 
 // GET upload page
 router.get("/", function(req, res){
@@ -186,13 +185,17 @@ function uploadLocalFile(req, res){
     // once all the files have been uploaded, send a response to the client
     form.on('end', function () {
     	console.log("File upload ended");
-    	var md = new Metadata(filePaths, data);
-    	console.log(md);
-    	var mdFileName = path.join(form.uploadDir, 'sampleID_' + md.id) + '.json';
-    	jsonfile.writeFileSync(mdFileName, md);
+    	writeMetadataEntry(filePaths, data);
         res.end("success");
     });
 
     // parse the incoming request containing the form data
     form.parse(req);
+}
+
+function writeMetadataEntry(filePaths, data) {
+	var md = new Metadata(filePaths, data);
+	db.push(md);
+	var mdPath = path.join(path.dirname(require.main.filename), 'db.json');
+	jsonfile.writeFileSync(mdPath, db, { spaces: 4 });
 }

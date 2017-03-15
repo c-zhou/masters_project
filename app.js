@@ -27,21 +27,6 @@ var io = require('socket.io')(server);
 module.exports = io;
 
 
-
-
-
-
-// io.on('connection', function(socket){
-//
-// 	// allows for accessing the socket within the req of a route
-// 	app.set('socketio', socket);
-//
-// 	socket.on('love', function(message){
-// 		console.log(message);
-// 	})
-// });
-
-
 // Listen on provided port, on all network interfaces.
 server.listen(port, function(){
 	console.log("Listening on port " + port);

@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1489535746535,
+        "filePaths": [
+            "/Users/m.hall/Dropbox/Documents/Streamformatics/CoinLab_Streamformatics/uploads/C6-Lets-Run-Some-Javascript.zip"
+        ],
+        "data": {
+            "name": {
+                "first": "michael",
+                "last": "hall"
+            },
+            "tcs": "on"
+        }
+    },
+    {
+        "id": 1489535779761,
+        "filePaths": [
+            "/Users/m.hall/Dropbox/Documents/Streamformatics/CoinLab_Streamformatics/uploads/CP000647.fasta"
+        ],
+        "data": {
+            "name": {
+                "first": "michael",
+                "last": "hall"
+            }
+        }
+    }
+]
