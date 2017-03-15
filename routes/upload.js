@@ -33,9 +33,9 @@ router.post("/", function(req, res){
 // websocket to handle upload by URL request
 io.of('/upload').on('connection', function(socket){
 	// this event contains the path the user entered for where their reads are located
-	socket.on('urls', function(data) {
-		var urls = data.urls;
-		downloadFilecURL(socket, urls, function(err) {
+	socket.on('formData', function(data) {
+		data.metadata = qs.parse(data.metadata); // parse the serialised metadata
+		downloadFilecURL(socket, data, function(err) {
 			if (err) {
 				console.log(err);
 			}
@@ -51,13 +51,13 @@ module.exports = router;
 
 // TODO add these functions into a middleware folder
 
-function downloadFilecURL(socket, urls, cb){
+function downloadFilecURL(socket, data, cb){
 	var curlArgs  = ['-#'],
         prevChunk = 0;
 
-	urls.forEach(function(item) {
+	data.urls.forEach(function(item) {
 		// extract filename
-		var fileName = UPLOAD_DIR + url.parse(item).pathname.split("/").pop();
+		var fileName = UPLOAD_DIR + path.basename(item);
 
 		// add url to scriptArgs
 		curlArgs.push('-o', fileName, item);
@@ -72,10 +72,11 @@ function downloadFilecURL(socket, urls, cb){
 
 	curl.stderr.setEncoding('utf8');
 
-	// add an end event listener
+	// when there is no more data to be consumed from the stream
 	curl.stdout.on('end', function(){
 		console.log("download complete");
 		socket.emit('downloadComplete');
+		writeMetadataEntry(data.urls, data.metadata);
 		prevChunk = 0;
 	});
 

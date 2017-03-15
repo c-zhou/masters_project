@@ -182,7 +182,10 @@ stopBtn.click(function(e) {
 urlForm.submit(function(e) {
     e.preventDefault();
 
-    var data = { urls: [] };
+    var data = {
+    	urls: [],
+	    metadata: metadataForm.serialize()
+    };
 
 	disableUpload();
 
@@ -202,7 +205,7 @@ urlForm.submit(function(e) {
     data.urls.push(urlEntry.val());
 
 	// send the data to the server using the 'urls' event
-	socket.emit('urls', data);
+	socket.emit('formData', data);
 
 });
 
