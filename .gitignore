@@ -16,3 +16,4 @@ public/data/japsaTesting/testZika/*
 public/data/virusDB/*
 public/data/japsaTesting/zika_library2_12plex/*
 uploads/*
+server-pull.sh
