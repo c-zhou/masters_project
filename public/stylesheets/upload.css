@@ -80,6 +80,12 @@ background-color: #E28614;
 display: block;
 }
 
+/*metadata form - hide induction fields initially*/
+.ui.form .fields.reveal-if-induction {
+    display: none;
+}
+
+
 /*change colour of url upload button*/
 #url-upload-button {
 background-color: #E28614;

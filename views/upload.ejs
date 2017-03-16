@@ -30,13 +30,17 @@
             </div>
         </div>
 
-        <div class="row" id="metadata-elements">
+        <!--===============================================================-->
         <!--METADATA FORM-->
+        <div class="row" id="metadata-elements">
             <div class="sixteen wide column">
                 <form class="ui form" id="metadata-form">
                     <div class="field ui right labeled input">
-                        <div class="ui label">MIC</div>
-                        <input type="text" name="mic" placeholder="Concentration">
+                        <div class="ui label" data-tooltip="Minimum Inhibitory Concentration">
+                            MIC
+                        </div>
+                        <input type="number" min="0" max="512" step="0.125" name="mic"
+                               placeholder="Concentration">
                         <div class="ui basic label">&mu;g/mL</div>
                     </div>
                     <div class="field">
@@ -45,14 +49,53 @@
                     </div>
                     <div class="field">
                         <div class="ui checkbox">
-                            <input type="checkbox" tabindex="0" name="tcs">
-                            <label>I agree to the Terms and Conditions</label>
+                            <input onclick="showInduction(this)" type="checkbox" tabindex="0"
+                                   name="induction[]" id="induction">
+                            <label for="induction[]">Induction Study</label>
                         </div>
                     </div>
-                    <button class="ui button" type="submit">Submit</button>
+
+
+                    <!--Induction study options-->
+                    <div class="three fields reveal-if-induction">
+                        <div class="field ui right labeled input">
+                            <input type="number" min="0" max="30" step="1" placeholder="Timepoint"
+                            name="induction[timepoint]">
+                            <div class="ui basic label">days</div>
+                        </div>
+                        <div class="field ui left corner labeled input">
+                            <!--Corner labels with tooltips need to be in a span-->
+                            <span data-tooltip="Drug used for induction experiment">
+                                <div class="ui left corner label">
+                                    <i class="help icon"></i>
+                                </div>
+                            </span>
+                            <input type="text" placeholder="Drug Name"
+                                   name="induction[drug]">
+                        </div>
+
+                        <div class="field ui right labeled left corner labeled input">
+                            <span data-tooltip="Concentration of drug used for induction experiment">
+                                <div class="ui left corner label">
+                                    <i class="help icon"></i>
+                                </div>
+                            </span>
+                            <input type="number" min="0" max="1000" step="0.125"
+                                   placeholder="Concentration" name="induction[concentration]">
+                            <div class="ui basic label">&mu;g/mL</div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="field">
+                        <button class="ui button" type="submit">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>
+        <!--===============================================================-->
 
         <div class="row" id="upload-progress-elements">
             <!--PROGRESS BAR-->

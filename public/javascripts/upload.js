@@ -39,7 +39,9 @@ var isAdvancedUpload = function() {
 // METADATA FORM
 // ============================================================================
 
-var metadata;
+var inductionElements = $('.reveal-if-induction'),
+	metadata;
+
 
 // on metadata form submit, show file selectors, hide all others
 metadataForm.submit(function(e) {
@@ -48,6 +50,24 @@ metadataForm.submit(function(e) {
 	[metadataStep, fileStep].forEach(nextStep);
 });
 
+// $(document).ready(showInduction($('#induction')));
+
+function showInduction(checkbox){
+	if (checkbox.checked) {
+		inductionElements.fadeIn();
+		// jquery default is block which messes up the semantic ui form
+		inductionElements.css('display', 'flex');
+	} else {
+		inductionElements.fadeOut();
+		// TODO - remove values from fields
+
+	}
+}
+
+// $('#induction').change(function(e) {
+// 	console.log(this.checked);
+// 	inductionElements[this.checked ? 'show' : 'hide']();
+// });
 
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX
