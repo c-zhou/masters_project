@@ -1,3 +1,7 @@
+const path        = require('path'),
+      spawn       = require('child_process').spawn,
+      UPLOAD_DIR  = path.join(__dirname, "../../uploads/");
+
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
     qs         = require('qs'), // package to parse serialized form data
@@ -10,10 +14,6 @@ var io         = require('../app.js'),
     jsonfile   = require('jsonfile'),
     Metadata   = require('../models/metadata'); // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
-
-const path        = require('path'),
-	  spawn       = require('child_process').spawn,
-      UPLOAD_DIR  = path.join(__dirname, "../../uploads/");
 
 // GET upload page
 router.get("/", function(req, res){
