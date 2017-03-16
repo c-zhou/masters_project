@@ -1,7 +1,7 @@
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
     qs         = require('qs'), // package to parse serialized form data
-    db         = require('../db.json'),
+    db         = require(path.join(path.dirname(require.main.filename), '../db.json')),
     url        = require('url'),
     http       = require('http'),
     kill       = require('tree-kill'),
@@ -197,6 +197,6 @@ function uploadLocalFile(req, res){
 function writeMetadataEntry(filePaths, data) {
 	var md = new Metadata(filePaths, data);
 	db.push(md);
-	var mdPath = path.join(path.dirname(require.main.filename), 'db.json');
+	var mdPath = path.join(path.dirname(require.main.filename), '../db.json');
 	jsonfile.writeFileSync(mdPath, db, { spaces: 4 });
 }
