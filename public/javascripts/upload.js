@@ -35,17 +35,7 @@ var isAdvancedUpload = function() {
 		'FileReader' in window;
 };
 
-$.ajax({
-	url: '/upload/json',
-	method: 'GET',
-	success: function(res) {
-		console.log(res);
-		var json = $.parseJSON(res);
-		console.log(json);
-	}
-});
 
-// console.log(json);
 
 // ============================================================================
 // METADATA FORM

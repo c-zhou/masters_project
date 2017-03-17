@@ -13,20 +13,11 @@ var io         = require('../app.js'),
     router     = express.Router(),
     jsonfile   = require('jsonfile'),
     Metadata   = require('../models/metadata'), // constructor for database object
-    formidable = require('formidable'), // parses incoming form data (uploaded files)
-    speciesList = require('../middleware/speciesNamesParse')();
+    formidable = require('formidable'); // parses incoming form data (uploaded files)
 
 // GET upload page
 router.get("/", function(req, res){
 	res.render("upload");
-});
-
-router.get('/json', function(req, res) {
-	jsonfile.readFile('../../organism_info.json', function(err, d) {
-		if (err) { console.log(err);}
-		console.log(d);
-		res.send(d);
-	})
 });
 
 // POST uploading file
