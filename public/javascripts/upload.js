@@ -65,10 +65,6 @@ function showInduction(checkbox){
 	}
 }
 
-// $('#induction').change(function(e) {
-// 	console.log(this.checked);
-// 	inductionElements[this.checked ? 'show' : 'hide']();
-// });
 
 // ============================================================================
 // UPLOAD LOCAL FILE FORM LOGIC AND DRAG AND DROP BOX

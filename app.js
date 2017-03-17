@@ -50,10 +50,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // require routes
-var index = require('./routes/index');
-var about = require('./routes/about');
-var upload = require('./routes/upload');
-var analysis = require('./routes/analysis');
+var index = require('./routes/index'),
+    about = require('./routes/about'),
+    upload = require('./routes/upload'),
+    analysis = require('./routes/analysis'),
+	dashboard = require('./routes/dashboard');
 
 
 // use routes
@@ -61,6 +62,7 @@ app.use('/', index);
 app.use('/about', about);
 app.use('/upload', upload);
 app.use('/analysis', analysis);
+app.use('/dashboard', dashboard);
 
 
 // catch 404 and forward to error handler

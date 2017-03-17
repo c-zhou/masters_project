@@ -116,6 +116,10 @@ margin-top: 50px;
     width: 100%;
 }
 
+#complete-options {
+    text-align: center;
+}
+
 /*============================================================================*/
 /*on page load, show metadata form, hide all others*/
 #upload-progress-elements,

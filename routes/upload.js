@@ -12,7 +12,7 @@ var io         = require('../app.js'),
     express    = require('express'),
     router     = express.Router(),
     jsonfile   = require('jsonfile'),
-    Metadata   = require('../models/metadata'); // constructor for database object
+    Metadata   = require('../models/metadata'), // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
 
 // GET upload page
