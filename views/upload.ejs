@@ -1,6 +1,5 @@
 <% include ./partials/header %>
 
-
 <div class="ui main text container">
     <div class="ui grid">
 
@@ -44,8 +43,19 @@
                         <div class="ui basic label">&mu;g/mL</div>
                     </div>
                     <div class="field">
-                        <label>Last Name</label>
-                        <input type="text" name="name[last]" placeholder="Last Name">
+                        <label>Organism Name</label>
+                        <input type="text" name="orgName" placeholder="Organism Name"
+                        list="speciesNames" class="ui search">
+                        <datalist id="speciesNames">
+                            <option value="test">
+                        </datalist>
+                    </div>
+                    <div class="ui search">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" placeholder="Search countries...">
+                            <i class="search icon"></i>
+                        </div>
+                        <div class="results"></div>
                     </div>
                     <div class="field">
                         <div class="ui checkbox">
