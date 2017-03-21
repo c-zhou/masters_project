@@ -1,7 +1,49 @@
-<% include ./partials/header %>
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
+    <meta charset="UTF-8">
+    <title>Streamformatics</title>
+    <script src="/javascripts/jquery-3.1.1.min.js"></script>
+    <script src="/javascripts/d3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/dashboard.css" type="text/css">
+    <script src="/semantic/dist/semantic.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
 
-<h1>Dashboard</h1>
+</head>
+<body>
+<div class="ui pointing menu">
+    <div class="ui container">
+        <a href="/" class="item">Home</a>
+        <a href="/about" class="item">About</a>
+        <a href="/analysis" class="item">Streamformatics</a>
+        <a href="/upload" class="item">MicroManage</a>
+    </div>
+</div>
+
+
+<script>
+    // script to control which tab is active
+    var path = window.location.pathname.split("/").pop();
+    $('.pointing.menu .item').each(function(i, obj){
+        var href = obj.href.split("/").pop();
+        if (href === path){
+            $(this).addClass("active");
+        }
+    });
+</script>
+
+
+
+
+
+
+
+<script type="text/javascript" src="/javascripts/dashboard.js"></script>
+
 
 
 
