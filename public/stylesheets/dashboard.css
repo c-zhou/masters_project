@@ -1,31 +1,49 @@
-svg {
-    font: 10px sans-serif;
+/*============================================================================*/
+/* provides the properties for the node rectangles. It changes the icon for the cursor, when it
+moves over the rectangle, to one that looks like it will move the rectangle ( a range of diff.
+icons can be found at http://www.echoecho.com/csscursors.htm), sets the fill colour to mostly
+opaque and keeps the edges sharp. */
+.node rect {
+    cursor: move;
+    fill-opacity: .9;
+    shape-rendering: auto;
 }
+/*============================================================================*/
 
-.background path {
-    fill: none;
-    stroke: #ddd;
-    shape-rendering: crispEdges;
+/*============================================================================*/
+/* sets the properties for the text at each node. The mouse is told to essentially ignore the text
+ in favour of anything that's under it (in the case of moving or highlighting something else) and a
+ slight shadow is applied for readability. */
+.node text {
+    pointer-events: none;
+    text-shadow: 0 1px 0 #fff;
 }
+/*============================================================================*/
 
-.foreground path {
-    fill: none;
-    stroke: steelblue;
-}
-
-.brush .extent {
-    fill-opacity: .3;
-    stroke: #fff;
-    shape-rendering: crispEdges;
-}
-
-.axis line,
-.axis path {
+/*============================================================================*/
+/* makes sure the link has no fill (it actually appears to be a bendy rectangle with very thick
+ edges that make the element appear to be a solid block), colours the edges black and makes the
+ edges almost transparent. */
+.link {
     fill: none;
     stroke: #000;
-    shape-rendering: crispEdges;
+    stroke-opacity: .2;
 }
+/*============================================================================*/
 
-.axis text {
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+/*============================================================================*/
+/* changes the opacity of the link when the mouse goes over it so that it's more visible. If
+desired, could change the colour of the highlighted link by adding in a line to this block
+changing the colour like: stroke: red, */
+.link:hover {
+    stroke-opacity: .5;
 }
+/*============================================================================*/
+
+/*============================================================================*/
+/* styling for the legend text. make the font bold and change the font type*/
+.legend text {
+    font-weight: 700;
+    font-family: 'Roboto', sans-serif;
+}
+/*============================================================================*/

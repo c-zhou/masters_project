@@ -5,12 +5,17 @@
     <meta charset="UTF-8">
     <title>Streamformatics</title>
     <script src="/javascripts/jquery-3.1.1.min.js"></script>
-    <script src="/javascripts/d3.min.js"></script>
+    <!--<script src="/javascripts/d3.min.js"></script>-->
+    <!--tell d3.js to use the sankey plug-in-->
+    <!--<script src="https://unpkg.com/d3-sankey@0"></script>-->
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
     <link rel="stylesheet" href="/stylesheets/dashboard.css" type="text/css">
     <script src="/semantic/dist/semantic.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+
+    <!--Runs all of the plotting-->
+    <script type="text/javascript" src="/javascripts/dashboard.js"></script>
 
 
 </head>
@@ -25,27 +30,31 @@
 </div>
 
 
-<script>
-    // script to control which tab is active
-    var path = window.location.pathname.split("/").pop();
-    $('.pointing.menu .item').each(function(i, obj){
-        var href = obj.href.split("/").pop();
-        if (href === path){
-            $(this).addClass("active");
-        }
-    });
-</script>
+
+<!--<div id="chart"></div>-->
 
 
+<%- getSankeyDiagram(fixtureData) %>
 
+<!--<script>-->
+	<!--// load the data-->
+<!--//	d3.tsv('/data/sankey.tsv', parseMSA, function(error, data) {-->
+<!--//-->
+<!--//		if (error) console.log(error);-->
+<!--//-->
+		<!--var chart = sankeyDiagram().width(700 * 1.5)-->
+			<!--.height(300 * 2)-->
+			<!--.nodeWidth(20)-->
+			<!--.nodePadding(20)-->
+			<!--.legendRectSize(25);-->
 
+		<!--d3.select('#chart')-->
+			<!--.data(data)-->
+			<!--.call(chart);-->
+<!--//-->
+<!--//	});-->
 
-
-
-<script type="text/javascript" src="/javascripts/dashboard.js"></script>
-
-
-
+<!--</script>-->
 
 
 <% include ./partials/footer %>

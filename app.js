@@ -25,7 +25,12 @@ var io = require('socket.io')(server);
 
 // export io object so it can be used in the analysis route
 module.exports = io;
+// var d3 = require('d3');
+// var sankey = require('d3-sankey');
+// d3.sankey = sankey;
+// console.log(d3.sankey.nodeWidth());
 
+app.locals.getSankeyDiagram = require('./middleware/sankeyHelper.js');
 
 // Listen on provided port, on all network interfaces.
 server.listen(port, function(){
