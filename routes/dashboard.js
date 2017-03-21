@@ -47,8 +47,9 @@ function graphParser(data) {
 				// push the link for the current base into graph
 				graph.links.push({
 					"source": currentBase + position,
-					"target": bases[position + 1] + position + 1,
-					"sampleID": data.sampleID[index]
+					"target": bases[position + 1] + (position + 1),
+					"sampleID": data.sampleID[index],
+					"value": 1
 				});
 			}
 		});

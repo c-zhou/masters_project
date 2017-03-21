@@ -6,7 +6,8 @@ var sankey = require('d3-sankey').sankey();
 
 var sankeyDiagram = module.exports = function() {
     // default values if none are given on diagram construction
-    var width        = 700,
+    var data,
+	    width        = 700,
         height       = 400,
         units        = "Widgets",
         margin       = {top: 10, right: 10, bottom: 10, left: 10},
@@ -27,13 +28,7 @@ var sankeyDiagram = module.exports = function() {
         color        = d3.scaleOrdinal(d3.schemeCategory20);
 
     function chart(selection){
-        console.log(selection);
-        // var data = selection.enter().data();
-        var graph = selection.enter().data();
-
-        console.log("Graph variable inside chart(): ");
-        console.log(graph);
-        // var graph = seqToGraph(data);
+        var graph = data;
 
         // append the svg object to the body of the page
         var svg = selection.append('svg')
@@ -43,7 +38,6 @@ var sankeyDiagram = module.exports = function() {
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         // set the sankey diagram properties
-        // var sankey = sankey();
         sankey.nodeWidth(nodeWidth)
             .nodePadding(nodePadding) // padding between nodes
             .size([width - legendRectSize * 2.5, height]); // size of the sankey diagram
@@ -65,14 +59,11 @@ var sankeyDiagram = module.exports = function() {
             .attr('class', 'link')
             .attr('d', path)
             // we set the stroke-width to the value associated with each link or 1. Whichever is larger
-            .style('stroke-width', function (d) {
-                return Math.max(1, d.dy);
-            })
+            .style('stroke-width', function (d) { return Math.max(1, d.dy); })
             // this makes sure the link for which the target has the highest y coordinate departs first
             // first out of the rectangle. This basically means there is minimal crossover of flows
-            .sort(function (a, b) {
-                return b.dy - a.dy;
-            });
+            .sort(function (a, b) { return b.dy - a.dy; });
+
 
         // ADD THE LINK TITLES - this appends a text element to each link when moused over that
         // contains the source and target name (with a neat arrow in between), which when applied to
@@ -102,9 +93,7 @@ var sankeyDiagram = module.exports = function() {
 
         // add the rectangles for the nodes.
         node.append('rect')
-            .attr('height', function (d) {
-                return d.dy;
-            })
+            .attr('height', function (d) { return d.dy; })
             .attr('width', sankey.nodeWidth())
             .attr('rx', rectCornerRadius)
             .attr('ry', rectCornerRadius)
@@ -181,6 +170,12 @@ var sankeyDiagram = module.exports = function() {
     }
 
     // GETTERS AND SETTERS
+	chart.data = function(_) {
+    	if (!arguments.length) return data;
+    	data = _;
+    	return chart;
+	};
+
     chart.width = function(_) {
         if (!arguments.length) return width;
         width = _ - margin.left - margin.right;

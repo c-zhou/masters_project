@@ -6,11 +6,8 @@ var d3 = require('d3'),
     sankeyDiagram = require('../middleware/sankeyDiagram');
 
 var getSankeyDiagram = function(params) {
-
-    // console.log("Graph variable inside getSankeyDiagram(): ");
-    // console.log(params.data);
-
     var chart = sankeyDiagram()
+	    .data(params.data)
         .width(700 * 1.5)
         .height(300 * 2)
         .nodeWidth(20)
@@ -18,10 +15,8 @@ var getSankeyDiagram = function(params) {
         .legendRectSize(25);
 
 	d3.select(doc.body)
-		.enter().data(params.data)
 		.append('div')
 		.attr('id', params.containerId)
-
 		.call(chart);
 
     var svg = d3.select(doc.getElementById(params.containerId))
