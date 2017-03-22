@@ -54,10 +54,11 @@ function sankeyDiagram() {
 		var link = svg.append('g').selectAll('.link')
 		  .data(graph.links)
 		  .enter().append('path')
-			.attr('class', 'link')
+			.attr('class', function(d) { return (d.sampleID === 'ref' ? 'link ref' : 'link'); })
 			.attr('d', path)
 			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
 			.style('stroke-width', function (d) { return Math.max(1, d.dy); })
+			.on('dblclick', dblClickLink) // highlight sample on link double-click
 			// this makes sure the link for which the target has the highest y coordinate departs first
 			// first out of the rectangle. This basically means there is minimal crossover of flows
 			.sort(function (a, b) { return b.dy - a.dy; });
@@ -164,6 +165,16 @@ function sankeyDiagram() {
 			// these two lines allow translation in the y axis while maintaining the link
 			sankey.relayout();
 			link.attr('d', path);
+		}
+
+		// this function is run when a link is double-clicked. this will highlight all links
+		// for that sample so that you can trace it through the diagram
+		function dblClickLink(d, i) {
+			var id = d.sampleID;
+			d3.selectAll('.link')
+				.classed('activeLink', function(d) { // gives class activeLink based on return val
+					return (d.sampleID === id); // returns true or false
+				});
 		}
 	}
 

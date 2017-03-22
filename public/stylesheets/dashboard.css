@@ -1,10 +1,9 @@
 /*============================================================================*/
 /* provides the properties for the node rectangles. It changes the icon for the cursor, when it
-moves over the rectangle, to one that looks like it will move the rectangle ( a range of diff.
-icons can be found at http://www.echoecho.com/csscursors.htm), sets the fill colour to mostly
-opaque and keeps the edges sharp. */
+moves over the rectangle, to one that looks like it will move the rectangle up and down,
+sets the fill colour to mostly opaque and keeps the edges sharp. */
 .node rect {
-    cursor: move;
+    cursor: ns-resize;
     fill-opacity: .9;
     shape-rendering: auto;
 }
@@ -37,6 +36,20 @@ desired, could change the colour of the highlighted link by adding in a line to 
 changing the colour like: stroke: red, */
 .link:hover {
     stroke-opacity: .5;
+    /*stroke: yellow;*/
+}
+/*============================================================================*/
+
+/*============================================================================*/
+/* styling for the reference sequence link.*/
+.link.ref {
+    fill: none;
+    stroke-opacity: 0.7;
+    stroke: green;
+}
+
+.link.ref:hover {
+    stroke-opacity: 1;
 }
 /*============================================================================*/
 
@@ -47,3 +60,8 @@ changing the colour like: stroke: red, */
     font-family: 'Roboto', sans-serif;
 }
 /*============================================================================*/
+
+.activeLink {
+    stroke: yellow;
+    stroke-opacity: 0.7;
+}
