@@ -1,58 +1,59 @@
 
-
+// resuable function for creating a sankey diagram
 function sankeyDiagram() {
 	// default values if none are given on diagram construction
 	var graph,
-	    width        = 700,
-	    height       = 400,
-	    units        = "Widgets",
-	    margin       = {top: 10, right: 10, bottom: 10, left: 10},
-	    darker       = 2,
-	    nodeWidth    = 36,
-	    nodeLabels   = false,
-	    nodePadding  = 40,
-	    numberFormat = ',.0f', // zero decimal places
-	    sankeyLayout = 32,
+	    width            = 700,
+	    height           = 400,
+	    units            = "Widgets",
+	    margin           = {top: 10, right: 10, bottom: 10, left: 10},
+	    darker           = 2, // number of shades darker when hovering mouse on link
+	    nodeWidth        = 36,
+	    nodeLabels       = false, // if set to true use node labels instead of legend
+	    nodePadding      = 40,
+	    numberFormat     = ',.0f', // zero decimal places
+	    sankeyLayout     = 50,
 	    rectCornerRadius = 3, // round corners on the node rectangles
-	    legendRectSize = 18,
-	    legendSpacing = 4,
-	    formatNumber = d3.format(numberFormat),
-	    // this function will return a given number formatted by formatNumber and then with our
-	    // units ('Widgets') added to the end
-	    format       = function(d) { return formatNumber(d) + ' ' + units; },
-	    // accesss to a predefined colour-scheme
-	    color        = d3.scaleOrdinal(d3.schemeCategory20);
+	    legendRectSize   = 18, // size of the legend colour squares
+	    legendSpacing    = 4, // spacing between legend squares
+	    formatNumber     = d3.format(numberFormat);
 
+	// this function will return a given number formatted by formatNumber and then with our
+	// units ('Widgets') added to the end
+	var format           = function(d) { return formatNumber(d) + ' ' + units; };
 
+	// accesss to a predefined colour-scheme
+	var color            = d3.scaleOrdinal(d3.schemeCategory20);
+
+	// selection will be the DOM element for current iteration of call(chart)
 	function chart(selection){
-		// append the svg object to the body of the page
+		// append the svg object to the selection
 		var svg = selection.append('svg')
 			.attr('width', width + margin.left + margin.right)
 			.attr('height', height + margin.top + margin.bottom)
-			.append('g')
+		  .append('g')
 			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 		// set the sankey diagram properties
-		var sankey = d3.sankey().nodeWidth(nodeWidth)
-			.nodePadding(nodePadding) // padding between nodes
-			.size([width - legendRectSize * 2.5, height]); // size of the sankey diagram
+		var sankey = d3.sankey()
+			.nodeWidth(nodeWidth)
+			.nodePadding(nodePadding)
+			.size([width - legendRectSize * 2.5, height]); // size of the sankey diagram.
 
 		// defines the path variable as a pointer to the sankey function that makes the links between
 		// the nodes do their clever thing of bending into the right places. This function is defined in
 		// the sankey d3 plug-in
 		var path = sankey.link();
 
-		console.log(graph);
-
 		sankey
-			.nodes(graph.nodes) // nodes are defined within the structure of the json file
-			.links(graph.links) // links are defined within the structure of the json file
-			.layout(sankeyLayout); // not sure what this is. maybe play around with it
+			.nodes(graph.nodes) // data to use as the nodes
+			.links(graph.links) // data to use as the links
+			.layout(sankeyLayout); // num. iterations to compute node positioning
 
 		// add in the links
 		var link = svg.append('g').selectAll('.link')
-			.data(graph.links)
-			.enter().append('path')
+		  .data(graph.links)
+		  .enter().append('path')
 			.attr('class', 'link')
 			.attr('d', path)
 			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
@@ -73,8 +74,8 @@ function sankeyDiagram() {
 
 		// add in the nodes
 		var node = svg.append('g').selectAll('.node')
-			.data(graph.nodes)
-			.enter().append('g')
+		  .data(graph.nodes)
+		  .enter().append('g')
 			.attr('class', 'node')
 			.attr('transform', function (d) {
 				return 'translate(' + d.x + ',' + d.y + ')';
@@ -102,7 +103,7 @@ function sankeyDiagram() {
 			.style('stroke', function (d) {
 				return d3.rgb(d.color).darker(darker);
 			})
-			.append('title')
+		  .append('title')
 			.text(function (d) {
 				return d.name + '\n' + format(d.value);
 			});
@@ -130,8 +131,8 @@ function sankeyDiagram() {
 		} else {
 			// add legend if labels are not required
 			var legend = svg.selectAll('.legend')
-				.data(color.domain()).enter()
-				.append('g')
+			  .data(color.domain())
+			  .enter().append('g')
 				.attr('class', 'legend')
 				.attr('transform', function(d, i) {
 					var height = legendRectSize + legendSpacing,
@@ -259,22 +260,3 @@ function sankeyDiagram() {
 	};
 	return chart;
 }
-
-//
-// function getSankeyDiagram(params) {
-//
-// 	var chart = sankeyDiagram()
-// 		.width(700 * 1.5)
-// 		.height(300 * 2)
-// 		.nodeWidth(20)
-// 		.nodePadding(20)
-// 		.legendRectSize(25);
-//
-// 	d3.select('#' + params.containerId)
-// 		.data(params.data)
-// 		.call(chart);
-// }
-
-
-
-// getSankeyDiagram(data);

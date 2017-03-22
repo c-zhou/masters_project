@@ -23,12 +23,12 @@ function graphParser(data) {
 			// create a node for the current position as the base and position concatenated
 			graph.nodes.push(currentBase + position);
 			if (position < currentSeq.length - 1) {
-				// push the link for the current base into graph
+				// push the link for current base -> next base into graph
 				graph.links.push({
 					"source": currentBase + position,
 					"target": bases[position + 1] + (position + 1),
 					"sampleID": data.sampleID[index],
-					"value": 1
+					"value": 1 // controls how thick link is. keep all at 1
 				});
 			}
 		});
@@ -49,7 +49,7 @@ function graphParser(data) {
 	// loop through each node to make nodes an array of objects rather than an array of strings
 	// before this operation graph.nodes was just the node names as an array of strings.
 	graph.nodes.forEach(function (d, i) {
-		graph.nodes[i] = {"name": d.slice(0, 1)};
+		graph.nodes[i] = {"name": d.slice(0, 1)}; // remove position number from name
 	});
 
 	return graph;
@@ -66,9 +66,10 @@ function tsvParser(fileName, callback) {
 	      });
 
 	var data = {},
-	    keys,
-	    lines = 0;
+	    keys, // allows for keeping track of column names
+	    lines = 0; // track line numbers for determining head etc.
 
+	// reading file one line at a time
 	rl.on('line', function(line) {
 		var row = line.split('\t');
 		if (lines === 0) { // headers/keys

@@ -1,36 +1,16 @@
-<!DOCTYPE html>
-<html lang="en" class="no-js">
-<head>
-    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
-    <meta charset="UTF-8">
-    <title>Streamformatics</title>
-    <script src="/javascripts/jquery-3.1.1.min.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <!--tell d3.js to use the sankey plug-in-->
+<% include ./partials/header %>
+
+<!--tell d3.js to use the sankey plug-in-->
     <script src="https://unpkg.com/d3-sankey@0"></script>
-    <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
-    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
     <link rel="stylesheet" href="/stylesheets/dashboard.css" type="text/css">
-    <script src="/semantic/dist/semantic.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-
     <script>
-        var params = <%- fixtureData %>
+        // grabs the data being sent from the server and stores it in params
+        var diagramData = <%- fixtureData %>
     </script>
-
-    <!--Runs all of the plotting-->
+    <!--Set up all of the plotting-->
     <script type="text/javascript" src="/javascripts/dashboard.js"></script>
 
-</head>
-<body>
-<div class="ui pointing menu">
-    <div class="ui container">
-        <a href="/" class="item">Home</a>
-        <a href="/about" class="item">About</a>
-        <a href="/analysis" class="item">Streamformatics</a>
-        <a href="/upload" class="item">MicroManage</a>
-    </div>
-</div>
+<% include ./partials/navbar %>
 
 
 <div id="chart"></div>
@@ -38,17 +18,18 @@
 
 
 <script>
-
+    // set up the sankey diagram
     var chart = sankeyDiagram()
-        .data(params.data)
+        .data(diagramData)
         .width(700 * 1.5)
-        .height(300 * 2)
+        .height(350 * 2)
         .nodeWidth(20)
         .nodePadding(20)
         .legendRectSize(25);
 
+    // run the chart on the div
     d3.select('#chart')
-//        .enter().data(params.data)
         .call(chart);
 </script>
+
 <% include ./partials/footer %>
