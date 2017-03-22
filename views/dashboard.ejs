@@ -5,18 +5,21 @@
     <meta charset="UTF-8">
     <title>Streamformatics</title>
     <script src="/javascripts/jquery-3.1.1.min.js"></script>
-    <!--<script src="/javascripts/d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <!--tell d3.js to use the sankey plug-in-->
-    <!--<script src="https://unpkg.com/d3-sankey@0"></script>-->
+    <script src="https://unpkg.com/d3-sankey@0"></script>
     <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
     <link rel="stylesheet" href="/stylesheets/dashboard.css" type="text/css">
     <script src="/semantic/dist/semantic.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
+    <script>
+        var params = <%- fixtureData %>
+    </script>
+
     <!--Runs all of the plotting-->
     <script type="text/javascript" src="/javascripts/dashboard.js"></script>
-
 
 </head>
 <body>
@@ -30,11 +33,22 @@
 </div>
 
 
-<%- getSankeyDiagram(fixtureData) %>
+<div id="chart"></div>
+
 
 
 <script>
 
-</script>
+    var chart = sankeyDiagram()
+        .data(params.data)
+        .width(700 * 1.5)
+        .height(300 * 2)
+        .nodeWidth(20)
+        .nodePadding(20)
+        .legendRectSize(25);
 
+    d3.select('#chart')
+//        .enter().data(params.data)
+        .call(chart);
+</script>
 <% include ./partials/footer %>
