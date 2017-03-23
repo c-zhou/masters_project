@@ -23,6 +23,7 @@ router.get('/', function(req, res) {
 
 // connecting to the websocket opened when the client clicks the get started button
 io.of('/analysis').on('connection', function(socket){
+	console.log("Socket connected on server side");
 	var pathData;
     // EVENT LISTENERS ON THE WEBSOCKET THAT WILL INTERACT WITH THE CLIENT/USER
 
@@ -38,26 +39,37 @@ io.of('/analysis').on('connection', function(socket){
 	    console.log("Starting species typing...");
 
     	// run logic to see which modules need to be run
+	    var checkReads = path.extname(pathData.pathToReads);
+		console.log(checkReads);
 
-	    // create a constructor function for these? necessary?
 
-	    // cp for npreader
-	    var npReaderArgs = [
-	    	'--realtime', // run the program in real-time mode
-	        '--fail', // get sequence reads from the fail folder
-	        '--folder ' + pathData.pathToReads, // the folder containing base-called reads
-	        '--output -' // output to stdout (this is default but included for clarity)
+       // call function which handles initiating the child process for species typing
+        // and all of the socket events/emitters needed to send the stdout to the client
+       // startSpeciesTyping(socket, pathData);
+
+    });
+});
+
+// child process constructor for npReader
+function run_npReader(pathData) {
+	var npReaderArgs = [
+		    '--realtime', // run the program in real-time mode
+		    '--fail', // get sequence reads from the fail folder
+		    '--folder ' + pathData.pathToReads, // the folder containing base-called reads
+		    '--output -' // output to stdout (this is default but included for clarity)
 	    ],
-	        npReaderOptions = {
-	    	    cwd: pathData.pathForOutput,
-		        stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
-	        };
+	    npReaderOptions = {
+		    cwd: pathData.pathForOutput, // where to run the process
+		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+	    };
 
-	    const npReader = spawn('jsa.np.npreader', npReaderArgs, npReaderOptions);
+	return spawn('jsa.np.npreader', npReaderArgs, npReaderOptions);
+}
 
-	    // cp for bwa
-		var bwaArgs = [
-			'-t 4', // number of threads
+// child process constructor for bwa
+function run_bwa(pathData) {
+	var bwaArgs = [
+		    '-t 4', // number of threads
 		    '-k 11', // min. seed length
 		    '-W 20', // discard a chain if seeded bases shorter than INT
 		    '-r 10', // look for internal seeds inside a seed longer than {-k} * FLOAT
@@ -70,32 +82,32 @@ io.of('/analysis').on('connection', function(socket){
 		    '-K 10000', // buffer length in bp (not documented)
 		    path.join(pathData.pathToVirus, 'genomeDB.fasta'), // ref sequence/db
 		    '-' // read file from stdin
-		],
-		    bwaOptions = npReaderOptions;
+	    ],
+	    bwaOptions = {
+		    cwd: pathData.pathForOutput, // where to run the process
+		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+	    };
 
-		const bwa = spawn('bwa mem', bwaArgs, bwaOptions);
+	return spawn('bwa mem', bwaArgs, bwaOptions);
+}
 
-	    //cp for rtST
-		var specTypingArgs = [
-			'-web', // output is in JSON format for use in the web app viz
+// child process constructor for real-time species typing
+function run_speciesTyping(pathData) {
+	var specTypingArgs = [
+		    '-web', // output is in JSON format for use in the web app viz
 		    '-bam -', // read BAM from stdin
 		    '-index ' + path.join(pathData.pathToVirus, 'speciesIndex'), // index file
 		    '--read 100', // min. number of reads between analysis
 		    '-time 3', // min. number of secs between analysis
 		    '-out -' // output to stdout
-		],
-		    specTypingOptions = npReaderOptions;
+	    ],
+	    specTypingOptions = {
+		    cwd: pathData.pathForOutput, // where to run the process
+		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+	    };
 
-		const specTyping = spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
-
-
-
-       // call function which handles initiating the child process for species typing
-        // and all of the socket events/emitters needed to send the stdout to the client
-       startSpeciesTyping(socket, pathData);
-
-    });
-});
+	return spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
+}
 
 
 function startSpeciesTyping(socket, pathData) {
