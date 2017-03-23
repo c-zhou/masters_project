@@ -64,6 +64,10 @@ io.of('/analysis').on('connection', function(socket){
 				console.log('npReader closed...');
 			});
 
+			bwa.on('error', function(error) {
+				console.log(error);
+			});
+
 			bwa.stdout.on('data', function(data) {
 				speciesTyping.stdin.write(data);
 			});
