@@ -7,7 +7,8 @@ var io       = require('../app.js'),
     kill     = require('tree-kill'),
     fs       = require('fs'),
     chokidar = require('chokidar'),
-    router   = express.Router();
+    router   = express.Router(),
+	middleware = require('../middleware/analysis');
 
 const spawn = require('child_process').spawn;
 const assert = require('assert');
@@ -43,22 +44,67 @@ io.of('/analysis').on('connection', function(socket){
 		if (!fileExt) { // client gave a path
 			console.log("client gave a path");
 			// call npReader
-			const npReader = run_npReader(pathData);
-
+			const npReader = middleware.run_npReader(pathData);
 			// call bwa. false can be omitted. this indicates bwa is not the starting point
-			const bwa = run_bwa(pathData, false);
-
+			const bwa = middleware.run_bwa(pathData, false);
 			// call species typing
-			const speciesTyping = run_speciesTyping(pathData);
+			const speciesTyping = middleware.run_speciesTyping(pathData);
+
+			npReader.stdout.on('data', function(data) {
+				bwa.stdin.write(data);
+			});
+
+			npReader.stderr.on('data', function(data) {
+				console.log("npReader stderr: " + data);
+			});
+
+			npReader.on('close', function(code) {
+				if (code !== 0) console.log("npReader exited with code " + code);
+				bwa.stdin.end();
+				console.log('npReader closed...');
+			});
+
+			bwa.stdout.on('data', function(data) {
+				speciesTyping.stdin.write(data);
+			});
+
+			bwa.stderr.on('data', function(data) {
+				console.log('bwa stderr: ' + data);
+			});
+
+			bwa.on('close', function(code) {
+				if (code !== 0) console.log(code);
+				speciesTyping.stdin.end();
+				console.log('bwa closed...');
+			});
+
+			speciesTyping.stdout.on('data', function(data) {
+				console.log("species typing stdout: " + data);
+				// writeStream.write(data);
+			});
+
+			speciesTyping.stderr.on('data', function(data) {
+				console.log('species typing stderr: ' + data);
+			});
+
+			speciesTyping.on('close', function(code) {
+				if (code !== 0) console.log('species typing closed with exit code ' + code);
+				console.log('species typing closed...');
+			});
+
+
+
+
+
 
 		} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // extension is for fastq
 			console.log("client gave a fastq file");
 
 			// call bwa. true indicates analysis is starting from bwa
-			const bwa = run_bwa(pathData, true);
+			const bwa = middleware.run_bwa(pathData, true);
 
 			// call species typing
-			const speciesTyping = run_speciesTyping(pathData);
+			const speciesTyping = middleware.run_speciesTyping(pathData);
 
 		} else {
 			throw "Invalid file extension: File extension must be '.fastq' or '.fq'";
@@ -72,74 +118,7 @@ io.of('/analysis').on('connection', function(socket){
     });
 });
 
-// child process constructor for npReader
-function run_npReader(pathData) {
-	console.log('npReader called...');
 
-	var npReaderArgs = [
-		    '--realtime', // run the program in real-time mode
-		    '--fail', // get sequence reads from the fail folder
-		    '--folder ' + pathData.pathToInput, // the folder containing base-called reads
-		    '--output -' // output to stdout (this is default but included for clarity)
-	    ],
-	    npReaderOptions = {
-		    cwd: pathData.pathForOutput, // where to run the process
-		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
-	    };
-
-	return spawn('jsa.np.npreader', npReaderArgs, npReaderOptions);
-}
-
-// child process constructor for bwa
-function run_bwa(pathData, startFrom) {
-	console.log('bwa called...');
-
-	// if user provided fastq, analysis starts from bwa and the input to bwa is set as the fastq
-	// file specified by client. otherwise, input is from stdin (-).
-	var readFrom = (startFrom) ? pathData.pathToInput : '-';
-
-	var bwaArgs = [
-		    '-t 4', // number of threads
-		    '-k 11', // min. seed length
-		    '-W 20', // discard a chain if seeded bases shorter than INT
-		    '-r 10', // look for internal seeds inside a seed longer than {-k} * FLOAT
-		    '-A 1', // mismatch score
-		    '-B 1', // penalty for mismatch - optimised for np
-		    '-O 1', // gap open penalty - optimised for nanopore
-		    '-E 1', // gap extension penalty
-		    '-L 0', // penalty for 5'- and 3'-end clipping - optimised for np
-		    '-Y', // use soft clipping for supplementary alignments
-		    '-K 10000', // buffer length in bp (not documented)
-		    path.join(pathData.pathToVirus, 'genomeDB.fasta'), // ref sequence/db
-		    readFrom // read file from
-	    ],
-	    bwaOptions = {
-		    cwd: pathData.pathForOutput, // where to run the process
-		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
-	    };
-
-	return spawn('bwa mem', bwaArgs, bwaOptions);
-}
-
-// child process constructor for real-time species typing
-function run_speciesTyping(pathData) {
-	console.log('species typing called...');
-
-	var specTypingArgs = [
-		    '-web', // output is in JSON format for use in the web app viz
-		    '-bam -', // read BAM from stdin
-		    '-index ' + path.join(pathData.pathToVirus, 'speciesIndex'), // index file
-		    '--read 100', // min. number of reads between analysis
-		    '-time 3', // min. number of secs between analysis
-		    '-out -' // output to stdout
-	    ],
-	    specTypingOptions = {
-		    cwd: pathData.pathForOutput, // where to run the process
-		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
-	    };
-
-	return spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
-}
 
 
 function startSpeciesTyping(socket, pathData) {
@@ -248,7 +227,6 @@ function onCloseOrKill(pid, wStream){
 	    });
     }
 }
-
 
 
 module.exports = router;
