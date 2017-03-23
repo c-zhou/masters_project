@@ -38,7 +38,8 @@ readPathsForm.submit(function(e){
 	// send the path to the server
 	socket.emit('paths', {
 		pathToReads: $('#readsPath').val(), // path to the user's reads
-		pathToVirus: $('#virusPath').val() // path to virus database
+		pathToVirus: $('#virusPath').val(), // path to virus database
+		pathForOutput: $('#outputPath').val()
 	});
 
 	$(this).fadeOut(fadeTime, function(){

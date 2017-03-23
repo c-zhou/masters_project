@@ -23,13 +23,13 @@ router.get('/', function(req, res) {
 
 // connecting to the websocket opened when the client clicks the get started button
 io.of('/analysis').on('connection', function(socket){
-	var scriptArgs;
+	var pathData;
     // EVENT LISTENERS ON THE WEBSOCKET THAT WILL INTERACT WITH THE CLIENT/USER
 
 	// this event contains the path the user entered for where their reads are located
 	socket.on('paths', function(data) {
-		// arguments (in order) to be passed to the child process
-		scriptArgs = ['speciesTypingMac.sh', data.pathToReads, data.pathToVirus];
+		// path information entered by client
+		pathData = data;
 	});
 
 	// this event is triggered when the user clicks the start button to begin species typing
@@ -38,16 +38,17 @@ io.of('/analysis').on('connection', function(socket){
 
        // call function which handles initiating the child process for species typing
         // and all of the socket events/emitters needed to send the stdout to the client
-       startSpeciesTyping(socket, scriptArgs);
+       startSpeciesTyping(socket, pathData);
 
     });
 });
 
 
-function startSpeciesTyping(socket, scriptArgs) {
+function startSpeciesTyping(socket, pathData) {
     // flag to track when writing has started to allow correct formatting of file
     var hasWritingStarted = false,
-        dataToWrite;
+        dataToWrite,
+        scriptArgs = ['speciesTypingMac.sh', pathData.pathToReads, pathData.pathToVirus];
 
     socket.on('disconnect', function(){
         console.log("Socket disconnected");
@@ -80,7 +81,7 @@ function startSpeciesTyping(socket, scriptArgs) {
     const speciesTyping = spawn('sh', scriptArgs, scriptOptions);
 
 	// open file for writing data to
-	var writePath = SCRIPT_DIR + 'speciesTyping' + speciesTyping.pid + '.log';
+	var writePath = pathData.pathForOutput;
 	var writeAnalysisFile = fs.createWriteStream(writePath);
 	writeAnalysisFile.write('[');
 
