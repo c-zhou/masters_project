@@ -59,12 +59,12 @@ function run_speciesTyping(pathData) {
 	console.log('species typing called...');
 
 	var specTypingArgs = [
-		    '-web', // output is in JSON format for use in the web app viz
-		    '-bam -', // read BAM from stdin
-		    '-index ' + path.join(pathData.pathToVirus, 'speciesIndex'), // index file
-		    '--read 100', // min. number of reads between analysis
-		    '-time 3', // min. number of secs between analysis
-		    '-out -' // output to stdout
+		    '--web', // output is in JSON format for use in the web app viz
+		    '--bamFile=-', // read BAM from stdin
+		    '--indexFile=' + path.join(pathData.pathToVirus, 'speciesIndex'), // index file
+		    '--read=100', // min. number of reads between analysis
+		    '--time=3', // min. number of secs between analysis
+		    '--output=-' // output to stdout
 	    ],
 	    specTypingOptions = {
 		    cwd: pathData.pathForOutput, // where to run the process
