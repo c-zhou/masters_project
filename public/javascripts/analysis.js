@@ -39,7 +39,7 @@ readPathsForm.submit(function(e){
 
 	// send the path to the server
 	socket.emit('paths', {
-		pathToReads: $('#readsPath').val(), // path to the user's reads
+		pathToInput: $('#readsPath').val(), // path to the user's reads
 		pathToVirus: $('#virusPath').val(), // path to virus database
 		pathForOutput: $('#outputPath').val(), // folder to run analysis from
 		outputFile: $('#outputFile').val() // file name for output

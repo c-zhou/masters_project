@@ -38,9 +38,31 @@ io.of('/analysis').on('connection', function(socket){
 
 	    console.log("Starting species typing...");
 
-    	// run logic to see which modules need to be run
-	    var checkReads = path.extname(pathData.pathToReads);
-		console.log(checkReads);
+    	// check for a file extension
+	    var fileExt = path.extname(pathData.pathToInput);
+		if (!fileExt) { // client gave a path
+			console.log("client gave a path");
+			// call npReader
+			const npReader = run_npReader(pathData);
+
+			// call bwa. false can be omitted. this indicates bwa is not the starting point
+			const bwa = run_bwa(pathData, false);
+
+			// call species typing
+			const speciesTyping = run_speciesTyping(pathData);
+
+		} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // extension is for fastq
+			console.log("client gave a fastq file");
+
+			// call bwa. true indicates analysis is starting from bwa
+			const bwa = run_bwa(pathData, true);
+
+			// call species typing
+			const speciesTyping = run_speciesTyping(pathData);
+
+		} else {
+			throw "Invalid file extension: File extension must be '.fastq' or '.fq'";
+		}
 
 
        // call function which handles initiating the child process for species typing
@@ -52,10 +74,12 @@ io.of('/analysis').on('connection', function(socket){
 
 // child process constructor for npReader
 function run_npReader(pathData) {
+	console.log('npReader called...');
+
 	var npReaderArgs = [
 		    '--realtime', // run the program in real-time mode
 		    '--fail', // get sequence reads from the fail folder
-		    '--folder ' + pathData.pathToReads, // the folder containing base-called reads
+		    '--folder ' + pathData.pathToInput, // the folder containing base-called reads
 		    '--output -' // output to stdout (this is default but included for clarity)
 	    ],
 	    npReaderOptions = {
@@ -67,7 +91,13 @@ function run_npReader(pathData) {
 }
 
 // child process constructor for bwa
-function run_bwa(pathData) {
+function run_bwa(pathData, startFrom) {
+	console.log('bwa called...');
+
+	// if user provided fastq, analysis starts from bwa and the input to bwa is set as the fastq
+	// file specified by client. otherwise, input is from stdin (-).
+	var readFrom = (startFrom) ? pathData.pathToInput : '-';
+
 	var bwaArgs = [
 		    '-t 4', // number of threads
 		    '-k 11', // min. seed length
@@ -81,7 +111,7 @@ function run_bwa(pathData) {
 		    '-Y', // use soft clipping for supplementary alignments
 		    '-K 10000', // buffer length in bp (not documented)
 		    path.join(pathData.pathToVirus, 'genomeDB.fasta'), // ref sequence/db
-		    '-' // read file from stdin
+		    readFrom // read file from
 	    ],
 	    bwaOptions = {
 		    cwd: pathData.pathForOutput, // where to run the process
@@ -93,6 +123,8 @@ function run_bwa(pathData) {
 
 // child process constructor for real-time species typing
 function run_speciesTyping(pathData) {
+	console.log('species typing called...');
+
 	var specTypingArgs = [
 		    '-web', // output is in JSON format for use in the web app viz
 		    '-bam -', // read BAM from stdin
@@ -114,7 +146,7 @@ function startSpeciesTyping(socket, pathData) {
     // flag to track when writing has started to allow correct formatting of file
     var hasWritingStarted = false,
         dataToWrite,
-        scriptArgs = ['speciesTypingMac.sh', pathData.pathToReads, pathData.pathToVirus];
+        scriptArgs = ['speciesTypingMac.sh', pathData.pathToInput, pathData.pathToVirus];
 
     socket.on('disconnect', function(){
         console.log("Socket disconnected");
