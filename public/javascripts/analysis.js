@@ -39,7 +39,8 @@ readPathsForm.submit(function(e){
 	socket.emit('paths', {
 		pathToReads: $('#readsPath').val(), // path to the user's reads
 		pathToVirus: $('#virusPath').val(), // path to virus database
-		pathForOutput: $('#outputPath').val()
+		pathForOutput: $('#outputPath').val(), // folder to run analysis from
+		outputFile: $('#outputFile').val() // file name for output
 	});
 
 	$(this).fadeOut(fadeTime, function(){
@@ -92,7 +93,7 @@ function plot(socket){
 
 	var width            = 960,
 	    height           = 450,
-	    interval         = 2000, // timer interval for plotting
+	    interval         = 3000, // timer interval for plotting
 	    padAngle         = 0.01,
 	    floatFormat      = d3.format('.4r'), // will format as float to 4 decimal places
 	    cornerRadius     = 4,

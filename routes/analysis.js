@@ -34,7 +34,61 @@ io.of('/analysis').on('connection', function(socket){
 
 	// this event is triggered when the user clicks the start button to begin species typing
     socket.on('startAnalysis', function(){
-       console.log("Starting species typing...");
+
+	    console.log("Starting species typing...");
+
+    	// run logic to see which modules need to be run
+
+	    // create a constructor function for these? necessary?
+
+	    // cp for npreader
+	    var npReaderArgs = [
+	    	'--realtime', // run the program in real-time mode
+	        '--fail', // get sequence reads from the fail folder
+	        '--folder ' + pathData.pathToReads, // the folder containing base-called reads
+	        '--output -' // output to stdout (this is default but included for clarity)
+	    ],
+	        npReaderOptions = {
+	    	    cwd: pathData.pathForOutput,
+		        stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+	        };
+
+	    const npReader = spawn('jsa.np.npreader', npReaderArgs, npReaderOptions);
+
+	    // cp for bwa
+		var bwaArgs = [
+			'-t 4', // number of threads
+		    '-k 11', // min. seed length
+		    '-W 20', // discard a chain if seeded bases shorter than INT
+		    '-r 10', // look for internal seeds inside a seed longer than {-k} * FLOAT
+		    '-A 1', // mismatch score
+		    '-B 1', // penalty for mismatch - optimised for np
+		    '-O 1', // gap open penalty - optimised for nanopore
+		    '-E 1', // gap extension penalty
+		    '-L 0', // penalty for 5'- and 3'-end clipping - optimised for np
+		    '-Y', // use soft clipping for supplementary alignments
+		    '-K 10000', // buffer length in bp (not documented)
+		    path.join(pathData.pathToVirus, 'genomeDB.fasta'), // ref sequence/db
+		    '-' // read file from stdin
+		],
+		    bwaOptions = npReaderOptions;
+
+		const bwa = spawn('bwa mem', bwaArgs, bwaOptions);
+
+	    //cp for rtST
+		var specTypingArgs = [
+			'-web', // output is in JSON format for use in the web app viz
+		    '-bam -', // read BAM from stdin
+		    '-index ' + path.join(pathData.pathToVirus, 'speciesIndex'), // index file
+		    '--read 100', // min. number of reads between analysis
+		    '-time 3', // min. number of secs between analysis
+		    '-out -' // output to stdout
+		],
+		    specTypingOptions = npReaderOptions;
+
+		const specTyping = spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
+
+
 
        // call function which handles initiating the child process for species typing
         // and all of the socket events/emitters needed to send the stdout to the client
@@ -81,7 +135,7 @@ function startSpeciesTyping(socket, pathData) {
     const speciesTyping = spawn('sh', scriptArgs, scriptOptions);
 
 	// open file for writing data to
-	var writePath = pathData.pathForOutput;
+	var writePath = pathData.outputFile;
 	var writeAnalysisFile = fs.createWriteStream(writePath);
 	writeAnalysisFile.write('[');
 
