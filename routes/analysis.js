@@ -50,6 +50,11 @@ io.of('/analysis').on('connection', function(socket){
 			// call species typing
 			const speciesTyping = middleware.run_speciesTyping(pathData);
 
+			npReader.on('error', function(error) {
+				console.log('npReader process error:');
+				console.log(error);
+			});
+
 			npReader.stdout.on('data', function(data) {
 				bwa.stdin.write(data);
 			});
@@ -65,6 +70,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			bwa.on('error', function(error) {
+				console.log('bwa process error:');
 				console.log(error);
 			});
 
@@ -80,6 +86,11 @@ io.of('/analysis').on('connection', function(socket){
 				if (code !== 0) console.log(code);
 				speciesTyping.stdin.end();
 				console.log('bwa closed...');
+			});
+
+			speciesTyping.on('error', function(error) {
+				console.log('species typing process error:');
+				console.log(error);
 			});
 
 			speciesTyping.stdout.on('data', function(data) {
