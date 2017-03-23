@@ -32,6 +32,7 @@ function run_bwa(pathData, startFrom) {
 	var readFrom = (startFrom) ? pathData.pathToInput : '-';
 
 	var bwaArgs = [
+			'mem', // run bwa mem
 		    '-t 4', // number of threads
 		    '-k 11', // min. seed length
 		    '-W 20', // discard a chain if seeded bases shorter than INT
@@ -51,7 +52,7 @@ function run_bwa(pathData, startFrom) {
 		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
 	    };
 
-	return spawn('bwa mem', bwaArgs, bwaOptions);
+	return spawn('bwa', bwaArgs, bwaOptions);
 }
 
 // child process constructor for real-time species typing
