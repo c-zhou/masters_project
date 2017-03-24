@@ -32,6 +32,10 @@ getStartedButton.click(function(){
 	$(this).fadeOut(fadeTime, function(){
 		readPathsForm.fadeIn(fadeTime);
 	});
+
+	socket.on('disconnect', function() {
+		console.log("Socket closed...");
+	});
 });
 
 // When the user submits the path, get that path and send to the analysis route,

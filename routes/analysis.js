@@ -43,6 +43,7 @@ io.of('/analysis').on('connection', function(socket){
 
     	var outputFilePath = path.join(pathData.pathForOutput, pathData.outputFile + '.log');
     	var outputFile = fs.createWriteStream(outputFilePath);
+	    outputFile.write('[');
 
 	    console.log("Starting species typing...");
 
@@ -80,11 +81,20 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			npReader.on('exit', function(code, signal) {
-				console.log("npReader exited with code '" + code + "' and signal '" + signal + "'");
+				if (code || signal) {
+					console.log("npReader exited with code '" + code + "' and signal '" + signal + "'");
+				} else {
+					console.log("npReader exited...");
+				}
+
 			});
 
 			bwa.on('exit', function(code, signal) {
-				console.log("bwa exited with code '" + code + "' and signal '" + signal + "'");
+				if (code || signal) {
+					console.log("bwa exited with code '" + code + "' and signal '" + signal + "'");
+				} else {
+					console.log("bwa exited...");
+				}
 			});
 
 			bwa.on('error', function(error) {
@@ -115,7 +125,11 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			speciesTyping.on('exit', function(code, signal) {
-				console.log("speciesTyping exited with code '" + code + "' and signal '" + signal + "'");
+				if (code || signal) {
+					console.log("speciesTyping exited with code '" + code + "' and signal '" + signal + "'");
+				} else {
+					console.log("speciesTyping exited...");
+				}
 				if (!outputFile.closed) { endFile(outputFile); }
 			});
 
@@ -155,7 +169,8 @@ io.of('/analysis').on('connection', function(socket){
 			socket.on('kill', function(){
 				try {
 					processes.forEach(function (child) {
-						if (child.connected) { child.kill(); }
+						if (child.connected) { kill(child.pid); }
+						// if (child.connected) { child.kill(); }
 					});
 					if (!outputFile.closed) { endFile(outputFile); }
 					socket.disconnect();
