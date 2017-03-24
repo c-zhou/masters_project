@@ -56,7 +56,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			npReader.stdout.on('data', function(data) {
-				console.log('npReader stdout: ' + data);
+				// console.log('npReader stdout: ' + data);
 				bwa.stdin.write(data);
 			});
 
@@ -76,7 +76,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			bwa.stdout.on('data', function(data) {
-				console.log('bwa stdout: ' + data);
+				// console.log('bwa stdout: ' + data);
 				speciesTyping.stdin.write(data);
 			});
 
