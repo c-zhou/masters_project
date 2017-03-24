@@ -105,7 +105,7 @@ io.of('/analysis').on('connection', function(socket){
 			speciesTyping.stdout.on('data', function(data) {
 				// parse output into JSON format and send to client
 				var updatedResults = JSON.parse(data);
-				socket.emit('stdout', updatedResults);
+				socket.emit('stdout', updatedResults.data);
 
 				// if this is the first time writing data, dont add a comma to the start
 				if (hasWritingStarted){

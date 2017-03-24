@@ -182,8 +182,6 @@ function plot(socket){
 // function that causes the actual chart to be 'drawn'
 function drawChart(data){
 
-	console.log(data.data);
-
 	var chartDiv = document.getElementById('chartContainer');
 
 	var width  = chartDiv.clientWidth,
