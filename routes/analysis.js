@@ -114,6 +114,10 @@ io.of('/analysis').on('connection', function(socket){
 				console.log(error);
 			});
 
+			speciesTyping.on('exit', function(code, signal) {
+				console.log("speciesTyping exited with code '" + code + "' and signal '" + signal + "'");
+			});
+
 			speciesTyping.stdout.on('data', function(data) {
 				// parse output into JSON format and send to client
 				var updatedResults = JSON.parse(data);
