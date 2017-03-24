@@ -37,7 +37,12 @@ io.of('/analysis').on('connection', function(socket){
 	// this event is triggered when the user clicks the start button to begin species typing
     socket.on('startAnalysis', function(){
 
+    	var outputFile = fs.createWriteStream(pathData.outputFile);
+
 	    console.log("Starting species typing...");
+
+	    var hasWritingStarted = false,
+	        dataToWrite;
 
     	// check for a file extension
 	    var fileExt = path.extname(pathData.pathToInput);
@@ -56,7 +61,6 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			npReader.stdout.on('data', function(data) {
-				// console.log('npReader stdout: ' + data);
 				bwa.stdin.write(data);
 			});
 
@@ -76,7 +80,6 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			bwa.stdout.on('data', function(data) {
-				// console.log('bwa stdout: ' + data);
 				speciesTyping.stdin.write(data);
 			});
 
@@ -90,13 +93,33 @@ io.of('/analysis').on('connection', function(socket){
 				console.log('bwa closed...');
 			});
 
+			// encode the stdout as a string rather than a Buffer
+			speciesTyping.stdout.setEncoding('utf8');
+
 			speciesTyping.on('error', function(error) {
 				console.log('species typing process error:');
 				console.log(error);
 			});
 
 			speciesTyping.stdout.on('data', function(data) {
-				console.log("species typing stdout: " + data);
+				// parse output into JSON format and send to client
+				var updatedResults = JSON.parse(data);
+				socket.emit('stdout', updatedResults);
+
+				// if this is the first time writing data, dont add a comma to the start
+				if (hasWritingStarted){
+					dataToWrite = ',' + data;
+				} else {
+					dataToWrite = data;
+					hasWritingStarted = true;
+				}
+
+				//write data to file. written is how many bytes were written from string.
+				outputFile.write(dataToWrite, function(error, written, string) {
+					if (error) console.log(error);
+				});
+
+				// console.log("species typing stdout: " + data);
 				// writeStream.write(data);
 			});
 
