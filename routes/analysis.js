@@ -151,14 +151,13 @@ io.of('/analysis').on('connection', function(socket){
 							}
 						});
 					});
+					outputFile.end(']', function () {
+						console.log("The log file has been closed.");
+					});
 				}
 				catch (e) {
 					console.log(e);
 				}
-
-				outputFile.end(']', function () {
-					console.log("The log file has been closed.");
-				});
 			});
 
 
