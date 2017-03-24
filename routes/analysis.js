@@ -134,13 +134,18 @@ io.of('/analysis').on('connection', function(socket){
 
 			socket.on('disconnect', function(){
 				console.log("Socket disconnected");
-				processes.forEach(function(child) {
-					kill(child, 'SIGTERM', function (err) {
-						if (err) {
-							console.log(err);
-						}
+				try {
+					processes.forEach(function (child) {
+						kill(child, 'SIGTERM', function (err) {
+							if (err) {
+								console.log(err);
+							}
+						});
 					});
-				});
+				}
+				catch (e) {
+					console.log(e);
+				}
 
 				outputFile.end(']', function () {
 					console.log("The log file has been closed.");
