@@ -66,7 +66,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			npReader.stderr.on('data', function(data) {
-				console.log("npReader stderr: " + data);
+				// console.log("npReader stderr: " + data);
 			});
 
 			npReader.on('close', function(code) {
@@ -85,7 +85,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			bwa.stderr.on('data', function(data) {
-				console.log('bwa stderr: ' + data);
+				// console.log('bwa stderr: ' + data);
 			});
 
 			bwa.on('close', function(code) {
@@ -130,9 +130,18 @@ io.of('/analysis').on('connection', function(socket){
 				console.log('species typing closed...');
 			});
 
+			var processes = [npReader.pid, bwa.pid, speciesTyping.pid];
 
+			socket.on('disconnect', function(){
+				console.log("Socket disconnected");
+				processes.forEach(function(child) {
+					child.kill();
+				});
 
-
+				outputFile.end(']', function () {
+					console.log("The log file has been closed.");
+				});
+			});
 
 
 		} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // extension is for fastq

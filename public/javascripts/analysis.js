@@ -68,7 +68,8 @@ startAnalysisButton.click(function(){
 // When the stop button is clicked, kill the child process running the species typing and
 // close the websocket.
 stopAnalysisButton.click(function(){
-	socket.emit('kill');
+	stopAnalysisButton.fadeOut(fadeTime);
+	socket.disconnect();
 });
 
 
