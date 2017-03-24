@@ -126,12 +126,15 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			speciesTyping.stderr.on('data', function(data) {
-				console.log('species typing stderr: ' + data);
+				// console.log('species typing stderr: ' + data);
 			});
 
 			speciesTyping.on('close', function(code) {
 				if (code !== 0) console.log('species typing closed with exit code ' + code);
 				console.log('species typing closed...');
+				outputFile.end(']', function () {
+					console.log("The log file has been closed.");
+				});
 			});
 
 			var processes = [npReader.pid, bwa.pid, speciesTyping.pid];
@@ -151,9 +154,6 @@ io.of('/analysis').on('connection', function(socket){
 					console.log(e);
 				}
 
-				outputFile.end(']', function () {
-					console.log("The log file has been closed.");
-				});
 			});
 
 
