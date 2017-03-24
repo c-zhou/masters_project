@@ -69,7 +69,7 @@ startAnalysisButton.click(function(){
 // close the websocket.
 stopAnalysisButton.click(function(){
 	stopAnalysisButton.fadeOut(fadeTime);
-	socket.disconnect();
+	socket.emit('kill');
 });
 
 
