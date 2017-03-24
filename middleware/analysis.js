@@ -10,7 +10,7 @@ function run_npReader(pathData) {
 	console.log('npReader called...');
 
 	var npReaderArgs = [
-		    '--realtime', // run the program in real-time mode
+		    // '--realtime', // run the program in real-time mode
 		    '--fail', // get sequence reads from the fail folder
 		    '--folder ' + pathData.pathToInput, // the folder containing base-called reads
 		    '--output -' // output to stdout (this is default but included for clarity)
