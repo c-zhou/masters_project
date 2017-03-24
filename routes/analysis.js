@@ -83,6 +83,10 @@ io.of('/analysis').on('connection', function(socket){
 				console.log("npReader exited with code '" + code + "' and signal '" + signal + "'");
 			});
 
+			bwa.on('exit', function(code, signal) {
+				console.log("bwa exited with code '" + code + "' and signal '" + signal + "'");
+			});
+
 			bwa.on('error', function(error) {
 				console.log('bwa process error:');
 				console.log(error);
@@ -150,6 +154,7 @@ io.of('/analysis').on('connection', function(socket){
 					});
 				}
 				catch (e) {
+					console.log("Catch error: ");
 					console.log(e);
 				}
 			});

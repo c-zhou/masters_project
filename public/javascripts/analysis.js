@@ -22,6 +22,11 @@ getStartedButton.click(function(){
 	// open the websocket connection and store the socket in a variable to be used elsewhere
 	socket = io.connect(location.href);
 
+	socket.on('error', {
+		console.log("Client-side socket error: ");
+		console.log(error);
+	});
+
 	console.log("Socket connected on client side");
 
 	$(this).fadeOut(fadeTime, function(){
