@@ -164,15 +164,13 @@ io.of('/analysis').on('connection', function(socket){
 				if (!outputFile.closed) { endFile(outputFile); }
 			});
 
-			var processes = [npReader, bwa, speciesTyping];
-
 			socket.on('kill', function(){
 				try {
-					processes.forEach(function (child) {
-						if (child.connected) { kill(child.pid); }
-						// if (child.connected) { child.kill(); }
-					});
-					if (!outputFile.closed) { endFile(outputFile); }
+					// processes.forEach(function (child) {
+					// 	if (child.connected) { kill(child.pid); }
+					// 	// if (child.connected) { child.kill(); }
+					// });
+					// if (!outputFile.closed) { endFile(outputFile); }
 					socket.disconnect();
 				}
 				catch (e) {
@@ -180,6 +178,8 @@ io.of('/analysis').on('connection', function(socket){
 					console.log(e);
 				}
 			});
+
+			var processes = [npReader, bwa, speciesTyping];
 
 
 		} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // extension is for fastq
@@ -194,6 +194,14 @@ io.of('/analysis').on('connection', function(socket){
 		} else {
 			throw "Invalid file extension: File extension must be '.fastq' or '.fq'";
 		}
+
+		socket.on('disconnect', function() {
+			processes.forEach(function (child) {
+				if (child.connected) { kill(child.pid); }
+				// if (child.connected) { child.kill(); }
+			});
+			if (!outputFile.closed) { endFile(outputFile); }
+		});
 
 
        // call function which handles initiating the child process for species typing
