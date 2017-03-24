@@ -84,22 +84,22 @@ io.of('/analysis').on('connection', function(socket){
 				console.log('npReader closed...');
 			});
 
-			npReader.on('exit', function(code, signal) {
-				if (code || signal) {
-					console.log("npReader exited with code '" + code + "' and signal '" + signal + "'");
-				} else {
-					console.log("npReader exited...");
-				}
+			// npReader.on('exit', function(code, signal) {
+			// 	if (code || signal) {
+			// 		console.log("npReader exited with code '" + code + "' and signal '" + signal + "'");
+			// 	} else {
+			// 		console.log("npReader exited...");
+			// 	}
+            //
+			// });
 
-			});
-
-			bwa.on('exit', function(code, signal) {
-				if (code || signal) {
-					console.log("bwa exited with code '" + code + "' and signal '" + signal + "'");
-				} else {
-					console.log("bwa exited...");
-				}
-			});
+			// bwa.on('exit', function(code, signal) {
+			// 	if (code || signal) {
+			// 		console.log("bwa exited with code '" + code + "' and signal '" + signal + "'");
+			// 	} else {
+			// 		console.log("bwa exited...");
+			// 	}
+			// });
 
 			bwa.on('error', function(error) {
 				console.log('bwa process error:');
@@ -128,14 +128,14 @@ io.of('/analysis').on('connection', function(socket){
 				console.log(error);
 			});
 
-			speciesTyping.on('exit', function(code, signal) {
-				if (code || signal) {
-					console.log("speciesTyping exited with code '" + code + "' and signal '" + signal + "'");
-				} else {
-					console.log("speciesTyping exited...");
-				}
-				// if (!outputFile.closed) { endFile(outputFile); }
-			});
+			// speciesTyping.on('exit', function(code, signal) {
+			// 	if (code || signal) {
+			// 		console.log("speciesTyping exited with code '" + code + "' and signal '" + signal + "'");
+			// 	} else {
+			// 		console.log("speciesTyping exited...");
+			// 	}
+			// 	// if (!outputFile.closed) { endFile(outputFile); }
+			// });
 
 			speciesTyping.stdout.on('data', function(data) {
 				// parse output into JSON format and send to client
@@ -151,7 +151,7 @@ io.of('/analysis').on('connection', function(socket){
 				}
 
 				//write data to file. written is how many bytes were written from string.
-				if (!outputFile.closed) {
+				if (!outputFile.closed && hasWritingStarted) {
 					outputFile.write(dataToWrite, function (error, written, string) {
 						if (error) console.log(error);
 					});
@@ -164,6 +164,7 @@ io.of('/analysis').on('connection', function(socket){
 
 			speciesTyping.on('close', function(code) {
 				if (code !== 0) console.log('species typing closed with exit code ' + code);
+				hasWritingStarted = false;
 				console.log('species typing closed...');
 				if (!outputFile.closed) { endFile(outputFile); }
 			});
@@ -200,12 +201,13 @@ io.of('/analysis').on('connection', function(socket){
 		}
 
 		socket.on('disconnect', function() {
-			processes.forEach(function (child) {
-				child.kill();
+			// processes.forEach(function (child) {
+			// 	child.kill();
 				// if (child.connected) { kill(child.pid); }
 				// else { console.log(child.pid + " is not connected" ); }
 				// if (child.connected) { child.kill(); }
-			});
+			// });
+			kill(processes[0].pid);
 			if (!outputFile.closed) { endFile(outputFile); }
 		});
 
