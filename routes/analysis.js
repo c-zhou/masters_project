@@ -45,6 +45,10 @@ io.of('/analysis').on('connection', function(socket){
     	var outputFile = fs.createWriteStream(outputFilePath);
 	    outputFile.write('[');
 
+	    outputFile.on('close', function() {
+	    	console.log("output file closed");
+	    });
+
 	    console.log("Starting species typing...");
 
 	    var hasWritingStarted = false,
