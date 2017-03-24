@@ -138,18 +138,12 @@ io.of('/analysis').on('connection', function(socket){
 				console.log('species typing closed...');
 			});
 
-			var processes = [npReader.pid, bwa.pid, speciesTyping.pid];
+			var processes = [npReader, bwa, speciesTyping];
 
 			socket.on('kill', function(){
 				try {
 					processes.forEach(function (child) {
-						kill(child, 'SIGTERM', function (err) {
-							if (err) {
-								console.log(err);
-							} else {
-								console.log(child + " killed...");
-							}
-						});
+						child.kill();
 					});
 					outputFile.end(']', function () {
 						console.log("The log file has been closed.");
