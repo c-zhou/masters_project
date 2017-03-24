@@ -182,6 +182,8 @@ function plot(socket){
 // function that causes the actual chart to be 'drawn'
 function drawChart(data){
 
+	console.log(data);
+
 	var chartDiv = document.getElementById('chartContainer');
 
 	var width  = chartDiv.clientWidth,
@@ -196,7 +198,6 @@ function drawChart(data){
 	var slice = svg.select('.slices')
 		.selectAll('path.slice')
 		.data(pie(data), function(d){
-			console.log(d);
 			return d.data.species;
 		});
 
