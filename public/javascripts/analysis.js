@@ -108,6 +108,8 @@ function plot(socket){
 	numberFormatPerc = d3.format(',.2%'); // will format numbers to percentage to 2 decimal places
 
 	socket.on('stdout', function(data){
+		console.log(data);
+
 		// keep the most recently received data on the client-side
 		mostRecentData = data;
 

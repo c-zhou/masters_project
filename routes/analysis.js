@@ -37,7 +37,8 @@ io.of('/analysis').on('connection', function(socket){
 	// this event is triggered when the user clicks the start button to begin species typing
     socket.on('startAnalysis', function(){
 
-    	var outputFile = fs.createWriteStream(pathData.outputFile);
+    	var outputFilePath = path.join(pathData.pathForOutput, pathData.outputFile + '.log');
+    	var outputFile = fs.createWriteStream(outputFilePath);
 
 	    console.log("Starting species typing...");
 
@@ -118,9 +119,6 @@ io.of('/analysis').on('connection', function(socket){
 				outputFile.write(dataToWrite, function(error, written, string) {
 					if (error) console.log(error);
 				});
-
-				// console.log("species typing stdout: " + data);
-				// writeStream.write(data);
 			});
 
 			speciesTyping.stderr.on('data', function(data) {
