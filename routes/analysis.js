@@ -159,6 +159,7 @@ io.of('/analysis').on('connection', function(socket){
 					processes.forEach(function (child) {
 						child.kill();
 					});
+					socket.disconnect();
 				}
 				catch (e) {
 					console.log("Catch error: ");
