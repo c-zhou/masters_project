@@ -116,9 +116,7 @@ io.of('/analysis').on('connection', function(socket){
 
 			speciesTyping.on('exit', function(code, signal) {
 				console.log("speciesTyping exited with code '" + code + "' and signal '" + signal + "'");
-				outputFile.end(']', function () {
-					console.log("The log file has been closed.");
-				});
+				if (!outputFile.closed) { endFile(outputFile); }
 			});
 
 			speciesTyping.stdout.on('data', function(data) {
@@ -135,9 +133,11 @@ io.of('/analysis').on('connection', function(socket){
 				}
 
 				//write data to file. written is how many bytes were written from string.
-				outputFile.write(dataToWrite, function(error, written, string) {
-					if (error) console.log(error);
-				});
+				if (!outputFile.closed) {
+					outputFile.write(dataToWrite, function (error, written, string) {
+						if (error) console.log(error);
+					});
+				}
 			});
 
 			speciesTyping.stderr.on('data', function(data) {
@@ -147,9 +147,7 @@ io.of('/analysis').on('connection', function(socket){
 			speciesTyping.on('close', function(code) {
 				if (code !== 0) console.log('species typing closed with exit code ' + code);
 				console.log('species typing closed...');
-				outputFile.end(']', function () {
-					console.log("The log file has been closed.");
-				});
+				if (!outputFile.closed) { endFile(outputFile); }
 			});
 
 			var processes = [npReader, bwa, speciesTyping];
@@ -157,8 +155,9 @@ io.of('/analysis').on('connection', function(socket){
 			socket.on('kill', function(){
 				try {
 					processes.forEach(function (child) {
-						child.kill();
+						if (child.connected) { child.kill(); }
 					});
+					if (!outputFile.closed) { endFile(outputFile); }
 					socket.disconnect();
 				}
 				catch (e) {
@@ -297,6 +296,13 @@ function onCloseOrKill(pid, wStream){
 		    console.log("The log file has been closed.");
 	    });
     }
+}
+
+
+function endFile(wStream) {
+	wStream.end(']', function () {
+		console.log("The log file has been closed.");
+	});
 }
 
 
