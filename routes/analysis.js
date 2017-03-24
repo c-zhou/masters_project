@@ -74,9 +74,13 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			npReader.on('close', function(code) {
-				if (code !== 0) console.log("npReader exited with code " + code);
+				if (code !== 0) console.log("npReader closed with code " + code);
 				bwa.stdin.end();
 				console.log('npReader closed...');
+			});
+
+			npReader.on('exit', function(code, signal) {
+				console.log("npReader exited with code '" + code + "' and signal '" + signal + "'");
 			});
 
 			bwa.on('error', function(error) {
