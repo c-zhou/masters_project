@@ -135,7 +135,7 @@ io.of('/analysis').on('connection', function(socket){
 			socket.on('disconnect', function(){
 				console.log("Socket disconnected");
 				processes.forEach(function(child) {
-					child.kill();
+					kill(child);
 				});
 
 				outputFile.end(']', function () {
