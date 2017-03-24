@@ -197,7 +197,9 @@ io.of('/analysis').on('connection', function(socket){
 
 		socket.on('disconnect', function() {
 			processes.forEach(function (child) {
-				if (child.connected) { kill(child.pid); }
+				child.kill();
+				// if (child.connected) { kill(child.pid); }
+				// else { console.log(child.pid + " is not connected" ); }
 				// if (child.connected) { child.kill(); }
 			});
 			if (!outputFile.closed) { endFile(outputFile); }
