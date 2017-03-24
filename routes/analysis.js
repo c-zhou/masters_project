@@ -134,7 +134,7 @@ io.of('/analysis').on('connection', function(socket){
 				} else {
 					console.log("speciesTyping exited...");
 				}
-				if (!outputFile.closed) { endFile(outputFile); }
+				// if (!outputFile.closed) { endFile(outputFile); }
 			});
 
 			speciesTyping.stdout.on('data', function(data) {
