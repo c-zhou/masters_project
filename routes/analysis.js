@@ -28,6 +28,10 @@ io.of('/analysis').on('connection', function(socket){
 	var pathData;
     // EVENT LISTENERS ON THE WEBSOCKET THAT WILL INTERACT WITH THE CLIENT/USER
 
+	socket.on('error', function(error) {
+		if (error) console.log(error);
+	});
+
 	// this event contains the path the user entered for where their reads are located
 	socket.on('paths', function(data) {
 		// path information entered by client
