@@ -105,7 +105,7 @@ function plot(socket){
 
 	var width            = 960,
 	    height           = 450,
-	    interval         = 3000, // timer interval for plotting
+	    interval         = 2000, // timer interval for plotting
 	    padAngle         = 0.01,
 	    floatFormat      = d3.format('.4r'), // will format as float to 4 decimal places
 	    cornerRadius     = 4,
