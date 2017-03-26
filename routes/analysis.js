@@ -38,6 +38,11 @@ io.of('/analysis').on('connection', function(socket){
 		pathData = data;
 	});
 
+	// when user presses stop button, receive kill message from client and close socket
+	socket.on('kill', function(){
+		socket.disconnect();
+	});
+
 	// this event is triggered when the user clicks the start button to begin species typing
     socket.on('startAnalysis', function(){
 
@@ -52,6 +57,7 @@ io.of('/analysis').on('connection', function(socket){
 	    console.log("Starting species typing...");
 
 	    var hasWritingStarted = false,
+	        processes = [],
 	        dataToWrite;
 
     	// check for a file extension
@@ -74,7 +80,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			npReader.on('close', function(code, signal) {
-				if (code || signal) console.log("npReader closed" + code + signal);
+				if (code || signal) console.log("npReader closed " + code + " " + signal);
 				bwa.stdin.end();
 			});
 
@@ -88,7 +94,7 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			bwa.on('close', function(code, signal) {
-				if (code || signal) console.log("bwa closed" + code + signal);
+				if (code || signal) console.log("bwa closed " + code + " " + signal);
 				speciesTyping.stdin.end();
 			});
 
@@ -121,28 +127,70 @@ io.of('/analysis').on('connection', function(socket){
 			});
 
 			speciesTyping.on('close', function(code, signal) {
-				if (code || signal) console.log("speciesTyping closed" + code + signal);
+				if (code || signal) console.log("speciesTyping closed " + code + " " + signal);
 				hasWritingStarted = false;
 				// close output file is not already close and write closing bracket
 				if (!outputFile.closed) { endFile(outputFile); }
 			});
 
-			// when user presses stop button, receive kill message from client and close socket
-			socket.on('kill', function(){
-				socket.disconnect();
-			});
-
-			var processes = [npReader, bwa, speciesTyping];
+			processes.push(npReader, bwa, speciesTyping);
 
 
 		} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // client gave fastq
 			console.log("client gave a fastq file");
 
-			// call bwa. true indicates analysis is starting from bwa
+			// call bwa. true indicates analysis is starting from bwa and fastq file will be
+			// given to bwa as it's input
 			const bwa = middleware.run_bwa(pathData, true);
 
 			// call species typing
 			const speciesTyping = middleware.run_speciesTyping(pathData);
+
+			bwa.on('error', function(error) {
+				console.log('bwa process error:');
+				console.log(error);
+			});
+
+			bwa.stdout.on('data', function(data) {
+				speciesTyping.stdin.write(data);
+			});
+
+			bwa.on('close', function(code, signal) {
+				if (code || signal) console.log("bwa closed " + code + " " + signal);
+				speciesTyping.stdin.end();
+			});
+
+			// encode the stdout as a string rather than a Buffer
+			speciesTyping.stdout.setEncoding('utf8');
+
+			speciesTyping.on('error', function(error) {
+				console.log('species typing process error:');
+				console.log(error);
+			});
+
+			speciesTyping.stdout.on('data', function(data) {
+				// parse output into JSON format and send to client
+				var recentResults = JSON.parse(data);
+				socket.emit('stdout', recentResults.data);
+
+				// if this is the first time writing data, dont add a comma to the start
+				if (hasWritingStarted) {
+					dataToWrite = ',' + data;
+				}
+				else {
+					dataToWrite       = data;
+					hasWritingStarted = true;
+				}
+
+				//write data to file. written is how many bytes were written from string.
+				if (!outputFile.closed && hasWritingStarted) {
+					outputFile.write(dataToWrite, function (error, written, string) {
+						if (error) console.log(error);
+					});
+				}
+			});
+
+			processes.push(bwa, speciesTyping);
 
 		} else {
 			throw "Invalid file extension: File extension must be '.fastq' or '.fq'";
