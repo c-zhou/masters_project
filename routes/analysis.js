@@ -216,7 +216,7 @@ function startSpeciesTyping(socket, pathData) {
     // flag to track when writing has started to allow correct formatting of file
     var hasWritingStarted = false,
         dataToWrite,
-        scriptArgs = ['speciesTypingMac.sh', pathData.pathToInput, pathData.pathToVirus];
+        scriptArgs = ['speciesTypingMac.sh', pathData.pathToInput, pathData.pathToDB];
 
     socket.on('disconnect', function(){
         console.log("Socket disconnected");

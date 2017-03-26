@@ -44,7 +44,7 @@ function run_bwa(pathData, startFrom) {
 		    '-L 0', // penalty for 5'- and 3'-end clipping - optimised for np
 		    '-Y', // use soft clipping for supplementary alignments
 		    '-K 10000', // buffer length in bp (not documented)
-		    path.join(pathData.pathToVirus, 'genomeDB.fasta'), // ref sequence/db
+		    path.join(pathData.pathToDB, 'genomeDB.fasta'), // ref sequence/db
 		    readFrom // read file from
 	    ],
 	    bwaOptions = {
@@ -62,7 +62,7 @@ function run_speciesTyping(pathData) {
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
 		    '--bamFile=-', // read BAM from stdin
-		    '--indexFile=' + path.join(pathData.pathToVirus, 'speciesIndex'), // index file
+		    '--indexFile=' + path.join(pathData.pathToDB, 'speciesIndex'), // index file
 		    '--read=100', // min. number of reads between analysis
 		    '--time=3', // min. number of secs between analysis
 		    '--output=-' // output to stdout

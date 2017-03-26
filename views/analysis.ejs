@@ -7,25 +7,41 @@
 
 <div class="ui main text container">
 
-    <!--Button to open connection and reveal path box-->
-    <button class="ui blue button" id="getStarted">Get Started</button>
+    <div class="ui grid">
+        <div class="sixteen wide column">
+            <!--Button to open connection and reveal path box-->
+            <button class="ui blue button" id="getStarted">Get Started</button>
 
-        <!--Form to submit the path to the folder to watch-->
-    <form class="ui form" id="readPathsForm">
-        <input type="text" placeholder="Enter path to reads (or fastq)" class="ui text"
-               name="readsPath" id="readsPath" required>
-        <input type="text" placeholder="Enter path to virus database" class="ui text"
-               name="virusPath" id="virusPath" required>
-        <input type="text" placeholder="Directory to run analysis from" class="ui text"
-        name="outputPath" id="outputPath" required>
-        <input type="text" placeholder="Output file name (no extension)" class="ui text"
-               name="outputFile" id="outputFile" required>
-        <input type="submit" class="ui green button" id="submitReadsPath">
-    </form>
+                <!--Form to submit the path to the folder to watch-->
+            <form class="ui form" id="readPathsForm">
+                <div class="field">
+                    <label for="readsPath">Path to reads or fastq file</label>
+                    <input type="text" placeholder="Enter path to reads or fastq"
+                       name="readsPath" id="readsPath" required>
+                </div>
+                <div class="field">
+                    <label for="dbPath">Path to reference database</label>
+                    <input type="text" placeholder="Enter path to database"
+                           name="dbPath" id="dbPath" required>
+                </div>
+                <div class="field">
+                    <label for="outputPath">Run analysis from</label>
+                    <input type="text" placeholder="Directory to run analysis from"
+                name="outputPath" id="outputPath" required>
+                </div>
+                <div class="field">
+                    <label for="outputFile">Output file name</label>
+                    <input type="text" placeholder="Output file name (no extension)"
+                       name="outputFile" id="outputFile" required>
+                </div>
+                <input type="submit" class="ui green button" id="submitReadsPath">
+            </form>
 
-    <!--buttons to start and stop the species typing-->
-    <button class="ui green button" id="startAnalysis">Start Analysis</button>
-    <button class="ui red button" id="stopAnalysis">Stop Analysis</button>
+            <!--buttons to start and stop the species typing-->
+            <button class="ui green button" id="startAnalysis">Start Analysis</button>
+            <button class="ui red button" id="stopAnalysis">Stop Analysis</button>
+        </div>
+    </div>
 
 </div>
 
