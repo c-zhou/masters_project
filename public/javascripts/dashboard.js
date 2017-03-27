@@ -16,13 +16,15 @@ function sankeyDiagram() {
 	    rectCornerRadius = 3, // round corners on the node rectangles
 	    legendRectSize   = 18, // size of the legend colour squares
 	    legendSpacing    = 4, // spacing between legend squares
+	    linkColourBy,
+	    linkColourScale,
 	    formatNumber     = d3.format(numberFormat);
 
 	// this function will return a given number formatted by formatNumber and then with our
 	// units ('Widgets') added to the end
 	var format           = function(d) { return formatNumber(d) + ' ' + units; };
 
-	// accesss to a predefined colour-scheme
+	// accesss to a predefined colour-scheme for nodes
 	var color            = d3.scaleOrdinal(d3.schemeCategory20);
 
 	// selection will be the DOM element for current iteration of call(chart)
@@ -62,6 +64,12 @@ function sankeyDiagram() {
 			// this makes sure the link for which the target has the highest y coordinate departs first
 			// first out of the rectangle. This basically means there is minimal crossover of flows
 			.sort(function (a, b) { return b.dy - a.dy; });
+
+		if (linkColourBy && linkColourScale) {
+			link.attr('stroke', function(d) {
+				return linkColourScale(d[linkColourBy])
+			});
+		}
 
 
 		// ADD THE LINK TITLES - this appends a text element to each link when moused over that
@@ -269,9 +277,22 @@ function sankeyDiagram() {
 		legendSpacing = _;
 		return chart;
 	};
+
+	chart.linkColourBy = function(_) {
+		if (!arguments.length) return linkColourBy;
+		linkColourBy = _;
+		return chart;
+	};
+
+	chart.linkColourScale = function(_) {
+		if (!arguments.length) return linkColourScale;
+		linkColourScale = _;
+		return chart;
+	};
+
 	return chart;
 }
 
-var RdYlBu = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', '#ffffbf',
- '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695'];
-var micDomain = [0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0];
+
+
+

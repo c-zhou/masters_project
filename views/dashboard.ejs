@@ -19,11 +19,46 @@
 
 
 <script>
+    // function that searches for the closest number to num in array and returns idx
+	Array.prototype.closest = function(num) {
+		var mid;
+		var lo = 0;
+		var hi = this.length - 1;
+		while (hi - lo > 1) {
+			mid = Math.floor ((lo + hi) / 2);
+			if (this[mid] < num) {
+				lo = mid;
+			} else {
+				hi = mid;
+			}
+		}
+		if (num - this[lo] <= this[hi] - num) {
+			return lo;
+		}
+		return hi;
+	};
+
+	var RdYlBu    = [
+		    '#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', '#ffffbf',
+            '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695'
+        ],
+	    micDomain = [
+	    	0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0
+        ];
+
+	// create a colour scale that takes a MIC value and returns closest colour
+    // based on the above domain of MIC values and the colour scale
+	var linkColourScale = function(t) {
+		return RdYlBu[micDomain.closest(t)];
+	};
+
     // set up the sankey diagram
     var chart = sankeyDiagram()
         .data(diagramData)
         .width(1280)
         .height(720)
+        .linkColourBy('MIC')
+        .linkColourScale(linkColourScale)
         .nodeWidth(7)
         .nodePadding(5)
         .legendRectSize(25);
