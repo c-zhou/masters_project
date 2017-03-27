@@ -271,3 +271,7 @@ function sankeyDiagram() {
 	};
 	return chart;
 }
+
+var RdYlBu = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', '#ffffbf',
+ '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695'];
+var micDomain = [0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0];

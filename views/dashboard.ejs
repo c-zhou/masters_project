@@ -2,6 +2,7 @@
 
 <!--tell d3.js to use the sankey plug-in-->
     <script src="https://unpkg.com/d3-sankey@0"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/dashboard.css" type="text/css">
     <script>
         // grabs the data being sent from the server and stores it in params
@@ -21,9 +22,9 @@
     // set up the sankey diagram
     var chart = sankeyDiagram()
         .data(diagramData)
-        .width(960)
-        .height(500)
-        .nodeWidth(5)
+        .width(1280)
+        .height(720)
+        .nodeWidth(7)
         .nodePadding(5)
         .legendRectSize(25);
 
