@@ -66,9 +66,7 @@ function sankeyDiagram() {
 			.sort(function (a, b) { return b.dy - a.dy; });
 
 		if (linkColourBy && linkColourScale) {
-			link.style('stroke', function(d) {
-				if () return linkColourScale(d[linkColourBy]);
-			});
+			link.style('stroke', function(d) { return linkColourScale(d[linkColourBy]);	});
 		}
 
 
