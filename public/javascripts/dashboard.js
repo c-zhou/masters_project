@@ -108,10 +108,6 @@ function sankeyDiagram() {
 			.style('fill', function (d) {
 				return d.color = color(d.name.replace(/ .*/, ''));
 			})
-			// the stroke around the outside of the rect. is then drawn in the same shade, but darker
-			// .style('stroke', function (d) {
-			// 	return d3.rgb(d.color).darker(darker);
-			// })
 		  .append('title')
 			.text(function (d) {
 				return d.name + '\n' + format(d.value);
@@ -162,6 +158,31 @@ function sankeyDiagram() {
 			legend.append('text')
 				.attr('x', legendRectSize / 2 - legendSpacing - 1) // centre text in rectangles
 				.attr('y', legendRectSize / 2 + legendSpacing + 1) // 1 is a minor adjustment
+				.text(function(d) { return d; });
+		}
+
+		if (linkColourBy && linkColourScale) {
+			var colourLegend = svg.selectAll('.colourLegend')
+			  .data(micDomain)
+			  .enter().append('g')
+				.attr('class', 'colourLegend')
+				.attr('transform', function(d, i) {
+					var height = legendRectSize + legendSpacing,
+					    offset = height * mic.length / 2,
+					    horz = width - legendRectSize * 2,
+					    vert = i * height + offset;
+					return 'translate(' + horz + ',' + vert + ')';
+				});
+
+			colourLegend.append('rect')
+				.attr('width', legendRectSize)
+				.attr('height', legendRectSize)
+				.style('fill', linkColourScale)
+				.style('stroke', linkColourScale);
+
+			colourLegend.append('text')
+				.attr('x', 6)
+				.attr('y', function(d, i) { return i * legendSpacing; })
 				.text(function(d) { return d; });
 		}
 
