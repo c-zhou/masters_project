@@ -37,7 +37,7 @@ sets the fill colour to mostly opaque and keeps the edges sharp. */
 desired, could change the colour of the highlighted link by adding in a line to this block
 changing the colour like: stroke: red, */
 .link:hover {
-    stroke-opacity: .5;
+    stroke-opacity: 1;
     /*stroke: yellow;*/
 }
 /*============================================================================*/
