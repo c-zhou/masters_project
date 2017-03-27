@@ -59,14 +59,14 @@ function sankeyDiagram() {
 			.attr('class', function(d) { return (d.sampleID === 'ref' ? 'link ref' : 'link'); })
 			.attr('d', path)
 			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
-			.style('stroke-width', function (d) { return Math.max(1, d.dy); })
+			.style('stroke-width', function (d) { return Math.max(1, d.dy) * 0.95; })
 			.on('dblclick', dblClickLink) // highlight sample on link double-click
 			// this makes sure the link for which the target has the highest y coordinate departs first
 			// first out of the rectangle. This basically means there is minimal crossover of flows
 			.sort(function (a, b) { return b.dy - a.dy; });
 
 		if (linkColourBy && linkColourScale) {
-			link.attr('stroke', function(d) {
+			link.style('stroke', function(d) {
 				return linkColourScale(d[linkColourBy])
 			});
 		}
