@@ -17,6 +17,7 @@ function sankeyDiagram() {
 	    legendRectSize   = 18, // size of the legend colour squares
 	    legendSpacing    = 4, // spacing between legend squares
 	    linkColourBy,
+	    reference,
 	    linkColourScale,
 	    formatNumber     = d3.format(numberFormat);
 
@@ -56,7 +57,7 @@ function sankeyDiagram() {
 		var link = svg.append('g').selectAll('.link')
 		  .data(graph.links)
 		  .enter().append('path')
-			.attr('class', function(d) { return (d.sampleID === 'ref' ? 'link ref' : 'link'); })
+			.attr('class', 'link')
 			.attr('d', path)
 			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
 			.style('stroke-width', function (d) { return Math.max(1, d.dy) * 0.95; })
@@ -65,10 +66,15 @@ function sankeyDiagram() {
 			// first out of the rectangle. This basically means there is minimal crossover of flows
 			.sort(function (a, b) { return b.dy - a.dy; });
 
+		// if user has specified to colour the link by an attribute
 		if (linkColourBy && linkColourScale) {
 			link.style('stroke', function(d) { return linkColourScale(d[linkColourBy]);	});
 		}
 
+		// if a reference was specified by user, give it an id
+		if (reference) {
+			link.attr('id', function(d) { if (d.sampleID === reference) return 'reference' });
+		}
 
 		// ADD THE LINK TITLES - this appends a text element to each link when moused over that
 		// contains the source and target name (with a neat arrow in between), which when applied to
@@ -285,6 +291,12 @@ function sankeyDiagram() {
 	chart.linkColourScale = function(_) {
 		if (!arguments.length) return linkColourScale;
 		linkColourScale = _;
+		return chart;
+	};
+
+	chart.reference = function(_) {
+		if (!arguments.length) return reference;
+		reference = _;
 		return chart;
 	};
 
