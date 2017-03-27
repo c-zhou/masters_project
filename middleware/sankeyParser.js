@@ -28,6 +28,7 @@ function graphParser(data) {
 					"source": currentBase + position,
 					"target": bases[position + 1] + (position + 1),
 					"sampleID": data.sampleID[index],
+					"MIC": data.MIC[index],
 					"value": 1 // controls how thick link is. keep all at 1
 				});
 			}

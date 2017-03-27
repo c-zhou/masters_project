@@ -67,7 +67,7 @@ function sankeyDiagram() {
 
 		if (linkColourBy && linkColourScale) {
 			link.style('stroke', function(d) {
-				console.log(d[linkColourBy]);
+				console.log(d);
 				return linkColourScale(d[linkColourBy]);
 			});
 		}
