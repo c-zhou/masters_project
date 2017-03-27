@@ -13,7 +13,7 @@ function sankeyDiagram() {
 	    nodePadding      = 40,
 	    numberFormat     = ',.0f', // zero decimal places
 	    sankeyLayout     = 50,
-	    rectCornerRadius = 3, // round corners on the node rectangles
+	    rectCornerRadius = 1, // round corners on the node rectangles
 	    legendRectSize   = 18, // size of the legend colour squares
 	    legendSpacing    = 4, // spacing between legend squares
 	    linkColourBy,
@@ -58,6 +58,7 @@ function sankeyDiagram() {
 		  .data(graph.links)
 		  .enter().append('path')
 			.attr('class', 'link')
+			.attr('id', function(d){ if(reference && d.sampleID === reference) return 'reference' })
 			.attr('d', path)
 			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
 			.style('stroke-width', function (d) { return Math.max(1, d.dy) * 0.95; })
@@ -70,11 +71,6 @@ function sankeyDiagram() {
 			// this makes sure the link for which the target has the highest y coordinate departs first
 			// first out of the rectangle. This basically means there is minimal crossover of flows
 			.sort(function (a, b) { return b.dy - a.dy; });
-
-		// if a reference was specified by user, give it an id
-		if (reference) {
-			link.attr('id', function(d) { if (d.sampleID === reference) return 'reference' });
-		}
 
 		// ADD THE LINK TITLES - this appends a text element to each link when moused over that
 		// contains the source and target name (with a neat arrow in between), which when applied to
@@ -113,9 +109,9 @@ function sankeyDiagram() {
 				return d.color = color(d.name.replace(/ .*/, ''));
 			})
 			// the stroke around the outside of the rect. is then drawn in the same shade, but darker
-			.style('stroke', function (d) {
-				return d3.rgb(d.color).darker(darker);
-			})
+			// .style('stroke', function (d) {
+			// 	return d3.rgb(d.color).darker(darker);
+			// })
 		  .append('title')
 			.text(function (d) {
 				return d.name + '\n' + format(d.value);
