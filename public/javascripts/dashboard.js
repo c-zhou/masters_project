@@ -19,6 +19,8 @@ function sankeyDiagram() {
 	    linkColourBy,
 	    reference,
 	    linkColourScale,
+	    linkColourDomain,
+	    linkColourRange,
 	    formatNumber     = d3.format(numberFormat);
 
 	// this function will return a given number formatted by formatNumber and then with our
@@ -163,12 +165,12 @@ function sankeyDiagram() {
 
 		if (linkColourBy && linkColourScale) {
 			var colourLegend = svg.selectAll('.colourLegend')
-			  .data(micDomain)
+			  .data(linkColourDomain)
 			  .enter().append('g')
 				.attr('class', 'colourLegend')
 				.attr('transform', function(d, i) {
 					var height = legendRectSize + legendSpacing,
-					    offset = height * mic.length / 2,
+					    offset = height * linkColourDomain.length / 2,
 					    horz = width - legendRectSize * 2,
 					    vert = i * height + offset;
 					return 'translate(' + horz + ',' + vert + ')';
@@ -305,9 +307,15 @@ function sankeyDiagram() {
 		return chart;
 	};
 
-	chart.linkColourScale = function(_) {
+	chart.linkColourScale = function(domain, range) {
 		if (!arguments.length) return linkColourScale;
-		linkColourScale = _;
+		linkColourDomain = domain;
+		linkColourRange  = range;
+		// create a colour scale that takes a value and returns closest colour
+		// based on the domain of values and the colour scale
+		linkColourScale = function(t) {
+			return range[domain.closest(t)];
+		};
 		return chart;
 	};
 
@@ -315,6 +323,25 @@ function sankeyDiagram() {
 		if (!arguments.length) return reference;
 		reference = _;
 		return chart;
+	};
+
+	// function that searches for the closest number to num in array and returns idx
+	Array.prototype.closest = function(num) {
+		var mid;
+		var lo = 0;
+		var hi = this.length - 1;
+		while (hi - lo > 1) {
+			mid = Math.floor ((lo + hi) / 2);
+			if (this[mid] < num) {
+				lo = mid;
+			} else {
+				hi = mid;
+			}
+		}
+		if (num - this[lo] <= this[hi] - num) {
+			return lo;
+		}
+		return hi;
 	};
 
 	return chart;
