@@ -173,6 +173,7 @@ function sankeyDiagram() {
 					    offset = height * linkColourDomain.length / 2,
 					    horz = width - legendRectSize * 2,
 					    vert = i * height + offset;
+					if (!nodeLabels) { vert += (color.domain().length - 1) * height + (height * color.domain().length / 2)}
 					return 'translate(' + horz + ',' + vert + ')';
 				});
 
@@ -184,7 +185,7 @@ function sankeyDiagram() {
 
 			colourLegend.append('text')
 				.attr('x', legendSpacing + legendRectSize)
-				.attr('y', (legendSpacing + legendRectSize) / 2)
+				.attr('y', (legendSpacing + legendRectSize) / 2 + 2)
 				.text(function(d) { return d; });
 		}
 
