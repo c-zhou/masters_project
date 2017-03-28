@@ -28,7 +28,7 @@ function sankeyDiagram() {
 	var format           = function(d) { return formatNumber(d) + ' ' + units; };
 
 	// accesss to a predefined colour-scheme for nodes
-	var color            = d3.scaleOrdinal(d3.schemeCategory20c.reverse());
+	var color            = d3.scaleOrdinal(['#a6611a', '#dfc27d', '#80cdc1', '#018571']);
 
 	// selection will be the DOM element for current iteration of call(chart)
 	function chart(selection){
