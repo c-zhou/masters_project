@@ -64,6 +64,13 @@ changing the colour like: stroke: red, */
 /*============================================================================*/
 
 /*============================================================================*/
+/* styling for the colour legend text. make the font bold and change the font type*/
+.colourLegend text {
+    font-family: 'Roboto', sans-serif;
+}
+/*============================================================================*/
+
+/*============================================================================*/
 /* styling link that has been double clicked*/
 .activeLink {
     stroke: yellow;

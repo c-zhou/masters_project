@@ -174,7 +174,7 @@ function sankeyDiagram() {
 					    horz = width - legendRectSize * 2,
 					    vert = i * height + offset;
 					if (!nodeLabels) { vert += (color.domain().length - 1) * height + (height * color.domain().length / 2)}
-					return 'translate(' + horz + ',' + vert + ')';
+					return 'translate(' + (horz - 2) + ',' + vert + ')';
 				});
 
 			colourLegend.append('rect')
