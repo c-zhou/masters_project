@@ -184,7 +184,7 @@ function sankeyDiagram() {
 
 			colourLegend.append('text')
 				.attr('x', legendSpacing + legendRectSize)
-				.attr('y', function(d, i) { return i * (legendSpacing / 2) + (legendRectSize / 2) + legendSpacing; })
+				.attr('y', function(d, i) { return i * (legendSpacing / 2) + (legendRectSize / 2); })
 				.text(function(d) { return d; });
 		}
 
