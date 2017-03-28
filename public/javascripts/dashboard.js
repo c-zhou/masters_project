@@ -63,7 +63,7 @@ function sankeyDiagram() {
 			.attr('id', function(d){ if(reference && d.sampleID === reference) return 'reference' })
 			.attr('d', path)
 			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
-			.style('stroke-width', function (d) { return Math.max(1, d.dy) * 0.95; })
+			.style('stroke-width', function (d) { return Math.max(1, d.dy); })
 			.style('stroke', function(d) { // if user has specified to colour the link by an attribute
 				if (linkColourBy && linkColourScale && d.sampleID !== reference) {
 					return linkColourScale(d[linkColourBy]);
