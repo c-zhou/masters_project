@@ -183,8 +183,8 @@ function sankeyDiagram() {
 				.style('stroke', linkColourScale);
 
 			colourLegend.append('text')
-				.attr('x', 6)
-				.attr('y', function(d, i) { return i * legendSpacing; })
+				.attr('x', legendSpacing + legendRectSize)
+				.attr('y', function(d, i) { return i * legendSpacing + (legendRectSize / 2) + legendSpacing; })
 				.text(function(d) { return d; });
 		}
 
