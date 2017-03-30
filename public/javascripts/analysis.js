@@ -328,7 +328,7 @@ function drawChart(data){
 			if(d.data.species.length > 30){
 				species = d.data.species.substr(0, 27) + "...";
 			}
-			return species + ': ' + d.value * 100 + '%';
+			return species + ': ' + numberFormatPerc(d.value);
 		});
 
 	text.exit()
