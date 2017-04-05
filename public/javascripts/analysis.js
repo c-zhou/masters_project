@@ -71,7 +71,17 @@ startAnalysisButton.click(function(){
 	});
 
 	// initiate plotting
-	plot(socket);
+    var donut = donutChart()
+        .width(960)
+        .height(500)
+        .transTime(750)
+        .cornerRadius(3)
+        .padAngle(0.015)
+        .variable('prob')
+        .category('species');
+
+    d3.select('#chart')
+        .call(donut);
 });
 
 // When the stop button is clicked, kill the child process running the species typing and
@@ -81,289 +91,400 @@ stopAnalysisButton.click(function(){
 	socket.emit('kill');
 });
 
-
+socket.on('stdout', function(data) {
+	donut.data(data);
+});
 
 //============================================================
 // D3 code for making the donut chart
 //============================================================
+function donutChart() {
+    var data = [],
+        width,
+        height,
+        margin = {top: 10, right: 10, bottom: 10, left: 10},
+        colour = d3.scaleOrdinal(d3.schemeCategory20c), // colour scheme
+        variable, // value in data that will dictate proportions on chart
+        category, // compare data by
+        padAngle, // effectively dictates the gap between slices
+        transTime, // transition time
+        updateData,
+        floatFormat = d3.format('.4r'),
+        cornerRadius, // sets how rounded the corners are on each slice
+        percentFormat = d3.format(',.2%');
 
-// variables required across both functions
-var svg,
-    arc,
-    div,
-    pie,
-    radius,
-    colour,
-    outerArc,
-    legendSpacing,
-    legendRectSize,
-    numberFormatPerc;
+    function chart(selection){
+        selection.each(function() {
+            // generate chart
+            // ===========================================================================================
+            // Set up constructors for making donut. See https://github.com/d3/d3-shape/blob/master/README.md
+            var radius = Math.min(width, height) / 2;
 
+            // creates a new pie generator
+            var pie = d3.pie()
+                .value(function(d) { return floatFormat(d[variable]); })
+                .sort(null);
 
-// function that controls the plotting
-function plot(socket){
+            // contructs and arc generator. This will be used for the donut. The difference between outer and inner
+            // radius will dictate the thickness of the donut
+            var arc = d3.arc()
+                .outerRadius(radius * 0.8)
+                .innerRadius(radius * 0.6)
+                .cornerRadius(cornerRadius)
+                .padAngle(padAngle);
 
-	var width            = 960,
-	    height           = 450,
-	    interval         = 2000, // timer interval for plotting
-	    padAngle         = 0.01,
-	    floatFormat      = d3.format('.4r'), // will format as float to 4 decimal places
-	    cornerRadius     = 4,
-	    plottingStarted  = false,
-	    chartTimer,
-	    mostRecentData;
+            // this arc is used for aligning the text labels
+            var outerArc = d3.arc()
+                .outerRadius(radius * 0.9)
+                .innerRadius(radius * 0.9);
+            // ===========================================================================================
 
-	colour = d3.scaleOrdinal(d3.schemeCategory20);
-	radius           = Math.min(width, height) / 2;
-	numberFormatPerc = d3.format(',.2%'); // will format numbers to percentage to 2 decimal places
+            // ===========================================================================================
+            // append the svg object to the selection
+            // var svg = selection.append('svg')
+            var svg = selection.append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+            // ===========================================================================================
 
-	socket.on('stdout', function(data){
+            // ===========================================================================================
+            // g elements to keep elements within svg modular
+            svg.append('g').attr('class', 'slices');
+            svg.append('g').attr('class', 'labelName');
+            svg.append('g').attr('class', 'lines');
+            // ===========================================================================================
 
-		// keep the most recently received data on the client-side
-		mostRecentData = data;
+            // ===========================================================================================
+            // add and colour the donut slices
+            var path = svg.select('.slices')
+                .selectAll('path')
+                .data(pie(data))
+                .enter().append('path')
+                .attr('fill', function(d) { return colour(d.data[category]); })
+                .attr('d', arc);
+            // ===========================================================================================
 
-		// i.e is this is the first time data has been received
-		if (!plottingStarted){
-			// setup interval to trigger plotting every given interval
-			chartTimer = setInterval(function(){
-				// update chart
-				drawChart(mostRecentData, svg);
-			}, interval);
+            // ===========================================================================================
+            // add text labels
+            var label = svg.select('.labelName').selectAll('text')
+                .data(pie(data))
+                .enter().append('text')
+                .attr('dy', '.35em')
+                .html(updateLabelText)
+                .attr('transform', labelTransform)
+                .style('text-anchor', function(d) {
+                    // if slice centre is on the left, anchor text to start, otherwise anchor to end
+                    return (midAngle(d)) < Math.PI ? 'start' : 'end';
+                });
+            // ===========================================================================================
 
-			// when user resizes the window, replot based on the window's size
-			window.addEventListener('resize', drawChart(mostRecentData));
+            // ===========================================================================================
+            // add lines connecting labels to slice. A polyline creates straight lines connecting several points
+            var polyline = svg.select('.lines')
+                .selectAll('polyline')
+                .data(pie(data))
+                .enter().append('polyline')
+                .attr('points', calculatePoints);
+            // ===========================================================================================
 
-			plottingStarted = true;
-		}
-	});
+            // ===========================================================================================
+            // add tooltip to mouse events on slices and labels
+            d3.selectAll('.labelName text, .slices path').call(toolTip);
+            // ===========================================================================================
 
-	// stop the plotting timer when the stop button is clicked
-	stopAnalysisButton.click(function(){
-		clearInterval(chartTimer);
-	});
+            // ===========================================================================================
+            // FUNCTION TO UPDATE CHART
+            updateData = function() {
 
+                var updatePath = d3.select('.slices').selectAll('path');
+                var updateLines = d3.select('.lines').selectAll('polyline');
+                var updateLabels = d3.select('.labelName').selectAll('text');
 
+                var data0 = path.data(), // store the current data before updating to the new
+                    data1 = pie(data);
 
-	svg = d3.select('#chartContainer')
-		.append('svg')
-		.attr('class', 'shadow')
-		.append('g');
+                // update data attached to the slices, labels, and polylines. the key function assigns the data to
+                // the correct element, rather than in order of how the data appears. This means that if a category
+                // already exists in the chart, it will have its data updated rather than removed and re-added.
+                updatePath = updatePath.data(data1, key);
+                updateLines = updateLines.data(data1, key);
+                updateLabels = updateLabels.data(data1, key);
 
-	svg.append('g')
-		.attr('class', 'slices');
+                // adds new slices/lines/labels
+                updatePath.enter().append('path')
+                    .each(function(d, i) { this._current = findNeighborArc(i, data0, data1, key) || d; })
+                    .attr('fill', function(d) {  return colour(d.data[category]); })
+                    .attr('d', arc);
 
-	svg.append('g')
-		.attr('class', 'labelName');
+                updateLines.enter().append('polyline')
+                    .each(function(d, i) { this._current = findNeighborArc(i, data0, data1, key) || d; })
+                    .attr('points', calculatePoints);
 
-	svg.append('g')
-		.attr('class', 'labelValue');
+                updateLabels.enter().append('text')
+                    .each(function(d, i) { this._current = findNeighborArc(i, data0, data1, key) || d; })
+                    .html(updateLabelText)
+                    .attr('transform', labelTransform)
+                    .style('text-anchor', function(d) { return (midAngle(d)) < Math.PI ? 'start' : 'end'; });
 
-	svg.append('g')
-		.attr('class', 'lines');
+                // removes slices/labels/lines that are not in the current dataset
+                updatePath.exit()
+                    .transition()
+                    .duration(transTime)
+                    .attrTween("d", arcTween)
+                    .remove();
 
-	pie = d3.pie()
-		.sort(null)
-		.value(function(d){
-			return floatFormat(d.prob);
-		});
+                updateLines.exit()
+                    .transition()
+                    .duration(transTime)
+                    .attrTween("points", pointTween)
+                    .remove();
 
-	arc = d3.arc()
-		.outerRadius(radius * 0.8)
-		.innerRadius(radius * 0.6)
-		.cornerRadius(cornerRadius)
-		.padAngle(padAngle);
+                updateLabels.exit()
+                    .remove();
 
+                // animates the transition from old angle to new angle for slices/lines/labels
+                updatePath.transition().duration(transTime)
+                    .attrTween('d', arcTween);
 
-	outerArc = d3.arc()
-		.innerRadius(radius * 0.9)
-		.outerRadius(radius * 0.9);
+                updateLines.transition().duration(transTime)
+                    .attrTween('points', pointTween);
 
-	legendRectSize = radius * 0.08;
-	legendSpacing  = radius * 0.1;
+                updateLabels.transition().duration(transTime)
+                    .attrTween('transform', labelTween)
+                    .styleTween('text-anchor', labelStyleTween);
 
-	div = d3.select('body')
-		.append('div')
-		.attr('class', 'toolTip');
+                updateLabels.html(updateLabelText); // update the label text
 
-	svg.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-}
+                // add tooltip to mouse events on slices and labels
+                d3.selectAll('.labelName text, .slices path').call(toolTip);
 
+            };
+            // ===========================================================================================
+            // Functions
+            // calculates the angle for the middle of a slice
+            function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }
 
-// function that causes the actual chart to be 'drawn'
-function drawChart(data){
+            // function that creates and adds the tool tip to a selected element
+            function toolTip(selection) {
 
-	var chartDiv = document.getElementById('chartContainer');
+                // add tooltip (svg circle element) when mouse enters label or slice
+                selection.on('mouseenter', function (data) {
 
-	var width  = chartDiv.clientWidth,
-	    height = chartDiv.clientHeight;
+                    svg.append('text')
+                        .attr('class', 'toolCircle')
+                        .attr('dy', -15) // hard-coded. can adjust this to adjust text vertical alignment in tooltip
+                        .html(toolTipHTML(data)) // add text to the circle.
+                        .style('font-size', '.7em')
+                        .style('text-anchor', 'middle'); // centres text in tooltip
 
-	svg.attr('width', width)
-		.attr('height', height);
+                    svg.append('circle')
+                        .attr('class', 'toolCircle')
+                        .attr('r', radius * 0.55) // radius of tooltip circle
+                        .style('fill', colour(data.data[category])) // colour based on category mouse is over
+                        .style('fill-opacity', 0.35);
 
-	svg.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+                });
 
-	// PIE SLICES
-	var slice = svg.select('.slices')
-		.selectAll('path.slice')
-		.data(pie(data), function(d){
-			return d.data.species;
-		});
+                // remove the tooltip when mouse leaves the slice/label
+                selection.on('mouseout', function () {
+                    d3.selectAll('.toolCircle').remove();
+                });
+            }
 
-	slice.enter()
-		.insert('path')
-		.style('fill', function(d){
-			return colour(d.data.species);
-		})
-		.attr('class', 'slice');
+            // function to create the HTML string for the tool tip. Loops through each key in data object
+            // and returns the html string key: value
+            function toolTipHTML(data) {
 
-	slice.transition().duration(750)
-		.attrTween('d', function(d){
-			this._current = this._current || d;
-			var interpolate = d3.interpolate(this._current, d);
-			this._current = interpolate(0);
-			return function(t){
-				return arc(interpolate(t));
-			};
-		});
+                var tip = '',
+                    i   = 0;
 
-	slice.on('mousemove', function(d){
-		div.style('left', d3.event.pageX + 10 + 'px')
-			.style('top', d3.event.pageY - 25 + 'px')
-			.style('display', 'inline-block')
-			.html(d.data.species + '<br>' + numberFormatPerc(d.data.prob));
-	});
+                for (var key in data.data) {
 
-	slice.on('mouseout', function(d){
-		div.style('display', 'none');
-	});
+                    // if value is a number, format it as a percentage
+                    var value = (!isNaN(parseFloat(data.data[key]))) ? percentFormat(data.data[key]) : data.data[key];
 
-	slice.exit()
-		.remove();
+                    // leave off 'dy' attr for first tspan so the 'dy' attr on text element works. The 'dy' attr on
+                    // tspan effectively imitates a line break.
+                    if (i === 0) tip += '<tspan x="0">' + key + ': ' + value + '</tspan>';
+                    else tip += '<tspan x="0" dy="1.2em">' + key + ': ' + value + '</tspan>';
+                    i++;
+                }
 
-	var legend = svg.selectAll('.legend')
-		.data(colour.domain())
-		.enter()
-		.append('g')
-		.attr('class', 'legend')
-		.attr('transform', function(d, i){
-			var height = legendRectSize + legendSpacing,
-			    offset = height * colour.domain().length / 2,
-			    horz   = -3 * legendRectSize,
-			    vert   = i * height - offset;
-			return 'translate(' + horz + ',' + vert + ')';
-		});
+                return tip;
+            }
 
-	legend.append('rect')
-		.attr('width', legendRectSize)
-		.attr('height', legendRectSize)
-		.attr('rx', 20)
-		.attr('ry', 20)
-		.style('fill', colour)
-		.style('stroke', colour);
+            // calculate the points for the polyline to pass through
+            function calculatePoints(d) {
+                // see label transform function for explanations of these three lines.
+                var pos = outerArc.centroid(d);
+                pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                return [arc.centroid(d), outerArc.centroid(d), pos]
+            }
 
-	legend.append('text')
-		.attr('x', 30)
-		.attr('y', 12)
-		.text(function(d){
-			// parse the species label if it is longer than 30 characters
-			if(d.length > 30){
-				d = d.substr(0, 27) + "...";
-			}
-			return d;
-		});
+            function labelTransform(d) {
+                // effectively computes the centre of the slice.
+                // see https://github.com/d3/d3-shape/blob/master/README.md#arc_centroid
+                var pos = outerArc.centroid(d);
 
-	// TEXT LABELS
+                // changes the point to be on left or right depending on where label is.
+                pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                return 'translate(' + pos + ')';
+            }
 
-	var text = svg.select('.labelName')
-		.selectAll('text')
-		.data(pie(data), function(d){
-			var species = d.data.species;
-			// parse the species label if it is longer than 30 characters
-			if(d.data.species.length > 30){
-				species = d.data.species.substr(0, 27) + "...";
-			}
-			return species
-		});
+            function updateLabelText(d) {
+                return d.data[category] + ': <tspan>' + percentFormat(d.data[variable]) + '</tspan>';
+            }
 
-	text.enter()
-		.append('text')
-		.attr('dy', '0.35em')
-		.text(function(d){
-			var species = d.data.species;
-			// parse the species label if it is longer than 30 characters
-			if(d.data.species.length > 30){
-				species = d.data.species.substr(0, 27) + "...";
-			}
-			return species + ': ' + numberFormatPerc(d.value);
-		});
+            // function that calculates transition path for label and also it's text anchoring
+            function labelStyleTween(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t){
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI ? 'start':'end';
+                };
+            }
 
-	function midAngle(d){
-		return d.startAngle + (d.endAngle - d.startAngle) / 2;
-	}
+            function labelTween(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t){
+                    var d2  = interpolate(t),
+                        pos = outerArc.centroid(d2); // computes the midpoint [x,y] of the centre line that would be
+                    // generated by the given arguments. It is defined as startangle + endangle/2 and innerR + outerR/2
+                    pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1); // aligns the labels on the sides
+                    return 'translate(' + pos + ')';
+                };
+            }
 
-	text.transition().duration(750)
-		.attrTween('transform', function(d){
-			this._current = this._current || d;
-			var interpolate = d3.interpolate(this._current, d);
-			this._current = interpolate(0);
-			return function(t){
-				var d2  = interpolate(t),
-				    pos = outerArc.centroid(d2);
-				pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-				return 'translate(' + pos + ')';
-			};
-		})
-		.styleTween('text-anchor', function(d){
-			this._current = this._current || d;
-			var interpolate = d3.interpolate(this._current, d);
-			this._current = interpolate(0);
-			return function(t){
-				var d2 = interpolate(t);
-				return midAngle(d2) < Math.PI ? 'start':'end';
-			};
-		})
-		.text(function(d){
-			var species = d.data.species;
-			// parse the species label if it is longer than 30 characters
-			if(d.data.species.length > 30){
-				species = d.data.species.substr(0, 27) + "...";
-			}
-			return species + ': ' + numberFormatPerc(d.value);
-		});
+            function pointTween(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t){
+                    var d2  = interpolate(t),
+                        pos = outerArc.centroid(d2);
+                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+                };
+            }
 
-	text.exit()
-		.remove();
+            // function to calculate the tween for an arc's transition.
+            // see http://bl.ocks.org/mbostock/5100636 for a thorough explanation.
+            function arcTween(d) {
+                var i = d3.interpolate(this._current, d);
+                this._current = i(0);
+                return function(t) { return arc(i(t)); };
+            }
 
+            function findNeighborArc(i, data0, data1, key) {
+                var d;
+                return (d = findPreceding(i, data0, data1, key)) ? {startAngle: d.endAngle, endAngle: d.endAngle}
+                    : (d = findFollowing(i, data0, data1, key)) ? {startAngle: d.startAngle, endAngle: d.startAngle}
+                        : null;
+            }
+            // Find the element in data0 that joins the highest preceding element in data1.
+            function findPreceding(i, data0, data1, key) {
+                var m = data0.length;
+                while (--i >= 0) {
+                    var k = key(data1[i]);
+                    for (var j = 0; j < m; ++j) {
+                        if (key(data0[j]) === k) return data0[j];
+                    }
+                }
+            }
 
-	// SLICE TO TEXT POLYLINES
+            function key(d) {
+                return d.data[category];
+            }
 
-	var polyline = svg.select('.lines')
-		.selectAll('polyline')
-		.data(pie(data), function(d){
-			var species = d.data.species;
-			// parse the species label if it is longer than 30 characters
-			if(d.data.species.length > 30){
-				species = d.data.species.substr(0, 27) + "...";
-			}
-			return species;
-		});
+            // Find the element in data0 that joins the lowest following element in data1.
+            function findFollowing(i, data0, data1, key) {
+                var n = data1.length, m = data0.length;
+                while (++i < n) {
+                    var k = key(data1[i]);
+                    for (var j = 0; j < m; ++j) {
+                        if (key(data0[j]) === k) return data0[j];
+                    }
+                }
+            }
 
-	polyline.enter()
-		.append('polyline');
+            // ===========================================================================================
 
-	polyline.transition().duration(750)
-		.attrTween('points', function(d){
-			this._current = this._current || d;
-			var interpolate = d3.interpolate(this._current, d);
-			this._current = interpolate(0);
-			return function(t){
-				var d2  = interpolate(t),
-				    pos = outerArc.centroid(d2);
-				pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-				return [arc.centroid(d2), outerArc.centroid(d2), pos];
-			};
-		});
+        });
+    }
 
-	polyline.exit()
-		.remove();
+    // getter and setter functions. See Mike Bostocks post "Towards Reusable Charts" for a tutorial on how this works.
+    chart.width = function(value) {
+        if (!arguments.length) return width;
+        width = value;
+        return chart;
+    };
+
+    chart.height = function(value) {
+        if (!arguments.length) return height;
+        height = value;
+        return chart;
+    };
+
+    chart.margin = function(value) {
+        if (!arguments.length) return margin;
+        margin = value;
+        return chart;
+    };
+
+    chart.radius = function(value) {
+        if (!arguments.length) return radius;
+        radius = value;
+        return chart;
+    };
+
+    chart.padAngle = function(value) {
+        if (!arguments.length) return padAngle;
+        padAngle = value;
+        return chart;
+    };
+
+    chart.cornerRadius = function(value) {
+        if (!arguments.length) return cornerRadius;
+        cornerRadius = value;
+        return chart;
+    };
+
+    chart.colour = function(value) {
+        if (!arguments.length) return colour;
+        colour = value;
+        return chart;
+    };
+
+    chart.variable = function(value) {
+        if (!arguments.length) return variable;
+        variable = value;
+        return chart;
+    };
+
+    chart.category = function(value) {
+        if (!arguments.length) return category;
+        category = value;
+        return chart;
+    };
+
+    chart.transTime = function(value) {
+        if (!arguments.length) return transTime;
+        transTime = value;
+        return chart;
+    };
+
+    chart.data = function(value) {
+        if (!arguments.length) return data;
+        data = value;
+        if (typeof updateData === 'function') updateData();
+        return chart;
+    };
+
+    return chart;
 }
