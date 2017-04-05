@@ -82,6 +82,11 @@ startAnalysisButton.click(function(){
 
     d3.select('#chart')
         .call(donut);
+
+    socket.on('stdout', function(data) {
+        console.log("stdout received");
+        donut.data(data);
+    });
 });
 
 // When the stop button is clicked, kill the child process running the species typing and
@@ -89,10 +94,6 @@ startAnalysisButton.click(function(){
 stopAnalysisButton.click(function(){
 	stopAnalysisButton.fadeOut(fadeTime);
 	socket.emit('kill');
-});
-
-socket.on('stdout', function(data) {
-	donut.data(data);
 });
 
 //============================================================
