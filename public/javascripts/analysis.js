@@ -80,7 +80,7 @@ startAnalysisButton.click(function(){
         .variable('prob')
         .category('species');
 
-    d3.select('#chart')
+    d3.select('#chartContainer')
         .call(donut);
 
     socket.on('stdout', function(data) {
