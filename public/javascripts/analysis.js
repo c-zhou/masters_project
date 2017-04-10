@@ -88,13 +88,14 @@ startAnalysisButton.click(function(){
     	data.forEach(function(d, i) {
     			probTotal += +d.prob;
 	    });
-    	if (probTotal < 99) {
+    	if (probTotal < 0.99) {
     		data.push({
 			    species: "other",
 			    prob: 1.0 - probTotal,
 			    err: "N/A"
 		    });
 	    }
+	    console.log(probTotal);
         donut.data(data);
     });
 });
