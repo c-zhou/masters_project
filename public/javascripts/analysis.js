@@ -84,6 +84,7 @@ startAnalysisButton.click(function(){
         .call(donut);
 
     socket.on('stdout', function(data) {
+    	console.log(data);
         donut.data(data);
     });
 });
