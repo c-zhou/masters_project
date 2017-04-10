@@ -86,6 +86,7 @@ startAnalysisButton.click(function(){
     socket.on('stdout', function(data) {
     	var probTotal;
     	data.forEach(function(d, i) {
+    		    console.log(+d.prob);
     			probTotal += +d.prob;
 	    });
     	if (probTotal < 0.99) {
