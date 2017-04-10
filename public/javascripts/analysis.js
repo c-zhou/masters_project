@@ -84,7 +84,17 @@ startAnalysisButton.click(function(){
         .call(donut);
 
     socket.on('stdout', function(data) {
-    	console.log(data);
+    	var probTotal;
+    	data.forEach(function(d, i) {
+    			probTotal += +d.prob;
+	    });
+    	if (probTotal < 99) {
+    		data.push({
+			    species: "other",
+			    prob: 1.0 - probTotal
+			    err: "N/A"
+		    });
+	    }
         donut.data(data);
     });
 });
