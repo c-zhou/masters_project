@@ -91,7 +91,7 @@ startAnalysisButton.click(function(){
     	if (probTotal < 99) {
     		data.push({
 			    species: "other",
-			    prob: 1.0 - probTotal
+			    prob: 1.0 - probTotal,
 			    err: "N/A"
 		    });
 	    }
