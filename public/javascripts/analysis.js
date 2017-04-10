@@ -85,11 +85,8 @@ startAnalysisButton.click(function(){
 
     socket.on('stdout', function(data) {
     	var probTotal = Number();
-    	data.forEach(function(d, i) {
-    		    console.log(+d.prob);
-    			probTotal += +d.prob;
-    			console.log(probTotal);
-	    });
+    	// add in an "other" species if the probabilities dont add to 1.0
+    	data.forEach(function(d) { probTotal += +d.prob; });
     	if (probTotal < 0.99) {
     		data.push({
 			    species: "other",
@@ -97,7 +94,7 @@ startAnalysisButton.click(function(){
 			    err: "N/A"
 		    });
 	    }
-	    console.log(probTotal);
+	    // update the donut chart with the new data
         donut.data(data);
     });
 });
@@ -117,7 +114,7 @@ function donutChart() {
         width,
         height,
         margin = {top: 10, right: 10, bottom: 10, left: 10},
-        colour = d3.scaleOrdinal(d3.schemeCategory20c), // colour scheme
+        colour = d3.scaleOrdinal(d3.schemeCategory20), // colour scheme
         variable, // value in data that will dictate proportions on chart
         category, // compare data by
         padAngle, // effectively dictates the gap between slices
