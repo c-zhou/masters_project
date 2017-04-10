@@ -74,7 +74,7 @@ startAnalysisButton.click(function(){
     var donut = donutChart()
         .width(960)
         .height(500)
-        .transTime(750)
+        .transTime(500)
         .cornerRadius(3)
         .padAngle(0.015)
         .variable('prob')
@@ -284,12 +284,12 @@ function donutChart() {
                         .attr('class', 'toolCircle')
                         .attr('dy', -15) // hard-coded. can adjust this to adjust text vertical alignment in tooltip
                         .html(toolTipHTML(data)) // add text to the circle.
-                        .style('font-size', '.7em')
+                        .style('font-size', '.8em')
                         .style('text-anchor', 'middle'); // centres text in tooltip
 
                     svg.append('circle')
                         .attr('class', 'toolCircle')
-                        .attr('r', radius * 0.55) // radius of tooltip circle
+                        .attr('r', radius * 0.59) // radius of tooltip circle
                         .style('fill', colour(data.data[category])) // colour based on category mouse is over
                         .style('fill-opacity', 0.35);
 
