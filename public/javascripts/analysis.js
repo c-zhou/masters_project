@@ -84,7 +84,6 @@ startAnalysisButton.click(function(){
         .call(donut);
 
     socket.on('stdout', function(data) {
-        console.log("stdout received");
         donut.data(data);
     });
 });
@@ -175,10 +174,7 @@ function donutChart() {
                 .attr('dy', '.35em')
                 .html(updateLabelText)
                 .attr('transform', labelTransform)
-                .style('text-anchor', function(d) {
-                    // if slice centre is on the left, anchor text to start, otherwise anchor to end
-                    return (midAngle(d)) < Math.PI ? 'start' : 'end';
-                });
+                .style('text-anchor', function(d) { return (midAngle(d)) < Math.PI ? 'start' : 'end'; });
             // ===========================================================================================
 
             // ===========================================================================================
@@ -304,7 +300,7 @@ function donutChart() {
                 for (var key in data.data) {
 
                     // if value is a number, format it as a percentage
-                    var value = (!isNaN(parseFloat(data.data[key]))) ? percentFormat(data.data[key]) : data.data[key];
+                    var value = (!isNaN(parseFloat(data.data[key]))) ? floatFormat(data.data[key]) : data.data[key];
 
                     // leave off 'dy' attr for first tspan so the 'dy' attr on text element works. The 'dy' attr on
                     // tspan effectively imitates a line break.
