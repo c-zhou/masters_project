@@ -289,7 +289,7 @@ function donutChart() {
 
                     svg.append('circle')
                         .attr('class', 'toolCircle')
-                        .attr('r', radius * 0.58) // radius of tooltip circle
+                        .attr('r', radius * 0.57) // radius of tooltip circle
                         .style('fill', colour(data.data[category])) // colour based on category mouse is over
                         .style('fill-opacity', 0.35);
 
