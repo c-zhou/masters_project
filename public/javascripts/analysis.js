@@ -84,7 +84,7 @@ startAnalysisButton.click(function(){
         .call(donut);
 
     socket.on('stdout', function(data) {
-    	var probTotal;
+    	var probTotal = Number();
     	data.forEach(function(d, i) {
     		    console.log(+d.prob);
     			probTotal += +d.prob;
