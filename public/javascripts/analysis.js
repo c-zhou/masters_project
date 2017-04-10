@@ -88,6 +88,7 @@ startAnalysisButton.click(function(){
     	data.forEach(function(d, i) {
     		    console.log(+d.prob);
     			probTotal += +d.prob;
+    			console.log(probTotal);
 	    });
     	if (probTotal < 0.99) {
     		data.push({
