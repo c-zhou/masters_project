@@ -38,7 +38,7 @@ var parser = function(fileName, callback) {
 		// construct the data entry for this row
 		var obj = {
 			sampleID: row[0],
-			sequence: row[1].replace('|', ''),
+			sequence: row[1].replace(/|/gi, ''),
 			gene_start: gene_start + 1,
 			gene_end: gene_end - 1
 		};
