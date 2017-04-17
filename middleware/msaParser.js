@@ -23,6 +23,9 @@ var parser = function(fileName, callback) {
 	rl.on('line', function(line) {
 		var row = line.split(re);
 
+		// change any * characters to an indel (-)
+        row[1] = row[1].replace(/\*/gi, "-");
+
 		// get the boundaries for the gene
 		var gene_start = row[1].indexOf("|"),
 			gene_end   = row[1].lastIndexOf("|");
