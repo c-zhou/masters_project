@@ -312,12 +312,12 @@ function parallelCoordinates() {
     chart.height = function(value) {
         if (!arguments.length) return heightTop;
         totalHeight = value;
-        heightTop = value - marginTop.top - marginTop.bottom;
         // adjust margins based on the height given
         marginTop.bottom = totalHeight * 0.5;
-        marginMiddle.top = marginTop.bottom - 40;
+        marginMiddle.top = totalHeight * 0.58;
         marginMiddle.bottom = totalHeight * 0.22;
-        marginBottom.top = marginMiddle.bottom - 40;
+        marginBottom.top = totalHeight * 0.86;
+        heightTop = value - marginTop.top - marginTop.bottom;
         return chart;
     };
 
