@@ -1,79 +1,56 @@
-/*============================================================================*/
-/* provides the properties for the node rectangles. It changes the icon for the cursor, when it
-moves over the rectangle, to one that looks like it will move the rectangle up and down,
-sets the fill colour to mostly opaque and keeps the edges sharp. */
-.node rect {
-    cursor: ns-resize;
-    fill-opacity: .9;
-    shape-rendering: auto;
+/*axis font size*/
+.x.axis {
+    font-size: .8em;
 }
-/*============================================================================*/
 
-/*============================================================================*/
-/* sets the properties for the text at each node. The mouse is told to essentially ignore the text
- in favour of anything that's under it (in the case of moving or highlighting something else) and a
- slight shadow is applied for readability. */
-.node text {
-    pointer-events: none;
-    text-shadow: 0 1px 0 #fff;
+.axis {
+    stroke: #222;
 }
-/*============================================================================*/
 
-/*============================================================================*/
-/* makes sure the link has no fill (it actually appears to be a bendy rectangle with very thick
- edges that make the element appear to be a solid block), colours the edges black and makes the
- edges almost transparent. */
-.link {
+.x.axis.top {
+    stroke-opacity: 0.2;
+    stroke: #222;
+    stroke-dasharray: 5 5;
+}
+
+/*make the y axes' text bold*/
+.y.axis {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.y.axis.entropy {
+    font-size: .8em;
+    font-weight: normal;
+}
+
+/*styling for the lines representing the sequence for each sample*/
+.line {
     fill: none;
-    stroke: #000;
-    stroke-opacity: .8;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    stroke-width: 2px;
+    shape-rendering: geometricPrecision;
+    clip-path: url(#clip);
 }
-/*============================================================================*/
 
-/*============================================================================*/
-/* changes the opacity of the link when the mouse goes over it so that it's more visible. If
-desired, could change the colour of the highlighted link by adding in a line to this block
-changing the colour like: stroke: red, */
-.link:hover {
-    stroke-opacity: 1;
-    /*stroke: yellow;*/
+.context.line {
+    stroke-opacity: 0.1;
+    stroke-width: 1px;
 }
-/*============================================================================*/
 
-/*============================================================================*/
-/* styling for the reference sequence link.*/
-#reference {
+/*=============================*/
+/*styling for grid lines*/
+.grid line {
+    stroke: #222;
+    stroke-opacity: 0.3;
+    shape-rendering: crispEdges;
+}
+.grid path {
+    stroke-width: 0;
+}
+/*=============================*/
+
+.zoom {
+    cursor: move;
     fill: none;
-    stroke-opacity: 0.8;
-    stroke: green;
+    pointer-events: all;
 }
-
-#reference:hover {
-    stroke-opacity: 1;
-}
-/*============================================================================*/
-
-/*============================================================================*/
-/* styling for the legend text. make the font bold and change the font type*/
-.legend text {
-    font-weight: 700;
-    font-family: 'Roboto', sans-serif;
-}
-/*============================================================================*/
-
-/*============================================================================*/
-/* styling for the colour legend text. make the font bold and change the font type*/
-.colourLegend text {
-    font-family: 'Roboto', sans-serif;
-}
-/*============================================================================*/
-
-/*============================================================================*/
-/* styling link that has been double clicked*/
-.activeLink {
-    stroke: yellow;
-    stroke-opacity: 0.7;
-}
-/*============================================================================*/
