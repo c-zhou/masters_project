@@ -5,9 +5,6 @@
 const fs = require('fs'),
 	  readline = require('readline');
 
-var d3 = require('d3');
-
-
 // function that returns an object with keys as the headers of the tsv file and values
 // for those headers in an array
 var parser = function(fileName, callback) {
@@ -20,9 +17,7 @@ var parser = function(fileName, callback) {
 	// regex to split on 1 or more spaces
 	const re = /\s+/;
 
-	var data = [],
-	    keys = ["sampleID", "sequence", "gene_start", "gene_end"];
-	    lines = 0; // track line numbers for determining head etc.
+	var data = [];
 
 	// reading file one line at a time
 	rl.on('line', function(line) {
@@ -38,30 +33,62 @@ var parser = function(fileName, callback) {
 		// construct the data entry for this row
 		var obj = {
 			sampleID: row[0],
-			sequence: row[1].replace(/\|/gi, ''),
+			sequence: row[1].replace(/\|/gi, '').split(''), // remove all (gi) |s from the sequence
 			gene_start: gene_start + 1,
 			gene_end: gene_end - 1
 		};
 
-        console.log(obj);
-
 		data.push(obj);
-		// if (lines === 0) { // headers/keys
-		// 	keys = row;
-		// 	keys.forEach(function(currentValue) {
-		// 		data[currentValue] = []; // create key in object for each header
-		// 	});
-		// } else {
-		// 	row.forEach(function(currentValue, i) {
-		// 		data[keys[i]].push(currentValue); // push values into appropriate key array
-		// 	});
-		// }
-		// lines++;
 	});
 
 	rl.on('close', function() {
-		return callback(data); // when done, run the given callback function on the data
+
+		var tData = transform(data);
+
+		return callback(tData); // when done, run the given callback function on the data
 	});
 };
+
+function transform(data) {
+    var mapping = {}, // hold mapping from sampleID to MIC etc.
+        rows = [], // this will hold the new data structure
+        columns = ["position"],
+    	sequence = "sequence",
+    	sampleID = 'sampleID';
+    // initialise the new data structure with objects for each position in the sequence
+    for (var i = 0; i < Object.keys(data[0][sequence]).length; i++) {
+        rows.push({ position: i + 1 });
+    }
+
+    // loop through each current sample's sequence
+    data.forEach(function(obj) {
+        var id = obj[sampleID];
+        var seq = obj[sequence];
+        columns.push(id);
+        mapping[id] = {
+            sequence: seq.join(''), // store the sample's sequence as a string for mapping
+            MIC: obj.MIC
+        };
+
+        // loop through each base in sequence and add it to the corresponding position in rows
+        seq.forEach(function(base, i) {
+            rows[i][id] = base;
+        });
+
+    });
+    rows.columns = columns;
+
+    // final nesting
+    rows =  rows.columns.slice(1).map(function(id) {
+        return {
+            id: id,
+            values: rows.map(function(d) {
+                return {position: d.position, bases: d[id]};
+            })
+        };
+    });
+
+    return { data: rows, mapping: mapping };
+}
 
 module.exports = parser;

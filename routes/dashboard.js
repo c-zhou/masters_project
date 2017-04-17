@@ -9,9 +9,7 @@ var testFile = 'public/data/greece_toy_data.txt';
 
 router.get('/', function(req, res) {
 	msaParser(testFile, function(data) {
-		var diagramData = sankeyParser.graphParser(data);
-		// one parsing is complete, render response
-		res.render('dashboard', { fixtureData: JSON.stringify(diagramData) });
+		res.render('dashboard', { fixtureData: JSON.stringify(data) });
 		// have to use JSON.stringify otherwise ejs only sees it as [object Object]
 	});
 });
