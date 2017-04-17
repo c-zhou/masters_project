@@ -218,17 +218,17 @@ function parallelCoordinates() {
             var samples = sequencePane.selectAll('.sample')
                 .data(data)
               .enter().append('g')
-                .attr('class', 'sample');
+                .attr('class', 'sample')
+	            .on('mouseover', function(d) {
+		            d3.select(this).style("stroke-width", "10px");
+	            });
 
             // add lines
             samples.append('path')
                 .attr('class', 'line')
                 .attr('stroke-opacity', 0.15)
                 .attr('d', line)
-                .style('stroke', colour || 'steelblue')
-                .on('mouseover', function(d) {
-                    d3.select(this).style("stroke-width", "10px");
-                });
+                .style('stroke', colour || 'steelblue');
             //========================================================================
 
             //========================================================================
