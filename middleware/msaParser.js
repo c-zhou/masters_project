@@ -20,18 +20,32 @@ var parser = function(fileName, callback) {
 	// regex to split on 1 or more spaces
 	const re = /\s+/;
 
-	var data = {
-            sampleID: [],
-            sequence: [],
-            gene_start: null,
-            gene_end: null
-		},
+	var data = [],
+	    keys = ["sampleID", "sequence", "gene_start", "gene_end"];
 	    lines = 0; // track line numbers for determining head etc.
 
 	// reading file one line at a time
 	rl.on('line', function(line) {
 		var row = line.split(re);
-		console.log(row);
+
+		// get the boundaries for the gene
+		var gene_start = row[1].indexOf("|"),
+			gene_end   = row[1].lastIndexOf("|");
+
+		// make sure two unique gene boundaries have been detected
+		console.assert(gene_end !== gene_start, "Unexpected gene boundaries");
+
+		// construct the data entry for this row
+		var obj = {
+			sampleID: row[0],
+			sequence: row[1].replace('|', ''),
+			gene_start: gene_start + 1,
+			gene_end: gene_end - 1
+		};
+
+        console.log(obj);
+
+		data.push(obj);
 		// if (lines === 0) { // headers/keys
 		// 	keys = row;
 		// 	keys.forEach(function(currentValue) {
