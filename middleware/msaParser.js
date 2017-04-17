@@ -47,6 +47,6 @@ var parser = function(fileName, callback) {
 	rl.on('close', function() {
 		return callback(data); // when done, run the given callback function on the data
 	});
-}
+};
 
 module.exports = parser;
