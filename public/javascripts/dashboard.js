@@ -2,7 +2,7 @@ function parallelCoordinates() {
     var data          = [],
         width,
         marginTop        = {top: 20, right: 30, bottom: 250, left: 40}, // margin for sequence pane
-        marginBottom       = {top: 430, right: 20, bottom: 30, left: 40}, // margin for context pane
+        marginBottom       = {top: 430, right: 30, bottom: 30, left: 40}, // margin for context pane
         marginMiddle       = {top: 290, right: 30, bottom: 110, left: 40}, // margin for entropy pane
         heightTop,
         domain        = ["A", "T", "C", "G", "-"], // y domain
@@ -313,6 +313,11 @@ function parallelCoordinates() {
         if (!arguments.length) return heightTop;
         totalHeight = value;
         heightTop = value - marginTop.top - marginTop.bottom;
+        // adjust margins based on the height given
+        marginTop.bottom = totalHeight * 0.5;
+        marginMiddle.top = totalHeight * 0.58;
+        marginMiddle.bottom = totalHeight * 0.22;
+        marginBottom.top = totalHeight * 0.86;
         return chart;
     };
 
