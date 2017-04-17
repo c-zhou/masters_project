@@ -5,7 +5,7 @@ var express    = require('express'),
     router     = express.Router(),
 	msaParser = require('../middleware/msaParser');
 
-var testFile = 'public/data/sankey.tsv';
+var testFile = 'public/data/greece_toy_data.txt';
 
 router.get('/', function(req, res) {
 	msaParser(testFile, function(data) {
