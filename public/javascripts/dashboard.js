@@ -225,10 +225,7 @@ function parallelCoordinates() {
                 .attr('class', 'line')
                 .attr('stroke-opacity', 0.15)
                 .attr('d', line)
-                .style('stroke', colour || 'steelblue')
-                .on("mouseover", function(d) {
-                    console.log(this);
-                });
+                .style('stroke', colour || 'steelblue');
             //========================================================================
 
             //========================================================================
