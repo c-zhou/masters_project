@@ -31,7 +31,7 @@
             0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0
         ];
 
-    d3.tsv('sankey.tsv', splitSeq, function(error, data) {
+    d3.tsv('../public/data/sankey.tsv', splitSeq, function(error, data) {
         if (error) throw error;
 
 
