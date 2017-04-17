@@ -219,7 +219,7 @@ function parallelCoordinates() {
                 .data(data)
               .enter().append('g')
                 .attr('class', 'sample')
-	            .on('mouseover', function(d) {
+	            .on('mouseenter', function(d) {
 		            d3.select(this).style("stroke-width", "10px");
 	            });
 
