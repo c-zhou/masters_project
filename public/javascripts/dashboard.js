@@ -1,353 +1,468 @@
+function parallelCoordinates() {
+    var data          = [],
+        width,
+        marginTop        = {top: 20, right: 30, bottom: 250, left: 40}, // margin for sequence pane
+        marginBottom       = {top: 430, right: 20, bottom: 30, left: 40}, // margin for context pane
+        marginMiddle       = {top: 290, right: 30, bottom: 110, left: 40}, // margin for entropy pane
+        heightTop,
+        domain        = ["A", "T", "C", "G", "-"], // y domain
+        mapping       = [], // data that maps the sample id to MIC, sequence etc
+        entropy, // array of entropy for each position
+        sampleID, // parameter name that uniquely identifies samples
+        sequence, // parameter name that sequence is held under
+        totalWidth, // original width user inputs
+        totalHeight, // original height user inputs
+        lineColourBy, // parameter to colour the lines by
+        baseResolution = 10, // minimum number of bases that can be zoomed into
+        lineColourScale,
+        lineColourRange,
+        lineColourDomain;
 
-// resuable function for creating a sankey diagram
-function sankeyDiagram() {
-	// default values if none are given on diagram construction
-	var graph,
-	    width            = 700,
-	    height           = 400,
-	    units            = "Widgets",
-	    margin           = {top: 10, right: 10, bottom: 10, left: 10},
-	    darker           = 2, // number of shades darker when hovering mouse on link
-	    nodeWidth        = 36,
-	    nodeLabels       = false, // if set to true use node labels instead of legend
-	    nodePadding      = 40,
-	    numberFormat     = ',.0f', // zero decimal places
-	    sankeyLayout     = 50,
-	    rectCornerRadius = 1, // round corners on the node rectangles
-	    legendRectSize   = 18, // size of the legend colour squares
-	    legendSpacing    = 4, // spacing between legend squares
-	    linkColourBy,
-	    reference,
-	    linkColourScale,
-	    linkColourDomain,
-	    linkColourRange,
-	    formatNumber     = d3.format(numberFormat);
 
-	// this function will return a given number formatted by formatNumber and then with our
-	// units ('Widgets') added to the end
-	var format           = function(d) { return formatNumber(d) + ' ' + units; };
+    //=======================================================================
+    // SCALES FOR THE AXES - 2 indicates use for context pane
+    var xTop = d3.scaleLinear(), // top axis on the sequence pane
+        xBottom = d3.scaleLinear(), // main x axis
+        // padding makes lines the points up with the y axis ticks
+        yTop = d3.scaleBand().paddingInner(1).paddingOuter(0.25),
+        yBottom = d3.scaleBand().paddingInner(1).paddingOuter(0.25),
+        yEntropy = d3.scaleLinear(), // y axis for the entropy pane
+        yEntropyBottom = d3.scaleLinear(); // y axis for the entropy line in context pane
+    //=======================================================================
 
-	// accesss to a predefined colour-scheme for nodes
-	var color            = d3.scaleOrdinal(['#a6611a', '#dfc27d', '#80cdc1', '#018571']);
 
-	// selection will be the DOM element for current iteration of call(chart)
-	function chart(selection){
-		// append the svg object to the selection
-		var svg = selection.append('svg')
-			.attr('width', width + margin.left + margin.right)
-			.attr('height', height + margin.top + margin.bottom)
-		  .append('g')
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+    //=======================================================================
+    // FUNCTIONS TO CALCULATE LINES
+    // used for lines in the sequence pane
+    var line = function(d) {
+        return d3.line()
+            .curve(d3.curveMonotoneY)
+            .x(function (d) { return xTop(d.position); })
+            .y(function (d) { return yTop(d.bases); })
+            (d.values);
+    };
 
-		// set the sankey diagram properties
-		var sankey = d3.sankey()
-			.nodeWidth(nodeWidth)
-			.nodePadding(nodePadding)
-			.size([width - legendRectSize * 2.5, height]); // size of the sankey diagram.
+    // used for sequence lines in the context pane
+    var lineBottom = function(d) {
+        return d3.line()
+        // .curve(d3.curveStep)
+            .x(function (d) { return xBottom(d.position); })
+            .y(function (d) { return yBottom(d.bases); })
+            (d.values);
+    };
 
-		// defines the path variable as a pointer to the sankey function that makes the links between
-		// the nodes do their clever thing of bending into the right places. This function is defined in
-		// the sankey d3 plug-in
-		var path = sankey.link();
+    // draw line of entropy data in entropy pane
+    var entropyLine = function(d, i) {
+        return d3.line()
+            .curve(d3.curveBasis)
+            .x(function (d, i) { return xTop(i + 1); })
+            .y(function (d) { return yEntropy(d); })
+            (d, i);
+    };
 
-		sankey
-			.nodes(graph.nodes) // data to use as the nodes
-			.links(graph.links) // data to use as the links
-			.layout(sankeyLayout); // num. iterations to compute node positioning
+    // draw entropy line in context pane
+    var entropyLineBottom = function(d, i) {
+        return d3.line()
+            .curve(d3.curveBasis)
+            .x(function (d, i) { return xBottom(i + 1); })
+            .y(function (d) { return yEntropyBottom(d); })
+            (d, i);
+    };
+    //=======================================================================
 
-		// add in the links
-		var link = svg.append('g').selectAll('.link')
-		  .data(graph.links)
-		  .enter().append('path')
-			.attr('class', 'link')
-			.attr('id', function(d){ if(reference && d.sampleID === reference) return 'reference' })
-			.attr('d', path)
-			// we set the stroke-width to the value associated with each link or 1. Whichever is larger
-			.style('stroke-width', function (d) { return Math.max(1, d.dy); })
-			.style('stroke', function(d) { // if user has specified to colour the link by an attribute
-				if (linkColourBy && linkColourScale && d.sampleID !== reference) {
-					return linkColourScale(d[linkColourBy]);
-				}
-			})
-			.on('dblclick', dblClickLink) // highlight sample on link double-click
-			// this makes sure the link for which the target has the highest y coordinate departs first
-			// first out of the rectangle. This basically means there is minimal crossover of flows
-			.sort(function (a, b) { return b.dy - a.dy; });
 
-		// ADD THE LINK TITLES - this appends a text element to each link when moused over that
-		// contains the source and target name (with a neat arrow in between), which when applied to
-		// the format function, adds the units.
-		link.append('title')
-			.text(function (d) {
-				return d.source.name + ' → ' + d.target.name + '\n' +
-					format(d.value) + '\n' + d.sampleID;
-			});
+    //=======================================================================
+    // WHERE THE MAGIC HAPPENS!!
+    function chart(selection){
 
-		// add in the nodes
-		var node = svg.append('g').selectAll('.node')
-		  .data(graph.nodes)
-		  .enter().append('g')
-			.attr('class', 'node')
-			.attr('transform', function (d) {
-				return 'translate(' + d.x + ',' + d.y + ')';
-			})
-			.call(d3.drag()
-				.subject(function (d) {
-					return d;
-				})
-				.on('start', function () {
-					this.parentNode.appendChild(this);
-				})
-				.on('drag', dragmove)); // will explain the darmove function lower down
+        selection.each(function() {
+            //========================================================================
+            // INITIALISE VARIABLES AND SVG ELEMENTS
 
-		// add the rectangles for the nodes.
-		node.append('rect')
-			.attr('height', function (d) { return d.dy; })
-			.attr('width', sankey.nodeWidth())
-			.attr('rx', rectCornerRadius)
-			.attr('ry', rectCornerRadius)
-			// this bit removes spaces from names so that they can be given uniques colours
-			.style('fill', function (d) {
-				return d.color = color(d.name.replace(/ .*/, ''));
-			})
-		  .append('title')
-			.text(function (d) {
-				return d.name + '\n' + format(d.value);
-			});
+            var heightBottom   = totalHeight - marginBottom.top - marginBottom.bottom, // height for context pane
+                heightMiddle   = totalHeight - marginMiddle.top - marginMiddle.bottom, // height for entropy pane
+                focusHeight    = totalHeight - marginTop.top - marginMiddle.bottom, // height for entropy pane + sequence pane
+                seqLength      = data[0].values.length;
 
-		if (nodeLabels) {
-			// add in the title for the nodes. if the x position is less than half of the diagram width
-			// the label is placed on the right, otherwise on the left.
-			node.append('text')
-				.attr('x', 2)
-				.attr('y', function (d) {
-					return d.dy / 2;
-				})
-				.attr('dy', '.35em')
-				.attr('text-anchor', 'end')
-				.attr('transform', null)
-				.text(function (d) {
-					return d.name;
-				})
-				// .filter(function (d) {
-				// 	return d.x < width / 2;
-				// })
-				// .attr('x', 6 + sankey.nodeWidth())
-				.attr('x', 2)
-				.attr('text-anchor', 'start');
-		} else {
-			// add legend if labels are not required
-			var legend = svg.selectAll('.legend')
-			  .data(color.domain())
-			  .enter().append('g')
-				.attr('class', 'legend')
-				.attr('transform', function(d, i) {
-					var height = legendRectSize + legendSpacing,
-					    offset = height * color.domain().length / 2,
-					    horz = width - legendRectSize * 2,
-					    vert = i * height + offset;
-					return 'translate(' + horz + ',' + vert + ')';
-				});
+            xTop.domain([1, seqLength]).range([0, width]);
+            xBottom.domain([1, seqLength]).range([0, width]);
+            yTop.domain(domain).range([heightTop, 0]);
+            yBottom.domain(domain).range([heightBottom, 0]);
+            yEntropy.domain(d3.extent(entropy)).range([heightMiddle, 0]);
+            yEntropyBottom.domain(d3.extent(entropy)).range([heightBottom, 0]);
 
-			legend.append('rect')
-				.attr('width', legendRectSize)
-				.attr('height', legendRectSize)
-				.attr('rx', 3) // round edges on legend squares
-				.attr('ry', 3)
-				.style('fill', color)
-				.style('stroke', color);
+            // colour each line based on the colourBy specified
+            if (lineColourBy) {
+                var colour = function(d) { return lineColourScale(mapping[d.id][lineColourBy]); }
+            }
 
-			legend.append('text')
-				.attr('x', legendRectSize / 2 - legendSpacing - 1) // centre text in rectangles
-				.attr('y', legendRectSize / 2 + legendSpacing + 1) // 1 is a minor adjustment
-				.text(function(d) { return d; });
-		}
+            var brush = d3.brushX() // limits brushing to x axis
+                .extent([[0,0], [width, heightBottom]]) // brushing only in context pane
+                .on('brush end', brushed); // when brushing or when brushing ends call brushed
 
-		if (linkColourBy && linkColourScale) {
-			var colourLegend = svg.selectAll('.colourLegend')
-			  .data(linkColourDomain)
-			  .enter().append('g')
-				.attr('class', 'colourLegend')
-				.attr('transform', function(d, i) {
-					var height = legendRectSize + legendSpacing,
-					    offset = height * linkColourDomain.length / 2,
-					    horz = width - legendRectSize * 2,
-					    vert = i * height + offset;
-					if (!nodeLabels) { vert += (color.domain().length - 1) * height + (height * color.domain().length / 2)}
-					return 'translate(' + (horz - 2) + ',' + vert + ')';
-				});
+            var zoom = d3.zoom()
+                .scaleExtent([1, seqLength / baseResolution]) // scale from 1 to ...
+                .translateExtent([[0,0], [width, focusHeight]]) // cannot pan outside focus pane
+                .extent([[0, 0], [width, focusHeight]]) // only zoom within focus pane
+                .on('zoom', zoomed);
 
-			colourLegend.append('rect')
-				.attr('width', legendRectSize)
-				.attr('height', legendRectSize)
-				.style('fill', linkColourScale)
-				.style('stroke', linkColourScale);
+            // append the svg object to the selection
+            var svg = selection.append('svg')
+                .attr('width', totalWidth)
+                .attr('height', totalHeight);
 
-			colourLegend.append('text')
-				.attr('x', legendSpacing + legendRectSize)
-				.attr('y', (legendSpacing + legendRectSize) / 2 + 2)
-				.text(function(d) { return d; });
-		}
+            // a clipPath prevents anything outside it from being drawn
+            svg.append('defs').append('clipPath')
+                .attr('id', 'clip')
+                .append('rect')
+                .attr('width', width)
+                .attr('height', focusHeight);
 
-		// the function for moving the nodes
-		function dragmove(d) {
-			d3.select(this) // selects the item being operated on
-				.attr('transform', 'translate(' + d.x + ',' +
-					(d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ')');
-			// these two lines allow translation in the y axis while maintaining the link
-			sankey.relayout();
-			link.attr('d', path);
-		}
+            // this will be the area showing the brushed/zoomed segment of the data
+            var sequencePane = svg.append('g')
+                .attr('class', 'sequencePane')
+                .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')');
 
-		// this function is run when a link is double-clicked. this will highlight all links
-		// for that sample so that you can trace it through the diagram
-		function dblClickLink(d, i) {
-			var id = d.sampleID;
-			d3.selectAll('.link')
-				.classed('activeLink', function(d) { // gives class activeLink based on return val
-					return (d.sampleID === id); // returns true or false
-				});
-		}
-	}
+            var entropyPane = svg.append('g')
+                .attr('class', 'entropyPane')
+                .attr('transform', 'translate(' + marginMiddle.left + ',' + marginMiddle.top + ')');
 
-	// GETTERS AND SETTERS
-	chart.data = function(_) {
-		if (!arguments.length) return graph;
-		graph = _;
-		return chart;
-	};
+            // this will be the area showing all of the data (think of it as fully zoomed out)
+            var context = svg.append('g')
+                .attr('class', 'context')
+                .attr('transform', 'translate(' + marginBottom.left + ',' + marginBottom.top + ')');
 
-	chart.width = function(_) {
-		if (!arguments.length) return width;
-		width = _ - margin.left - margin.right;
-		// returning chart means these methods can be chained
-		return chart;
-	};
+            // transparent window over focus that allows zooming. THIS MUST COME AFTER THE
+            // FOCUS AND CONTEXT PANES HAVE BEEN APPENDED
+            svg.append('rect')
+                .attr('class', 'zoom')
+                .attr('width', width)
+                .attr('height', focusHeight)
+                .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')')
+                .call(zoom);
+            //========================================================================
 
-	chart.height = function(_) {
-		if (!arguments.length) return height;
-		height = _ - margin.top - margin.bottom;
-		return chart;
-	};
 
-	chart.margin = function(_) {
-		if (!arguments.length) return margin;
-		margin = _;
-		return chart;
-	};
+            //========================================================================
+            // FOCUS PANES
 
-	chart.units = function(_) {
-		if (!arguments.length) return units;
-		units = _;
-		return chart;
-	};
+            //========================================================================
+            // ADDING AXES
 
-	chart.nodeWidth = function(_) {
-		if (!arguments.length) return nodeWidth;
-		nodeWidth = _;
-		return chart;
-	};
+            // defining the axes
+            // xAxisTop will draw vertical lines that stay aligned with the plot when panning
+            var xAxisTopSeq = d3.axisTop(xTop).ticks(baseResolution).tickSize(heightTop, 0),
+                xAxisBottomFocus = d3.axisBottom(xTop),
+                xAxisContext = d3.axisBottom(xBottom),
+                yAxisLeftSeq = d3.axisLeft(yTop),
+                yAxisRightSeq = d3.axisRight(yTop),
+                yAxisEntropy  = d3.axisLeft(yEntropy).ticks(5);
 
-	chart.nodePadding = function(_) {
-		if (!arguments.length) return nodePadding;
-		nodePadding = _;
-		return chart;
-	};
+            // add x axes to sequence pane
+            sequencePane.append('g')
+                .attr('class', 'x axis top')
+                .attr('transform', 'translate(0,' + heightTop + ')')
+                .call(xAxisTopSeq);
 
-	chart.sankeyLayout = function(_) {
-		if (!arguments.length) return sankeyLayout;
-		sankeyLayout = _;
-		return chart;
-	};
+            sequencePane.append('g')
+                .attr('class', 'x axis bottom')
+                .attr('transform', 'translate(0,' + heightTop + ')')
+                .call(xAxisBottomFocus);
 
-	chart.darker = function(_) {
-		if (!arguments.length) return darker;
-		darker = _;
-		return chart;
-	};
+            // add y axis to left and right in sequence pane
+            sequencePane.append('g')
+                .attr('class', 'y axis left')
+                .call(yAxisLeftSeq);
 
-	chart.numberFormat = function(_) {
-		if (!arguments.length) return numberFormat;
-		numberFormat = _;
-		return chart;
-	};
+            sequencePane.append('g')
+                .attr('class', 'y axis right')
+                .attr('transform', 'translate(' + width + ',0)')
+                .call(yAxisRightSeq);
 
-	chart.color = function(_) {
-		if (!arguments.length) return color;
-		color = _;
-		return chart;
-	};
+            // add the Y gridlines to sequence pane
+            sequencePane.append("g")
+                .attr("class", "grid")
+                .call(make_y_gridlines(yTop).tickSize(-width).tickFormat(""));
 
-	chart.rectCornerRadius = function(_) {
-		if (!arguments.length) return rectCornerRadius;
-		rectCornerRadius = _;
-		return chart;
-	};
+            // add entropy x axis
+            entropyPane.append('g')
+                .attr('class', 'x axis entropy')
+                .attr('transform', 'translate(0,' + heightMiddle + ')')
+                .call(xAxisBottomFocus);
 
-	chart.nodeLabels = function(_) {
-		if(!arguments.length) return nodeLabels;
-		nodeLabels = _;
-		return chart;
-	};
+            // add entropy y axis
+            entropyPane.append('g')
+                .attr('class', 'y axis entropy')
+                .call(yAxisEntropy);
 
-	chart.legendRectSize = function(_) {
-		if(!arguments.length) return legendRectSize;
-		legendRectSize = _;
-		return chart;
-	};
+            // make entropy y gridline
+            entropyPane.append("g")
+                .attr("class", "grid")
+                .call(make_y_gridlines(yEntropy).tickSize(-width).tickFormat(""));
+            //========================================================================
 
-	chart.legendSpacing = function(_) {
-		if(!arguments.length) return legendSpacing;
-		legendSpacing = _;
-		return chart;
-	};
 
-	chart.linkColourBy = function(_) {
-		if (!arguments.length) return linkColourBy;
-		linkColourBy = _;
-		return chart;
-	};
+            //========================================================================
+            // DRAW LINES IN FOCUS PANES
+            // add the entropy line
+            entropyPane.append('path')
+                .datum(entropy)
+                .attr('class', 'entropy line')
+                .attr('stroke', 'green')
+                .attr('stroke-width', '2px')
+                .attr('stroke-opacity', 0.7)
+                .attr('fill', 'none')
+                .attr('d', entropyLine);
 
-	chart.linkColourScale = function(domain, range) {
-		if (!arguments.length) return linkColourScale;
-		linkColourDomain = domain;
-		linkColourRange  = range;
-		// create a colour scale that takes a value and returns closest colour
-		// based on the domain of values and the colour scale
-		linkColourScale = function(t) {
-			return range[domain.closest(t)];
-		};
-		return chart;
-	};
+            // container for the sequence lines and associated elements
+            var samples = sequencePane.selectAll('.sample')
+                .data(data)
+                .enter().append('g')
+                .attr('class', 'sample');
 
-	chart.reference = function(_) {
-		if (!arguments.length) return reference;
-		reference = _;
-		return chart;
-	};
+            // add lines
+            samples.append('path')
+                .attr('class', 'line')
+                .attr('stroke-opacity', 0.15)
+                .attr('d', line)
+                .style('stroke', colour || 'steelblue');
+            //========================================================================
 
-	// function that searches for the closest number to num in array and returns idx
-	Array.prototype.closest = function(num) {
-		var mid;
-		var lo = 0;
-		var hi = this.length - 1;
-		while (hi - lo > 1) {
-			mid = Math.floor ((lo + hi) / 2);
-			if (this[mid] < num) {
-				lo = mid;
-			} else {
-				hi = mid;
-			}
-		}
-		if (num - this[lo] <= this[hi] - num) {
-			return lo;
-		}
-		return hi;
-	};
+            //========================================================================
 
-	return chart;
+
+            //========================================================================
+            // ADDING CONTEXT PANE
+
+            // add x axis to focus
+            context.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + heightBottom + ')')
+                .call(xAxisContext);
+
+            context.append('g')
+                .attr('class', 'brush')
+                .call(brush)
+                .call(brush.move, xTop.range());
+
+            // add the entropy line
+            context.append('path')
+                .datum(entropy)
+                .attr('class', 'entropy')
+                .attr('stroke', 'green')
+                .attr('stroke-width', '3px')
+                .attr('fill', 'none')
+                .attr('d', entropyLineBottom);
+
+            var samples2 = context.selectAll('.sample')
+                .data(data)
+                .enter().append('g')
+                .attr('class', 'sample');
+
+            // add lines
+            samples2.append('path')
+                .attr('class', 'context line')
+                .attr('d', lineBottom)
+                .style('stroke', colour || 'steelblue');
+            //========================================================================
+
+
+            //========================================================================
+            // FUNCTIONS THAT CONTROL THE BRUSHING AND ZOOMING FUNCTIONALITY
+            function brushed() {
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') return; // ignore brush-by-zoom
+                var s = d3.event.selection || xBottom.range();
+                xTop.domain(s.map(xBottom.invert, xBottom));
+                updateChart();
+                svg.select('.zoom').call(zoom.transform, d3.zoomIdentity
+                    .scale(width / (s[1] - s[0]))
+                    .translate(-s[0], 0));
+            }
+
+            function zoomed() {
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') return; // ignore zoom-by-brush
+                var t = d3.event.transform;
+                xTop.domain(t.rescaleX(xBottom).domain());
+                updateChart();
+                context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
+            }
+
+            function updateChart() {
+                sequencePane.selectAll('.line').attr('d', line);
+                entropyPane.select('.entropy.line').attr('d', entropyLine);
+                sequencePane.select('.x.axis.top').call(xAxisTopSeq);
+                sequencePane.select('.x.axis.bottom').call(xAxisBottomFocus);
+                entropyPane.select('.x.axis.entropy').call(xAxisBottomFocus);
+            }
+            //========================================================================
+        });
+    }
+    //=======================================================================
+
+    //========================================================================
+    // GETTER AND SETTER FUNCTIONS
+
+    chart.width = function(value) {
+        if (!arguments.length) return width;
+        totalWidth = value;
+        width = value - marginTop.left - marginTop.right;
+        return chart;
+    };
+
+    chart.height = function(value) {
+        if (!arguments.length) return heightTop;
+        totalHeight = value;
+        heightTop = value - marginTop.top - marginTop.bottom;
+        return chart;
+    };
+
+    chart.marginTop = function(value) {
+        if (!arguments.length) return marginTop;
+        marginTop = value;
+        return chart;
+    };
+
+    chart.marginMiddle = function(value) {
+        if (!arguments.length) return marginMiddle;
+        marginMiddle = value;
+        return chart;
+    };
+
+    chart.marginBottom = function(value) {
+        if (!arguments.length) return marginBottom;
+        marginBottom = value;
+        return chart;
+    };
+
+    chart.sequence = function(value) {
+        if (!arguments.length) return sequence;
+        sequence = value;
+        return chart;
+    };
+
+    chart.sampleID = function(value) {
+        if (!arguments.length) return sampleID;
+        sampleID = value;
+        return chart;
+    };
+
+    chart.domain = function(value) {
+        if (!arguments.length) return domain;
+        domain = value;
+        return chart;
+    };
+
+    chart.data = function(value) {
+        if (!arguments.length) return data;
+        data = value;
+        entropy = shannonEntropy(data);
+        return chart;
+    };
+
+    chart.mapping = function(value) {
+        if (!arguments.length) return mapping;
+        mapping = value;
+        return chart;
+    };
+
+    chart.lineColourBy = function(value) {
+        if (!arguments.length) return lineColourBy;
+        lineColourBy = value;
+        return chart;
+    };
+
+    chart.lineColourScale = function(domain, range) {
+        if (!arguments.length) return lineColourScale;
+        lineColourDomain = domain;
+        lineColourRange  = range;
+        // create a colour scale that takes a value and returns closest colour
+        // based on the domain of values and the colour scale
+        lineColourScale = function(t) {
+            return range[domain.closest(t)];
+        };
+        return chart;
+    };
+
+    chart.baseResolution = function(value) {
+        if (!arguments.length) return baseResolution;
+        // dont allow anything lower than 1 or a float
+        baseResolution = (value < 1) ? 1 : Math.round(value);
+        return chart;
+    };
+    //========================================================================
+
+
+    //========================================================================
+    // GENERAL FUNCTIONS
+
+    // function that searches for the closest number to num in array and returns idx
+    Array.prototype.closest = function(num) {
+        var mid;
+        var lo = 0;
+        var hi = this.length - 1;
+        while (hi - lo > 1) {
+            mid = Math.floor ((lo + hi) / 2);
+            if (this[mid] < num) {
+                lo = mid;
+            } else {
+                hi = mid;
+            }
+        }
+        if (num - this[lo] <= this[hi] - num) {
+            return lo;
+        }
+        return hi;
+    };
+
+    // gridlines in y axis function
+    function make_y_gridlines(scale) { return d3.axisLeft(scale).ticks(5); }
+
+    // calculate the shannon entropy (variance) for the data
+    function shannonEntropy(data) {
+        var N       = data.length, // number of samples
+            bases   = ["A", "T", "C", "G", "-"],
+            prob    = [0.2, 0.2, 0.2, 0.2, 0.2],
+            entropy = [],
+            result  = [];
+        data.forEach(tally); // get counts for each sample
+        entropy.forEach(function(d, i) { result[i - 1] = sumEntropy(Object.values(d), N); });
+        return result;
+
+        function tally(obj) {
+            obj.values.forEach(iter) // get counts for each position in sample
+        }
+
+        function iter(pos) {
+            if (!entropy[pos.position]) { // if first time calculating count for this position:
+                var skeleton = {};
+                bases.forEach(function(b) { skeleton[b] = 0 });
+                entropy[pos.position] = skeleton;
+                entropy[pos.position][pos.bases] = 1;
+            } else {
+                entropy[pos.position][pos.bases] += 1;
+            }
+        }
+
+        // returns the negative sum of the entropy for given counts
+        function sumEntropy(counts, N) {
+
+            return -counts.reduce(function(acc, val, idx) {
+                // dont calculate entropy if the value is 0 as this will return -Infinity
+                var x = (val === 0) ? 0 : calculateEntropy(val, prob[idx]);
+                return acc + x;
+            }, 0);
+
+            // calculate the entropy for a single value
+            function calculateEntropy(val) {
+                return val / N * getBaseLog(2, val / N);
+            }
+        }
+
+        // get the log base x of value y
+        function getBaseLog(x, y) { return Math.log(y) / Math.log(x); }
+
+    }
+    //========================================================================
+
+    return chart;
 }
-
-
-
-
