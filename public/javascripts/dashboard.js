@@ -79,8 +79,6 @@ function parallelCoordinates() {
             //========================================================================
             // INITIALISE VARIABLES AND SVG ELEMENTS
 
-			console.log(entropy);
-
             var heightBottom   = totalHeight - marginBottom.top - marginBottom.bottom, // height for context pane
                 heightMiddle   = totalHeight - marginMiddle.top - marginMiddle.bottom, // height for entropy pane
                 focusHeight    = totalHeight - marginTop.top - marginMiddle.bottom, // height for entropy pane + sequence pane
