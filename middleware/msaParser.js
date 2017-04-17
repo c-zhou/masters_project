@@ -8,8 +8,6 @@ const fs = require('fs'),
 var d3 = require('d3');
 
 
-
-
 // function that returns an object with keys as the headers of the tsv file and values
 // for those headers in an array
 var parser = function(fileName, callback) {
@@ -18,6 +16,9 @@ var parser = function(fileName, callback) {
 	const rl = readline.createInterface({
 		      input: fs.createReadStream(fileName)
 	      });
+
+	// regex to split on 1 or more spaces
+	const re = /\s+/;
 
 	var data = {
             sampleID: [],
@@ -29,7 +30,7 @@ var parser = function(fileName, callback) {
 
 	// reading file one line at a time
 	rl.on('line', function(line) {
-		var row = line.split(' ');
+		var row = line.split(re);
 		console.log(row);
 		// if (lines === 0) { // headers/keys
 		// 	keys = row;
