@@ -217,8 +217,11 @@ function parallelCoordinates() {
             // container for the sequence lines and associated elements
             var samples = sequencePane.selectAll('.sample')
                 .data(data)
-                .enter().append('g')
-                .attr('class', 'sample');
+              .enter().append('g')
+                .attr('class', 'sample')
+                .on("mouseover", function(d) {
+                    console.log(this);
+                });
 
             // add lines
             samples.append('path')
@@ -256,7 +259,7 @@ function parallelCoordinates() {
 
             var samples2 = context.selectAll('.sample')
                 .data(data)
-                .enter().append('g')
+              .enter().append('g')
                 .attr('class', 'sample');
 
             // add lines
