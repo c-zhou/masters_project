@@ -119,7 +119,7 @@ function runAnalysis(socket){
 			var mutatedPathData = pathData;
 			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
 			// spawn a bwa instance based on resistance database
-			const bwaRes = middleware.run_bwa(mutatedPathData);
+			const bwaRes = middleware.run_bwa(mutatedPathData, true);
 			const resProfiling = middleware.run_resProfiling(mutatedPathData);
 			bwaListeners(bwaRes, resProfiling);
 			resProfilingListeners(resProfiling, outputResFile, socket);
