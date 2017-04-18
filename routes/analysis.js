@@ -164,6 +164,7 @@ function bwaListeners(bwa, japsaProc) {
 	});
 
 	bwa.stderr.on('data', function(data) {
+		console.log("bwa stderr: ");
 		console.log(data);
 	});
 
