@@ -190,6 +190,7 @@ function bwaListeners(bwa, japsaProc) {
 function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	// encode the stdout as a string rather than a Buffer
 	speciesTyping.stdout.setEncoding('utf8');
+	speciesTyping.stderr.setEncoding('utf8');
 
 	speciesTyping.on('error', function(error) {
 		console.log('species typing process error:');
