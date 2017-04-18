@@ -34,7 +34,7 @@ function run_bwa(pathData, startFrom) {
 	var bwaArgs = [
 			'mem', // run bwa mem
 		    '-t 4', // number of threads
-		    '-v 1', // output errors only
+		    '-v 2', // output errors and warnings
 		    '-k 11', // min. seed length
 		    '-W 20', // discard a chain if seeded bases shorter than INT
 		    '-r 10', // look for internal seeds inside a seed longer than {-k} * FLOAT
