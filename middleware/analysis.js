@@ -50,7 +50,7 @@ function run_bwa(pathData, startFrom) {
 	    ],
 	    bwaOptions = {
 		    cwd: pathData.pathForOutput, // where to run the process
-		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+		    // stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
 	    };
 
 	console.log("bwa args");
