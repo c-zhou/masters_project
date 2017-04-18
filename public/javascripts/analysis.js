@@ -12,6 +12,7 @@ var getStartedButton    = $('#getStarted'),
     readPathsForm       = $('#readPathsForm'),
     startAnalysisButton = $('#startAnalysis'),
     chartContainer      = $('#chartContainer'),
+    resistanceDBfield   = $('#resDBPath'),
     stopAnalysisButton  = $('#stopAnalysis');
 
 var socket;
@@ -44,14 +45,15 @@ readPathsForm.submit(function(e){
 	// prevents default action of form
 	e.preventDefault();
 
-	//TODO - error handling for when the text fields are empty. Add folder chooser.
+	//TODO - error handling for when the text fields are empty.
 
 	// send the path to the server
 	socket.emit('paths', {
 		pathToInput: $('#readsPath').val(), // path to the user's reads
 		pathToDB: $('#dbPath').val(), // path to database
 		pathForOutput: $('#outputPath').val(), // folder to run analysis from
-		outputFile: $('#outputFile').val() // file name for output
+		outputFile: $('#outputFile').val(), // file name for output
+		pathToResDB: resistanceDBfield.val()
 	});
 
 	$(this).fadeOut(fadeTime, function(){
@@ -105,6 +107,22 @@ stopAnalysisButton.click(function(){
 	stopAnalysisButton.fadeOut(fadeTime);
 	socket.emit('kill');
 });
+
+// function that will make field to enter resistance profile database path appear when
+// checkbox is selected
+function showResDB(checkbox){
+	if (checkbox.checked) {
+		resistanceDBfield.fadeIn();
+		// jquery default is block which messes up the semantic ui form
+		resistanceDBfield.css('display', 'flex');
+		resistanceDBfield.attr('required', true); // make fields required
+	} else {
+		resistanceDBfield.fadeOut();
+		// remove values from fields and make them not required anymore
+		resistanceDBfield.val('')
+			.removeAttr('required');
+	}
+}
 
 //============================================================
 // D3 code for making the donut chart

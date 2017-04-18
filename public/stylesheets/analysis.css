@@ -48,19 +48,12 @@ bottom: 0px;
 
 /*===========================================================*/
 /*Hide text box, chart div, and start/stop buttons initially*/
-#readPathsForm {
+#readPathsForm,
+#startAnalysis,
+#stopAnalysis,
+#chartContainer,
+#resDBPath {
     display: none;
 }
 
-#startAnalysis {
-    display: none;
-}
-
-#stopAnalysis {
-    display: none;
-}
-
-#chartContainer {
-    display: none;
-}
 /*===========================================================*/
