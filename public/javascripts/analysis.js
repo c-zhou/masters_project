@@ -114,7 +114,7 @@ function showResDB(checkbox){
 	if (checkbox.checked) {
 		resistanceDBfield.fadeIn();
 		// jquery default is block which messes up the semantic ui form
-		resistanceDBfield.css('display', 'flex');
+		resistanceDBfield.css('display', 'inherit');
 		resistanceDBfield.find('input').attr('required', true); // make field required
 	} else {
 		resistanceDBfield.fadeOut();

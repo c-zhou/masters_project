@@ -56,7 +56,7 @@ function showInduction(checkbox){
 	if (checkbox.checked) {
 		inductionElements.fadeIn();
 		// jquery default is block which messes up the semantic ui form
-		inductionElements.find('input').css('display', 'flex');
+		inductionElements..css('display', 'flex');
 		inductionElements.find('input').attr('required', true); // make fields required
 	} else {
 		inductionElements.fadeOut();
