@@ -108,9 +108,6 @@ function runAnalysis(socket){
 		// call species typing
 		const speciesTyping = middleware.run_speciesTyping(pathData);
 
-		bwaListeners(bwa, speciesTyping);
-		speciesTypingListeners(speciesTyping, outputFile, socket);
-
 		processes.push(bwa, speciesTyping);
 
 		// if user wants resistance profiling
@@ -126,6 +123,9 @@ function runAnalysis(socket){
 
 			processes.push(bwaRes, resProfiling);
 		}
+
+		bwaListeners(bwa, speciesTyping);
+		speciesTypingListeners(speciesTyping, outputFile, socket);
 
 	} else {
 		throw "Invalid file extension: File extension must be '.fastq' or '.fq'";

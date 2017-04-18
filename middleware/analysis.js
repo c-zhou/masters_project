@@ -60,8 +60,6 @@ function run_bwa(pathData, startFrom) {
 function run_speciesTyping(pathData) {
 	console.log('species typing called...');
 
-	console.log(path.join(path.dirname(pathData.pathToDB), 'speciesIndex'));
-
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
 		    '--bamFile=-', // read BAM from stdin
