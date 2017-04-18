@@ -168,13 +168,13 @@ function bwaListeners(bwa, japsaProc) {
 	});
 
 	bwa.stderr.on('data', function(data) {
-		// console.log("bwa stderr: ");
-		// console.log(data);
+		console.log("bwa stderr: ");
+		console.log(data.toString());
 	});
 
 
 	bwa.stdout.on('data', function(data) {
-		// console.log(data.toString());
+		console.log(data.toString());
 		japsaProc.stdin.write(data);
 	});
 
