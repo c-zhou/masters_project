@@ -181,6 +181,10 @@ function bwaListeners(bwa, japsaProc) {
 		if (code || signal) console.log("bwa closed " + code + " " + signal);
 		japsaProc.stdin.end();
 	});
+
+	bwa.on('exit', function(code, signal) {
+		if (code || signal) console.log("bwa exited " + code + " " + signal);
+	});
 }
 
 function speciesTypingListeners(speciesTyping, outputFile, socket) {
@@ -218,6 +222,10 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 		hasSTWritingStarted = false;
 		// close output file is not already close and write closing bracket
 		if (!outputFile.closed) { endFile(outputFile); }
+	});
+
+	speciesTyping.on('exit', function(code, signal) {
+		if (code || signal) console.log("speciesTyping exited " + code + " " + signal);
 	});
 }
 
