@@ -53,7 +53,7 @@ readPathsForm.submit(function(e){
 		pathToDB: $('#dbPath').val(), // path to database
 		pathForOutput: $('#outputPath').val(), // folder to run analysis from
 		outputFile: $('#outputFile').val(), // file name for output
-		pathToResDB: resistanceDBfield.val()
+		pathToResDB: $('#resDBPath input').val()
 	});
 
 	$(this).fadeOut(fadeTime, function(){
@@ -115,11 +115,12 @@ function showResDB(checkbox){
 		resistanceDBfield.fadeIn();
 		// jquery default is block which messes up the semantic ui form
 		resistanceDBfield.css('display', 'flex');
-		resistanceDBfield.attr('required', true); // make fields required
+		resistanceDBfield.find('input').attr('required', true); // make field required
 	} else {
 		resistanceDBfield.fadeOut();
 		// remove values from fields and make them not required anymore
-		resistanceDBfield.val('')
+		resistanceDBfield.find('input')
+			.val('')
 			.removeAttr('required');
 	}
 }
