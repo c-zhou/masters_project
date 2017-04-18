@@ -24,6 +24,7 @@ io.of('/analysis').on('connection', function(socket){
 	});
 
 	socket.on('paths', function(data) {
+		console.log(data);
 		// path information entered by client
 		pathData = data;
 	});
