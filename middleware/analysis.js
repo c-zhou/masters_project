@@ -44,7 +44,7 @@ function run_bwa(pathData, startFrom) {
 		    '-L 0', // penalty for 5'- and 3'-end clipping - optimised for np
 		    '-Y', // use soft clipping for supplementary alignments
 		    '-K 10000', // buffer length in bp (not documented)
-		    path.join(pathData.pathToDB, 'genomeDB.fasta'), // ref sequence/db
+		    pathData.pathToDB, // ref sequence/db
 		    readFrom // read file from
 	    ],
 	    bwaOptions = {
