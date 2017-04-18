@@ -53,6 +53,12 @@ function run_bwa(pathData, startFrom) {
 		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
 	    };
 
+	console.log("bwa args");
+	console.log(bwaArgs);
+
+	console.log("bwa opts");
+	console.log(bwaOptions);
+
 	return spawn('bwa', bwaArgs, bwaOptions);
 }
 
@@ -72,6 +78,12 @@ function run_speciesTyping(pathData) {
 		    cwd: pathData.pathForOutput, // where to run the process
 		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
 	    };
+
+	console.log("st args");
+	console.log(specTypingArgs);
+
+	console.log("st opts");
+	console.log(specTypingOptions);
 
 	return spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
 }
