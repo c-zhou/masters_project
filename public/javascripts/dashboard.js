@@ -135,7 +135,7 @@ function parallelCoordinates() {
 
             // testing out brushing for line selection
 	        var brushTest = d3.brush() // limits brushing to x axis
-		        .extent([[0,marginTop.bottom], [width, heightTop]]) // brushing only in context pane
+		        .extent([[0,0], [width, heightTop]]) // brushing only in context pane
 		        .on('brush end', brushedTest); // when brushing or when brushing ends call brushed
 
             function brushedTest() {
