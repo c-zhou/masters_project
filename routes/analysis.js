@@ -83,6 +83,7 @@ function runAnalysis(socket){
 
 		// if user wants resistance profiling
 		if (pathData.pathToResDB) {
+			console.log("resistance profiling requested...");
 
 			var mutatedPathData = pathData;
 			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
@@ -112,6 +113,7 @@ function runAnalysis(socket){
 
 		// if user wants resistance profiling
 		if (pathData.pathToResDB) {
+			console.log("resistance profiling requested...");
 
 			var mutatedPathData = pathData;
 			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
