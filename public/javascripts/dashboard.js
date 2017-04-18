@@ -135,7 +135,7 @@ function parallelCoordinates() {
 
             // testing out brushing for line selection
 	        var brushTest = d3.brush() // limits brushing to x axis
-		        .extent([[0,marginMiddle.bottom], [width, focusHeight]]) // brushing only in context pane
+		        .extent([[0,marginTop.bottom], [width, heightTop]]) // brushing only in context pane
 		        .on('brush end', brushedTest); // when brushing or when brushing ends call brushed
 
             function brushedTest() {
@@ -145,6 +145,13 @@ function parallelCoordinates() {
 
             }
 
+	        sequencePane.append('g')
+		        .attr('class', 'brush')
+		        .call(brushTest);
+		        // .call(brushTest.move, xTop.range());
+
+
+
             // transparent window over focus that allows zooming. THIS MUST COME AFTER THE
             // FOCUS AND CONTEXT PANES HAVE BEEN APPENDED
             svg.append('rect')
@@ -152,8 +159,7 @@ function parallelCoordinates() {
                 .attr('width', width)
                 .attr('height', focusHeight)
                 .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')')
-                .call(zoom)
-	            .call(brushTest);
+                .call(zoom);
             //========================================================================
 
 
