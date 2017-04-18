@@ -189,7 +189,7 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	// encode the stdout as a string rather than a Buffer
 	speciesTyping.stdout.setEncoding('utf8');
 
-	speciesTyping.stdin.on('data', function(data) {
+	speciesTyping.stdin.on('error', function(data) {
 		console.log(data);
 	});
 
