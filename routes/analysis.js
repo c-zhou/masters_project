@@ -163,6 +163,11 @@ function bwaListeners(bwa, japsaProc) {
 		console.log(error);
 	});
 
+	bwa.stderr.on('data', function(data) {
+		console.log(data);
+	});
+
+
 	bwa.stdout.on('data', function(data) {
 		japsaProc.stdin.write(data);
 	});
