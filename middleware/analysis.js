@@ -75,8 +75,26 @@ function run_speciesTyping(pathData) {
 	return spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
 }
 
+function run_resProfiling(pathData) {
+	console.log('resistance profiling called...');
+
+	var resProfilingArgs = [
+		'--output=-', // output to stdout
+	    '--bamFile=-', // read BAM from stdin
+	    '--resDB=' + pathData.pathToResDB, // path to resistance database
+	    '--time=10' // min. seconds to wait between analysis
+	],
+	    resProfilingOptions = {
+		    cwd: pathData.pathForOutput, // where to run the process
+		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+	    };
+
+	return spawn('jsa.np.rtResistGenes', resProfilingArgs, resProfilingOptions);
+}
+
 module.exports = {
 	run_npReader: run_npReader,
 	run_bwa: run_bwa,
-	run_speciesTyping: run_speciesTyping
+	run_speciesTyping: run_speciesTyping,
+	run_resProfiling: run_resProfiling
 };

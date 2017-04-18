@@ -12,7 +12,8 @@ router.get('/', function(req, res) {
 });
 
 var pathData,
-    hasWritingStarted = false,
+    hasSTWritingStarted = false, // has species typing writing started
+    hasRPWritingStarted = false, // has resistance profiling writing started
     processes         = [];
 
 // connecting to the websocket opened when the client clicks the get started button
@@ -24,8 +25,6 @@ io.of('/analysis').on('connection', function(socket){
 	});
 
 	socket.on('paths', function(data) {
-		console.log(data);
-		console.log((data.pathToResDB) ? data.pathToResDB : "res. profile not required");
 		// path information entered by client
 		pathData = data;
 	});
@@ -47,16 +46,28 @@ io.of('/analysis').on('connection', function(socket){
 
 function runAnalysis(socket){
 	console.log("Starting species typing...");
-	hasWritingStarted = false;
+	hasSTWritingStarted = false;
+	hasRPWritingStarted = false;
 	processes = [];
 
-	var outputFilePath = path.join(pathData.pathForOutput, pathData.outputFile + '.log'),
-	    outputFile     = fs.createWriteStream(outputFilePath);
+	var outputFilePath    = path.join(pathData.pathForOutput, pathData.outputFile + '.log'),
+	    outputFile        = fs.createWriteStream(outputFilePath);
 	outputFile.write('[');
+
 
 	outputFile.on('close', function() {
 		console.log("output file closed");
 	});
+
+	if (pathData.pathToResDB) {
+		var outputResFilePath = path.join(pathData.pathForOutput, pathData.outputFile +
+			    '_resistance.log'),
+		    outputResFile     = fs.createWriteStream(outputResFilePath);
+		outputResFile.write('[');
+		outputResFile.on('close', function() {
+			console.log("resistance output file closed");
+		});
+	}
 
 	// check for a file extension
 	var fileExt = path.extname(pathData.pathToInput);
@@ -68,11 +79,27 @@ function runAnalysis(socket){
 		// call species typing
 		const speciesTyping = middleware.run_speciesTyping(pathData);
 
-		npReaderListeners(npReader, bwa);
+		processes.push(npReader, bwa, speciesTyping);
+
+		// if user wants resistance profiling
+		if (pathData.pathToResDB) {
+
+			var mutatedPathData = pathData;
+			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
+			// spawn a bwa instance based on resistance database
+			const bwaRes = middleware.run_bwa(mutatedPathData);
+			const resProfiling = middleware.run_resProfiling(mutatedPathData);
+			npReaderListeners(npReader, [bwa, bwaRes]);
+			bwaListeners(bwaRes, resProfiling);
+			resProfilingListeners(resProfiling, outputResFile, socket);
+
+			processes.push(bwaRes, resProfiling);
+		} else {
+			npReaderListeners(npReader, [bwa]);
+		}
+
 		bwaListeners(bwa, speciesTyping);
 		speciesTypingListeners(speciesTyping, outputFile, socket);
-
-		processes.push(npReader, bwa, speciesTyping);
 
 	} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // client gave fastq
 		// call bwa. true indicates analysis is starting from bwa and fastq file will be
@@ -85,6 +112,20 @@ function runAnalysis(socket){
 		speciesTypingListeners(speciesTyping, outputFile, socket);
 
 		processes.push(bwa, speciesTyping);
+
+		// if user wants resistance profiling
+		if (pathData.pathToResDB) {
+
+			var mutatedPathData = pathData;
+			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
+			// spawn a bwa instance based on resistance database
+			const bwaRes = middleware.run_bwa(mutatedPathData);
+			const resProfiling = middleware.run_resProfiling(mutatedPathData);
+			bwaListeners(bwaRes, resProfiling);
+			resProfilingListeners(resProfiling, outputResFile, socket);
+
+			processes.push(bwaRes, resProfiling);
+		}
 
 	} else {
 		throw "Invalid file extension: File extension must be '.fastq' or '.fq'";
@@ -104,28 +145,31 @@ function npReaderListeners(npReader, bwa){
 	});
 
 	npReader.stdout.on('data', function(data) {
-		bwa.stdin.write(data);
+		bwa.forEach(function(proc) { proc.stdin.write(data); });
+
+		// bwa.stdin.write(data);
 	});
 
 	npReader.on('close', function(code, signal) {
 		if (code || signal) console.log("npReader closed " + code + " " + signal);
-		bwa.stdin.end();
+		// bwa.stdin.end();
+		bwa.forEach(function(proc) { proc.stdin.end(); });
 	});
 }
 
-function bwaListeners(bwa, speciesTyping) {
+function bwaListeners(bwa, japsaProc) {
 	bwa.on('error', function(error) {
 		console.log('bwa process error:');
 		console.log(error);
 	});
 
 	bwa.stdout.on('data', function(data) {
-		speciesTyping.stdin.write(data);
+		japsaProc.stdin.write(data);
 	});
 
 	bwa.on('close', function(code, signal) {
 		if (code || signal) console.log("bwa closed " + code + " " + signal);
-		speciesTyping.stdin.end();
+		japsaProc.stdin.end();
 	});
 }
 
@@ -145,14 +189,14 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 		socket.emit('stdout', recentResults.data);
 
 		// if this is the first time writing data, dont add a comma to the start
-		if (hasWritingStarted) { dataToWrite = ',' + data; }
+		if (hasSTWritingStarted) { dataToWrite = ',' + data; }
 		else {
 			dataToWrite = data;
-			hasWritingStarted = true;
+			hasSTWritingStarted = true;
 		}
 
 		//write data to file. written is how many bytes were written from string.
-		if (!outputFile.closed && hasWritingStarted) {
+		if (!outputFile.closed && hasSTWritingStarted) {
 			outputFile.write(dataToWrite, function (error, written, string) {
 				if (error) console.log(error);
 			});
@@ -161,7 +205,45 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 
 	speciesTyping.on('close', function(code, signal) {
 		if (code || signal) console.log("speciesTyping closed " + code + " " + signal);
-		hasWritingStarted = false;
+		hasSTWritingStarted = false;
+		// close output file is not already close and write closing bracket
+		if (!outputFile.closed) { endFile(outputFile); }
+	});
+}
+
+function resProfilingListeners(resProfiling, outputFile, socket) {
+	// encode the stdout as a string rather than a Buffer
+	resProfiling.stdout.setEncoding('utf8');
+
+	resProfiling.on('error', function(error) {
+		console.log('resistance profiling process error:');
+		console.log(error);
+	});
+
+	resProfiling.stdout.on('data', function(data) {
+		var dataToWrite;
+		// parse output into JSON format and send to client
+		// var recentResults = JSON.parse(data);
+		socket.emit('resistance', data);
+
+		// if this is the first time writing data, dont add a comma to the start
+		if (hasRPWritingStarted) { dataToWrite = ',' + data; }
+		else {
+			dataToWrite = data;
+			hasRPWritingStarted = true;
+		}
+
+		//write data to file. written is how many bytes were written from string.
+		if (!outputFile.closed && hasRPWritingStarted) {
+			outputFile.write(dataToWrite, function (error, written, string) {
+				if (error) console.log(error);
+			});
+		}
+	});
+
+	resProfiling.on('close', function(code, signal) {
+		if (code || signal) console.log("resistance profiling closed " + code + " " + signal);
+		hasRPWritingStarted = false;
 		// close output file is not already close and write closing bracket
 		if (!outputFile.closed) { endFile(outputFile); }
 	});

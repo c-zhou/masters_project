@@ -99,6 +99,11 @@ startAnalysisButton.click(function(){
 	    // update the donut chart with the new data
         donut.data(data);
     });
+
+    // receiving output from resistance profiling
+    socket.on('resistance', function(data) {
+    	console.log(data);
+    });
 });
 
 // When the stop button is clicked, kill the child process running the species typing and
