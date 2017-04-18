@@ -132,6 +132,19 @@ function parallelCoordinates() {
                 .attr('class', 'context')
                 .attr('transform', 'translate(' + marginBottom.left + ',' + marginBottom.top + ')');
 
+
+            // testing out brushing for line selection
+	        var brushTest = d3.brush() // limits brushing to x axis
+		        .extent([[0,marginMiddle.bottom], [width, focusHeight]]) // brushing only in context pane
+		        .on('brush end', brushedTest); // when brushing or when brushing ends call brushed
+
+            function brushedTest() {
+	            if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') return; // ignore brush-by-zoom
+	            var s = d3.event.selection;
+	            console.log(s);
+
+            }
+
             // transparent window over focus that allows zooming. THIS MUST COME AFTER THE
             // FOCUS AND CONTEXT PANES HAVE BEEN APPENDED
             svg.append('rect')
@@ -139,7 +152,8 @@ function parallelCoordinates() {
                 .attr('width', width)
                 .attr('height', focusHeight)
                 .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')')
-                .call(zoom);
+                .call(zoom)
+	            .call(brushTest);
             //========================================================================
 
 
@@ -218,10 +232,7 @@ function parallelCoordinates() {
             var samples = sequencePane.selectAll('.sample')
                 .data(data)
               .enter().append('g')
-                .attr('class', 'sample')
-	            .on('mouseenter', function(d) {
-		            d3.select(this).style("stroke-width", "10px");
-	            });
+                .attr('class', 'sample');
 
             // add lines
             samples.append('path')
