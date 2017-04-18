@@ -176,7 +176,6 @@ function bwaListeners(bwa, japsaProc) {
 
 
 	bwa.stdout.on('data', function(data) {
-		console.log(data);
 		japsaProc.stdin.write(data);
 	});
 
@@ -189,6 +188,10 @@ function bwaListeners(bwa, japsaProc) {
 function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	// encode the stdout as a string rather than a Buffer
 	speciesTyping.stdout.setEncoding('utf8');
+
+	speciesTyping.stdin.on('data', function(data) {
+		console.log(data);
+	});
 
 	speciesTyping.on('error', function(error) {
 		console.log('species typing process error:');
