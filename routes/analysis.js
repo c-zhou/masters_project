@@ -158,6 +158,7 @@ function npReaderListeners(npReader, bwa){
 }
 
 function bwaListeners(bwa, japsaProc) {
+	bwa.stderr.setEncoding('utf8');
 	bwa.on('error', function(error) {
 		console.log('bwa process error:');
 		console.log(error);
