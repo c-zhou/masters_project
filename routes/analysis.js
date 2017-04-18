@@ -174,7 +174,7 @@ function bwaListeners(bwa, japsaProc) {
 
 
 	bwa.stdout.on('data', function(data) {
-		console.log(data.toString());
+		// console.log(data.toString());
 		japsaProc.stdin.write(data);
 	});
 
