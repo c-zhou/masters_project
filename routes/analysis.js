@@ -161,10 +161,6 @@ function npReaderListeners(npReader, bwa){
 
 function bwaListeners(bwa, japsaProc) {
 	// bwa.stderr.setEncoding('utf8');
-	bwa.on('error', function(error) {
-		console.log('bwa process error:');
-		console.log(error);
-	});
 
 	bwa.on('error', function(error) {
 		console.log('bwa error: ');
@@ -190,10 +186,6 @@ function bwaListeners(bwa, japsaProc) {
 function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	// encode the stdout as a string rather than a Buffer
 	speciesTyping.stdout.setEncoding('utf8');
-
-	speciesTyping.stdin.on('error', function(data) {
-		console.log(data);
-	});
 
 	speciesTyping.on('error', function(error) {
 		console.log('species typing process error:');

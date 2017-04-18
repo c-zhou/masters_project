@@ -63,8 +63,7 @@ function run_speciesTyping(pathData) {
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
 		    '--bamFile=-', // read BAM from stdin
-		    '--indexFile=' +
-		    path.join(path.dirname(pathData.pathToDB), 'speciesIndex'), // index file
+		    '--indexFile=' + path.join(path.dirname(pathData.pathToDB), 'speciesIndex'), // index file
 		    '--read=100', // min. number of reads between analysis
 		    '--time=3', // min. number of secs between analysis
 		    '--output=-' // output to stdout
