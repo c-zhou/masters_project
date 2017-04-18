@@ -25,6 +25,7 @@ io.of('/analysis').on('connection', function(socket){
 
 	socket.on('paths', function(data) {
 		console.log(data);
+		console.log((data.pathToResDB) ? data.pathToResDB : "res. profile not required");
 		// path information entered by client
 		pathData = data;
 	});
