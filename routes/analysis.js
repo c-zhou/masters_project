@@ -196,6 +196,11 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 		console.log(error);
 	});
 
+	speciesTyping.stderr.on('data', function(data) {
+		console.log('st stderr:');
+		console.log(data);
+	});
+
 	speciesTyping.stdout.on('data', function(data) {
 		var dataToWrite;
 		// parse output into JSON format and send to client
