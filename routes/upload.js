@@ -205,6 +205,7 @@ function uploadLocalFile(req, res){
 }
 
 function writeMetadataEntry(filePaths, data) {
+	data.genus = data.species.split(' ')[0].capitalize();
 	console.log(data);
 	var md = new Metadata(filePaths, data);
 	db.push(md);
@@ -240,3 +241,7 @@ function writeMetadataEntry(filePaths, data) {
 // 	}
 //
 // }
+
+String.prototype.capitalize = function() {
+	return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+}
