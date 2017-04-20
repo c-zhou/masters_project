@@ -3,9 +3,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <link rel="stylesheet" href="/stylesheets/upload.css">
 
-<script>
-    var speciesList = <%- speciesList %>
-</script>
+
 
 <% include ./partials/navbar %>
 
@@ -56,7 +54,9 @@
                         <input type="text" name="orgName" placeholder="Organism Name"
                         list="speciesNames" class="ui search">
                         <datalist id="speciesNames">
-                            <option value="test">
+                            <% speciesList.forEach(function(entry) { %>
+                            <option value="<%= entry %>"></option>
+                            <% }); %>
                         </datalist>
                     </div>
 

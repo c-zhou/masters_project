@@ -24,8 +24,7 @@ router.get("/", function(req, res){
 
 	// load in species list and then render the view
 	getSpeciesList('/home/ubuntu/app_dev/organism_info.tsv', function(speciesList) {
-		console.log(speciesList);
-		res.render("upload", { speciesList: speciesList.toArray()});
+		res.render("upload", { speciesList: speciesList });
 	});
 
 });
@@ -226,7 +225,7 @@ function getSpeciesList(file, callback) {
 	});
 
 	rl.on('close', function() {
-		callback(speciesList);
+		callback(speciesList.toArray());
 	});
 
 	// puts the string together depending on whether strain info is present
