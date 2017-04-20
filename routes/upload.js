@@ -205,6 +205,7 @@ function uploadLocalFile(req, res){
 }
 
 function writeMetadataEntry(filePaths, data) {
+	console.log(data);
 	var md = new Metadata(filePaths, data);
 	db.push(md);
 	var mdPath = path.join(path.dirname(require.main.filename), '../db.json');

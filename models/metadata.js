@@ -3,8 +3,8 @@
  */
 // a constructor for the metadata that will be stored for each file uploaded
 var Metadata = function(filePaths, data) {
-	this.id = new Date().getTime();
-	this.filePaths = filePaths;
+	this.sampleID = new Date().getTime();
+	this.path = filePaths;
 	this.data = data;
 };
 
