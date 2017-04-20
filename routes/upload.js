@@ -230,7 +230,7 @@ function getSpeciesList(file) {
 
 	function stringConstr(list) {
 		var temp = list[2] + "(taxid: " + list[0] + ")";
-		var ending = (temp[3]) ? ", " + temp[3] + ")" : ")";
+		var ending = (list[3]) ? ", " + list[3] + ")" : ")";
 		return temp + ending;
 	}
 
