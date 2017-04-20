@@ -50,13 +50,25 @@
                         <div class="ui basic label">&mu;g/mL</div>
                     </div>
                     <div class="field">
+                        <div class="ui fluid selection dropdown">
+                            <input type="hidden" name="user">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Select Friend</div>
+                            <div class="menu">
+                                <% speciesList.forEach(function(entry) { %>
+                                <div class="item" data-value="<%= entry %>">
+                                    <%= entry %>
+                                </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
                         <label>Organism Name</label>
                         <input type="text" name="orgName" placeholder="Organism Name"
                         list="speciesNames" class="ui search">
                         <datalist id="speciesNames">
-                            <% speciesList.forEach(function(entry) { %>
-                            <option value="<%= entry %>"></option>
-                            <% }); %>
+
                         </datalist>
                     </div>
 
