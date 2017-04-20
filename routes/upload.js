@@ -1,5 +1,6 @@
 const path        = require('path'),
       spawn       = require('child_process').spawn,
+      readline    = require('readline'),
       UPLOAD_DIR  = path.join(__dirname, "../../uploads/");
 
 var io         = require('../app.js'),
@@ -16,12 +17,15 @@ var io         = require('../app.js'),
     Metadata   = require('../models/metadata'), // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
 
-// load in species list
-var speciesList = getSpeciesList('/home/ubuntu/app_dev/organism_info.tsv');
 
 // GET upload page
 router.get("/", function(req, res){
-	res.render("upload");
+
+	// load in species list and then render the view
+	getSpeciesList('/home/ubuntu/app_dev/organism_info.tsv', function(speciesList) {
+		res.render("upload", { speciesList: speciesList});
+	});
+
 });
 
 // POST uploading file
@@ -206,12 +210,16 @@ function writeMetadataEntry(filePaths, data) {
 }
 
 function getSpeciesList(file) {
-	// d3.tsv(file, function(error, data) {
-	// 	if (error) console.log(error.message);
-	// 	console.log(data);
-	// });
-	var f = fs.createReadStream(file);
-	f.on('data', function(data) {
-		console.log(data.toString());
+	const rl = readline.createInterface({
+		input: fs.createReadStream(fileName)
 	});
+
+	var speciesList = [];
+
+	rl.on('line', function(line) {
+		var entry = line.split('\t');
+		console.log(entry);
+	});
+
+
 }
