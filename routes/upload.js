@@ -9,6 +9,7 @@ var io         = require('../app.js'),
     qs         = require('qs'), // package to parse serialized form data
     db         = require(path.join(path.dirname(require.main.filename), '../db.json')),
     url        = require('url'),
+    Set        = require('collections/set'),
     http       = require('http'),
     kill       = require('tree-kill'),
     express    = require('express'),
@@ -210,16 +211,27 @@ function writeMetadataEntry(filePaths, data) {
 }
 
 function getSpeciesList(file) {
+	// file header is 'taxid' 'species_taxid' 'organism_name' 'infraspecific_name'
+
 	const rl = readline.createInterface({
 		input: fs.createReadStream(file)
 	});
 
-	var speciesList = [];
+	var speciesList = new Set();
+
+	var i = 0;
 
 	rl.on('line', function(line) {
 		var entry = line.split('\t');
-		console.log(entry);
+		var str = stringConstr(entry);
+		if (i < 20) console.log(str);
+		i++;
 	});
 
+	function stringConstr(list) {
+		var temp = list[2] + "(taxid: " + list[0] + ")";
+		var ending = (temp[3]) ? ", " + temp[3] + ")" : ")";
+		return temp + ending;
+	}
 
 }
