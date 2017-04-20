@@ -222,11 +222,11 @@ function getSpeciesList(file) {
 	var i = 0;
 
 	rl.on('line', function(line) {
-		if (i == 1 || i == 0) next();
-		var entry = line.split('\t');
-		var str = stringConstr(entry);
-		if (i < 20) console.log(str);
-		i++;
+		if (line.startsWith(/\d/) {
+			var entry = line.split('\t');
+			var str   = stringConstr(entry);
+			if (i < 20) console.log(str);
+		}
 	});
 
 	function stringConstr(list) {
