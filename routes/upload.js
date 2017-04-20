@@ -218,19 +218,27 @@ function getSpeciesList(file) {
 	});
 
 	var speciesList = new Set();
+	var test = [];
 
 	var i = 0;
 
 	rl.on('line', function(line) {
-		if (line.match(/^\d/)) {
+		if (line.match(/^\d/)) { // ie skip headers etc. (line should start with digit)
 			var entry = line.split('\t');
-			var str   = stringConstr(entry);
-			if (i < 20) console.log(str);
+			var str = stringConstr(entry);
+			speciesList.add(str);
+			test.push(str);
 		}
 	});
 
+	rl.on('close', function() {
+		console.log("Set length = " + speciesList.length);
+		console.log("Array length = " + test.length);
+	});
+
+	// puts the string together depending on whether strain info is present
 	function stringConstr(list) {
-		var temp = list[2] + "(taxid: " + list[0];
+		var temp = list[2] + " (taxid: " + list[0];
 		var ending = (list[3]) ? ", " + list[3] + ")" : ")";
 		return temp + ending;
 	}
