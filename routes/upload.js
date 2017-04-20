@@ -24,7 +24,7 @@ router.get("/", function(req, res){
 
 	// load in species list and then render the view
 	getSpeciesList('/home/ubuntu/app_dev/organism_info.tsv', function(speciesList) {
-		res.render("upload", { speciesList: speciesList });
+		res.render("upload", { speciesList: JSON.stringify(speciesList) });
 	});
 
 });
