@@ -210,7 +210,7 @@ function writeMetadataEntry(filePaths, data) {
 	jsonfile.writeFileSync(mdPath, db, { spaces: 4 });
 }
 
-function getSpeciesList(file) {
+function getSpeciesList(file, callback) {
 	// file header is 'taxid' 'species_taxid' 'organism_name' 'infraspecific_name'
 
 	const rl = readline.createInterface({
@@ -218,22 +218,14 @@ function getSpeciesList(file) {
 	});
 
 	var speciesList = new Set();
-	var test = [];
-
-	var i = 0;
 
 	rl.on('line', function(line) {
-		if (line.match(/^\d/)) { // ie skip headers etc. (line should start with digit)
-			var entry = line.split('\t');
-			var str = stringConstr(entry);
-			speciesList.add(str);
-			test.push(str);
-		}
+		// split lines on tabs and construct string for display
+		if (line.match(/^\d/)) speciesList.add(stringConstr(line.split('\t')));
 	});
 
 	rl.on('close', function() {
-		console.log("Set length = " + speciesList.length);
-		console.log("Array length = " + test.length);
+		callback(speciesList);
 	});
 
 	// puts the string together depending on whether strain info is present

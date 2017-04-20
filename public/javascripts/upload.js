@@ -1,6 +1,8 @@
 /**
  * Created by m.hall on 21/2/17.
  */
+console.log(speciesList);
+
 var $form        = $('.box'),
     $input       = $form.find('input[type="file"]'),
     socket,
