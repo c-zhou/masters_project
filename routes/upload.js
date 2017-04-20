@@ -205,7 +205,8 @@ function uploadLocalFile(req, res){
 }
 
 function writeMetadataEntry(filePaths, data) {
-	data.genus = data.species.split(' ')[0].capitalize();
+	data.species = data.species.capitalize();
+	data.genus   = data.species.split(' ')[0];
 	console.log(data);
 	var md = new Metadata(filePaths, data);
 	db.push(md);
