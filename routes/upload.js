@@ -211,7 +211,7 @@ function writeMetadataEntry(filePaths, data) {
 
 function getSpeciesList(file) {
 	const rl = readline.createInterface({
-		input: fs.createReadStream(fileName)
+		input: fs.createReadStream(file)
 	});
 
 	var speciesList = [];
