@@ -2,8 +2,12 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <link rel="stylesheet" href="/stylesheets/upload.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
-
+<script>
+    var speciesList = <%- speciesList %>
+</script>
 
 <% include ./partials/navbar %>
 
@@ -50,18 +54,7 @@
                         <div class="ui basic label">&mu;g/mL</div>
                     </div>
                     <div class="field">
-                        <div class="ui fluid selection dropdown">
-                            <input type="hidden" name="user">
-                            <i class="dropdown icon"></i>
-                            <div class="default text">Select Friend</div>
-                            <div class="menu">
-                                <% speciesList.forEach(function(entry) { %>
-                                <div class="item" data-value="<%= entry %>">
-                                    <%= entry %>
-                                </div>
-                                <% }); %>
-                            </div>
-                        </div>
+                        <select id="speciesList"></select>
                     </div>
                     <div class="field">
                         <label>Organism Name</label>
@@ -191,6 +184,12 @@
 
     </div>
 </div>
+
+<script>
+    $('#speciesList').select2({
+        data: speciesList
+    })
+</script>
 
 <script src="javascripts/upload.js"></script>
 
