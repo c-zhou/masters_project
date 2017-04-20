@@ -4,6 +4,7 @@ const path        = require('path'),
 
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
+    d3         = require('d3'),
     qs         = require('qs'), // package to parse serialized form data
     db         = require(path.join(path.dirname(require.main.filename), '../db.json')),
     url        = require('url'),
@@ -14,6 +15,9 @@ var io         = require('../app.js'),
     jsonfile   = require('jsonfile'),
     Metadata   = require('../models/metadata'), // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
+
+// load in species list
+var speciesList = getSpeciesList('/home/ubuntu/app_dev/organism_info.tsv');
 
 // GET upload page
 router.get("/", function(req, res){
@@ -199,4 +203,11 @@ function writeMetadataEntry(filePaths, data) {
 	db.push(md);
 	var mdPath = path.join(path.dirname(require.main.filename), '../db.json');
 	jsonfile.writeFileSync(mdPath, db, { spaces: 4 });
+}
+
+function getSpeciesList(file) {
+	d3.tsv(file, function(error, data) {
+		if (error) console.log(error);
+		console.log(data);
+	});
 }
