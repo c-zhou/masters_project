@@ -7,7 +7,6 @@
 
 <script>
 	var data = <%- speciesList %>;
-	console.log(data);
 </script>
 
 <% include ./partials/navbar %>
@@ -187,7 +186,7 @@
 </div>
 
 <script>
-    console.log(data);
+    console.log(typeof data);
 	$('#speciesList').select2({
 		data: data
 	});
