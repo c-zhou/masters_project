@@ -222,7 +222,7 @@ function getSpeciesList(file) {
 	var i = 0;
 
 	rl.on('line', function(line) {
-		if (line.startsWith(/\d/)) {
+		if (line.match(/^\d/)) {
 			var entry = line.split('\t');
 			var str   = stringConstr(entry);
 			if (i < 20) console.log(str);
