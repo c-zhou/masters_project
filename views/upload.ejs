@@ -2,14 +2,6 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <link rel="stylesheet" href="/stylesheets/upload.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.js"></script>
-
-<script>
-	var data = <%- speciesList %>;
-</script>
 
 <% include ./partials/navbar %>
 
@@ -56,15 +48,8 @@
                         <div class="ui basic label">&mu;g/mL</div>
                     </div>
                     <div class="field">
-                        <select id="speciesList"></select>
-                    </div>
-                    <div class="field">
                         <label>Organism Name</label>
-                        <input type="text" name="orgName" placeholder="Organism Name"
-                        list="speciesNames" class="ui search">
-                        <datalist id="speciesNames">
-
-                        </datalist>
+                        <input type="text" name="orgName" placeholder="Organism Name">
                     </div>
 
                     <div class="field">
@@ -105,9 +90,6 @@
                             <div class="ui basic label">&mu;g/mL</div>
                         </div>
                     </div>
-
-
-
 
                     <div class="field">
                         <button class="ui button" type="submit">Submit</button>
@@ -187,34 +169,7 @@
     </div>
 </div>
 
-<div class="ui-widget">
-    <label for="birds">Birds: </label>
-    <input id="birds">
-</div>
 
-<div class="ui-widget">
-    Result:
-    <div id="log" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
-</div>
-
-<script>
-    console.log(typeof data);
-    var select = $('#speciesList');
-    $( function() {
-	    function log( message ) {
-		    $( "<div>" ).text( message ).prependTo( "#log" );
-		    $( "#log" ).scrollTop( 0 );
-	    }
-
-	    $( "#birds" ).autocomplete({
-		    source: data,
-		    minLength: 2,
-		    select: function( event, ui ) {
-			    log( "Selected: " + ui.item.value + " aka " + ui.item.id );
-		    }
-	    });
-    } );
-</script>
 
 <script src="javascripts/upload.js"></script>
 
