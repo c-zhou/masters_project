@@ -222,6 +222,7 @@ function getSpeciesList(file) {
 	var i = 0;
 
 	rl.on('line', function(line) {
+		if (i == 1 || i == 0) next();
 		var entry = line.split('\t');
 		var str = stringConstr(entry);
 		if (i < 20) console.log(str);
@@ -229,7 +230,7 @@ function getSpeciesList(file) {
 	});
 
 	function stringConstr(list) {
-		var temp = list[2] + "(taxid: " + list[0] + ")";
+		var temp = list[2] + "(taxid: " + list[0];
 		var ending = (list[3]) ? ", " + list[3] + ")" : ")";
 		return temp + ending;
 	}
