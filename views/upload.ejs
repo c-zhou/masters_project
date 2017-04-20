@@ -6,9 +6,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
 <script>
-    var speciesList = <%- speciesList %>;
     $('#speciesList').select2({
-        data: speciesList
+        data: <%- speciesList %>
     });
 </script>
 
