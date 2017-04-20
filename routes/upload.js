@@ -207,7 +207,7 @@ function writeMetadataEntry(filePaths, data) {
 
 function getSpeciesList(file) {
 	d3.tsv(file, function(error, data) {
-		if (error) console.log(error);
+		if (error) console.log(error.message);
 		console.log(data);
 	});
 }
