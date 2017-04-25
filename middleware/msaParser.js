@@ -14,7 +14,7 @@ var parser = function(fileName, callback) {
 		      input: fs.createReadStream(fileName)
 	      });
 
-	// regex to split on 1 or more spaces
+	// regex to split on 1 or more spaces (includes tab characters)
 	const re = /\s+/;
 
 	var data = [];

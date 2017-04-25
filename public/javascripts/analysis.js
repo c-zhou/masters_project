@@ -12,6 +12,7 @@ var getStartedButton    = $('#getStarted'),
     readPathsForm       = $('#readPathsForm'),
     startAnalysisButton = $('#startAnalysis'),
     chartContainer      = $('#chartContainer'),
+    resistanceDBfield   = $('#resDBPath'),
     stopAnalysisButton  = $('#stopAnalysis');
 
 var socket;
@@ -44,14 +45,15 @@ readPathsForm.submit(function(e){
 	// prevents default action of form
 	e.preventDefault();
 
-	//TODO - error handling for when the text fields are empty. Add folder chooser.
+	//TODO - error handling for when the text fields are empty.
 
 	// send the path to the server
 	socket.emit('paths', {
 		pathToInput: $('#readsPath').val(), // path to the user's reads
 		pathToDB: $('#dbPath').val(), // path to database
 		pathForOutput: $('#outputPath').val(), // folder to run analysis from
-		outputFile: $('#outputFile').val() // file name for output
+		outputFile: $('#outputFile').val(), // file name for output
+		pathToResDB: $('#resDBPath input').val()
 	});
 
 	$(this).fadeOut(fadeTime, function(){
@@ -84,6 +86,7 @@ startAnalysisButton.click(function(){
         .call(donut);
 
     socket.on('stdout', function(data) {
+    	console.log("received stdout from st");
     	var probTotal = Number();
     	// add in an "other" species if the probabilities dont add to 1.0
     	data.forEach(function(d) { probTotal += +d.prob; });
@@ -97,6 +100,11 @@ startAnalysisButton.click(function(){
 	    // update the donut chart with the new data
         donut.data(data);
     });
+
+    // receiving output from resistance profiling
+    socket.on('resistance', function(data) {
+    	console.log(data);
+    });
 });
 
 // When the stop button is clicked, kill the child process running the species typing and
@@ -105,6 +113,23 @@ stopAnalysisButton.click(function(){
 	stopAnalysisButton.fadeOut(fadeTime);
 	socket.emit('kill');
 });
+
+// function that will make field to enter resistance profile database path appear when
+// checkbox is selected
+function showResDB(checkbox){
+	if (checkbox.checked) {
+		resistanceDBfield.fadeIn();
+		// jquery default is block which messes up the semantic ui form
+		resistanceDBfield.css('display', 'inherit');
+		resistanceDBfield.find('input').attr('required', true); // make field required
+	} else {
+		resistanceDBfield.fadeOut();
+		// remove values from fields and make them not required anymore
+		resistanceDBfield.find('input')
+			.val('')
+			.removeAttr('required');
+	}
+}
 
 //============================================================
 // D3 code for making the donut chart
