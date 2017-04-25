@@ -138,6 +138,7 @@ function donutChart() {
     var data = [],
         width,
         height,
+        radius,
         margin = {top: 10, right: 10, bottom: 10, left: 10},
         colour = d3.scaleOrdinal(d3.schemeCategory20), // colour scheme
         variable, // value in data that will dictate proportions on chart
@@ -154,7 +155,7 @@ function donutChart() {
             // generate chart
             // ===========================================================================================
             // Set up constructors for making donut. See https://github.com/d3/d3-shape/blob/master/README.md
-            var radius = Math.min(width, height) / 2;
+            radius = Math.min(width, height) / 2;
 
             // creates a new pie generator
             var pie = d3.pie()

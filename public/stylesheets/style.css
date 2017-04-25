@@ -11,12 +11,12 @@ h1 {
 hr {
     width: 400px;
     border-top: 1px solid black;
-border-bottom: 1px solid rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 
 body {
-font-family: 'Roboto', sans-serif;
-color: black;
+    font-family: 'Roboto', sans-serif;
+    color: black;
 }
 
 /*Prevents autofill from changing the colour of the input box to yellow*/
@@ -33,12 +33,12 @@ input:-webkit-autofill {
 }
 
 .container.main {
-margin-top: 7.0em;
+    margin-top: 7.0em;
 }
 
 /* size of the navbar items */
 .menu .container .item {
-font-size: 1.5em;
+    font-size: 1.5em;
 }
 
 /* navbar */
@@ -49,25 +49,25 @@ opacity: 0.9;
 
 /*On the landing page, holds the centerpiece*/
 #content {
-text-align: center;
-padding-top: 25%;
-text-shadow: 0px 4px 3px rgba(0,0,0,0.3),
-0px 8px 13px rgba(0,0,0,0.1),
-0px 18px 23px rgba(0,0,0,0.1);
+    text-align: center;
+    padding-top: 25%;
+    text-shadow: 0 4px 3px rgba(0,0,0,0.3),
+    0 8px 13px rgba(0,0,0,0.1),
+    0 18px 23px rgba(0,0,0,0.1);
 }
 
 /*div that holds the background image on the landing page*/
 #bg {
-width: 100%;
-max-width: 1920px;
-background: url("../images/Dnarrow.png") no-repeat;
-background-size: 100% 100%;
-background-position: center;
-position: absolute;
-height: 100%;
-max-height: 1080px;
-z-index: -9999;
-opacity: 0.7;
+    width: 100%;
+    max-width: 1920px;
+    background: url("../images/Dnarrow.png") no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+    position: absolute;
+    height: 100%;
+    max-height: 1080px;
+    z-index: -9999;
+    opacity: 0.7;
 }
 
 
