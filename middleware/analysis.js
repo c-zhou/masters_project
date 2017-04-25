@@ -34,6 +34,7 @@ function run_bwa(pathData, startFrom) {
 	var bwaArgs = [
 			'mem', // run bwa mem
 		    '-t 4', // number of threads
+		    '-v 3', // output all normal messages
 		    '-k 11', // min. seed length
 		    '-W 20', // discard a chain if seeded bases shorter than INT
 		    '-r 10', // look for internal seeds inside a seed longer than {-k} * FLOAT
@@ -44,13 +45,19 @@ function run_bwa(pathData, startFrom) {
 		    '-L 0', // penalty for 5'- and 3'-end clipping - optimised for np
 		    '-Y', // use soft clipping for supplementary alignments
 		    '-K 10000', // buffer length in bp (not documented)
-		    path.join(pathData.pathToDB, 'genomeDB.fasta'), // ref sequence/db
+		    pathData.pathToDB, // ref sequence/db
 		    readFrom // read file from
 	    ],
 	    bwaOptions = {
 		    cwd: pathData.pathForOutput, // where to run the process
 		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
 	    };
+
+	console.log("bwa args");
+	console.log(bwaArgs);
+
+	console.log("bwa opts");
+	console.log(bwaOptions);
 
 	return spawn('bwa', bwaArgs, bwaOptions);
 }
@@ -62,7 +69,7 @@ function run_speciesTyping(pathData) {
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
 		    '--bamFile=-', // read BAM from stdin
-		    '--indexFile=' + path.join(pathData.pathToDB, 'speciesIndex'), // index file
+		    '--indexFile=' + path.join(path.dirname(pathData.pathToDB), 'speciesIndex'), // index file
 		    '--read=100', // min. number of reads between analysis
 		    '--time=3', // min. number of secs between analysis
 		    '--output=-' // output to stdout
@@ -72,11 +79,36 @@ function run_speciesTyping(pathData) {
 		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
 	    };
 
+	console.log("st args");
+	console.log(specTypingArgs);
+
+	console.log("st opts");
+	console.log(specTypingOptions);
+
 	return spawn('jsa.np.rtSpeciesTyping', specTypingArgs, specTypingOptions);
+}
+
+function run_resProfiling(pathData) {
+	console.log('resistance profiling called...');
+
+	var resProfilingArgs = [
+		'--output=-', // output to stdout
+	    '--bamFile=-', // read BAM from stdin
+	    '--resDB=' + pathData.pathToResDB, // path to resistance database
+	    '--score=0.0001',
+	    '--tmp=tmp/resTest' // temporary folder so data doesnt need to be stored in memory
+	],
+	    resProfilingOptions = {
+		    cwd: pathData.pathForOutput, // where to run the process
+		    stdio: ['pipe', 'pipe', 'pipe'] // stdin stdout stderr types (could use 'ignore')
+	    };
+
+	return spawn('jsa.np.rtResistGenes', resProfilingArgs, resProfilingOptions);
 }
 
 module.exports = {
 	run_npReader: run_npReader,
 	run_bwa: run_bwa,
-	run_speciesTyping: run_speciesTyping
+	run_speciesTyping: run_speciesTyping,
+	run_resProfiling: run_resProfiling
 };

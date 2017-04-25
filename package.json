@@ -9,6 +9,7 @@
     "body-parser": "~1.16.0",
     "bootstrap": "^3.3.7",
     "chokidar": "^1.6.1",
+    "collections": "^5.0.6",
     "cookie-parser": "~1.4.3",
     "d3": "^4.7.0",
     "d3-sankey": "^0.4.2",

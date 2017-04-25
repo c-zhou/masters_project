@@ -1,12 +1,15 @@
 const path        = require('path'),
       spawn       = require('child_process').spawn,
+      readline    = require('readline'),
       UPLOAD_DIR  = path.join(__dirname, "../../uploads/");
 
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
+    d3         = require('d3'),
     qs         = require('qs'), // package to parse serialized form data
     db         = require(path.join(path.dirname(require.main.filename), '../db.json')),
     url        = require('url'),
+    Set        = require('collections/set'),
     http       = require('http'),
     kill       = require('tree-kill'),
     express    = require('express'),
@@ -15,9 +18,16 @@ var io         = require('../app.js'),
     Metadata   = require('../models/metadata'), // constructor for database object
     formidable = require('formidable'); // parses incoming form data (uploaded files)
 
+
 // GET upload page
 router.get("/", function(req, res){
-	res.render("upload");
+
+	// load in species list and then render the view
+	// getSpeciesList('/home/ubuntu/app_dev/organism_info.tsv', function(speciesList) {
+	// 	res.render("upload", { speciesList: JSON.stringify(speciesList) });
+	// });
+	res.render('upload');
+
 });
 
 // POST uploading file
@@ -195,8 +205,44 @@ function uploadLocalFile(req, res){
 }
 
 function writeMetadataEntry(filePaths, data) {
+	data.species = data.species.capitalize();
+	data.genus   = data.species.split(' ')[0];
+	console.log(data);
 	var md = new Metadata(filePaths, data);
 	db.push(md);
 	var mdPath = path.join(path.dirname(require.main.filename), '../db.json');
 	jsonfile.writeFileSync(mdPath, db, { spaces: 4 });
 }
+
+// function to retrieve the species list on the server. not in use currently as I cant figure
+// out how to efficiently server this as a search box due to the enormous size of the list.
+// function getSpeciesList(file, callback) {
+// 	// file header is 'taxid' 'species_taxid' 'organism_name' 'infraspecific_name'
+//
+// 	const rl = readline.createInterface({
+// 		input: fs.createReadStream(file)
+// 	});
+//
+// 	var speciesList = new Set();
+//
+// 	rl.on('line', function(line) {
+// 		// split lines on tabs and construct string for display
+// 		if (line.match(/^\d/)) speciesList.add(stringConstr(line.split('\t')));
+// 	});
+//
+// 	rl.on('close', function() {
+// 		callback(speciesList.toArray());
+// 	});
+//
+// 	// puts the string together depending on whether strain info is present
+// 	function stringConstr(list) {
+// 		var temp = list[2] + " (taxid: " + list[0];
+// 		var ending = (list[3]) ? ", " + list[3] + ")" : ")";
+// 		return temp + ending;
+// 	}
+//
+// }
+
+String.prototype.capitalize = function() {
+	return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+};

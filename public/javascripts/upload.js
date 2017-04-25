@@ -52,8 +52,6 @@ metadataForm.submit(function(e) {
 	[metadataStep, fileStep].forEach(nextStep);
 });
 
-// $(document).ready(showInduction($('#induction')));
-
 function showInduction(checkbox){
 	if (checkbox.checked) {
 		inductionElements.fadeIn();

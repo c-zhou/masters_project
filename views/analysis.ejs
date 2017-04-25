@@ -16,17 +16,17 @@
             <form class="ui form" id="readPathsForm">
                 <div class="field">
                     <label for="readsPath">Path to reads or fastq file</label>
-                    <input type="text" placeholder="Enter path to reads or fastq"
+                    <input type="text" placeholder="Enter/path/to/reads/or/fastq"
                        name="readsPath" id="readsPath" required>
                 </div>
                 <div class="field">
                     <label for="dbPath">Path to reference database</label>
-                    <input type="text" placeholder="Enter path to database"
+                    <input type="text" placeholder="Enter/path/to/database"
                            name="dbPath" id="dbPath" required>
                 </div>
                 <div class="field">
                     <label for="outputPath">Run analysis from</label>
-                    <input type="text" placeholder="Directory to run analysis from"
+                    <input type="text" placeholder="Directory/to/run/analysis/from"
                 name="outputPath" id="outputPath" required>
                 </div>
                 <div class="field">
@@ -34,7 +34,23 @@
                     <input type="text" placeholder="Output file name (no extension)"
                        name="outputFile" id="outputFile" required>
                 </div>
+                <!-- Checkbox that allows user to select if they want to do resistance
+                 profiling. Checking the box will make a field appear to enter the
+                 path to the resistance gene database-->
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" onclick="showResDB(this)" tabindex="0"
+                               name="resProfileCheck" id="resProfileCheck">
+                        <label for="resProfileCheck">Resistance Profiling?</label>
+                    </div>
+                </div>
+                <div class="field" id="resDBPath">
+                    <label for="resDBPath">Path to resistance database</label>
+                    <input type="text" placeholder="Path/to/database"
+                           name="resDBPath">
+                </div>
                 <input type="submit" class="ui green button" id="submitReadsPath">
+
             </form>
 
             <!--buttons to start and stop the species typing-->
