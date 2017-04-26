@@ -7,7 +7,7 @@ const spawn = require('child_process').spawn,
 
 // child process constructor for npReader
 function run_npReader(pathData) {
-	console.log('npReader called...');
+	console.log('npReader called at ' + new Date());
 
 	var npReaderArgs = [
 		    '--realtime', // run the program in real-time mode
@@ -25,7 +25,7 @@ function run_npReader(pathData) {
 
 // child process constructor for bwa
 function run_bwa(pathData, startFrom) {
-	console.log('bwa called...');
+	console.log('bwa called at ' + new Date());
 
 	// if user provided fastq, analysis starts from bwa and the input to bwa is set as the fastq
 	// file specified by client. otherwise, input is from stdin (-).
@@ -58,7 +58,7 @@ function run_bwa(pathData, startFrom) {
 
 // child process constructor for real-time species typing
 function run_speciesTyping(pathData) {
-	console.log('species typing called...');
+	console.log('species typing called at ' + new Date());
 
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
@@ -77,7 +77,7 @@ function run_speciesTyping(pathData) {
 }
 
 function run_resProfiling(pathData) {
-	console.log('resistance profiling called...');
+	console.log('resistance profiling called at ' + new Date());
 
 	var resProfilingArgs = [
 		'--output=-', // output to stdout

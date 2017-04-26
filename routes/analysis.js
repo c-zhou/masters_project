@@ -45,7 +45,7 @@ io.of('/analysis').on('connection', function(socket){
 // =====================================================================================
 
 function runAnalysis(socket){
-	console.log("Starting analysis...");
+	console.log("Starting analysis at " + new Date());
 	hasSTWritingStarted = false;
 	hasRPWritingStarted = false;
 	processes = [];
@@ -56,7 +56,7 @@ function runAnalysis(socket){
 
 
 	outputFile.on('close', function() {
-		console.log("output file closed");
+		console.log("output file closed at " + new Date());
 	});
 
 	if (pathData.pathToResDB) {
@@ -65,7 +65,7 @@ function runAnalysis(socket){
 		    outputResFile     = fs.createWriteStream(outputResFilePath);
 		outputResFile.write('[');
 		outputResFile.on('close', function() {
-			console.log("resistance output file closed");
+			console.log("resistance output file closed at " + new Date());
 		});
 	}
 
@@ -153,7 +153,7 @@ function npReaderListeners(npReader, bwa){
 	});
 
 	npReader.on('close', function(code, signal) {
-		if (code || signal) console.log("npReader closed " + code + " " + signal);
+		if (code || signal) console.log("npReader closed " + code + " " + signal + ' at ' + new Date());
 		// bwa.stdin.end();
 		bwa.forEach(function(proc) { proc.stdin.end(); });
 	});
@@ -179,12 +179,12 @@ function bwaListeners(bwa, japsaProc) {
 	});
 
 	bwa.on('close', function(code, signal) {
-		if (code || signal) console.log("bwa closed " + code + " " + signal);
+		if (code || signal) console.log("bwa closed " + code + " " + signal + ' at ' + new Date());
 		japsaProc.stdin.end();
 	});
 
 	bwa.on('exit', function(code, signal) {
-		if (code || signal) console.log("bwa exited " + code + " " + signal);
+		if (code || signal) console.log("bwa exited " + code + " " + signal + ' at ' + new Date());
 	});
 }
 
@@ -225,14 +225,14 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	});
 
 	speciesTyping.on('close', function(code, signal) {
-		if (code || signal) console.log("speciesTyping closed " + code + " " + signal);
+		if (code || signal) console.log("speciesTyping closed " + code + " " + signal + ' at ' + new Date());
 		hasSTWritingStarted = false;
 		// close output file is not already close and write closing bracket
 		if (!outputFile.closed) { endFile(outputFile); }
 	});
 
 	speciesTyping.on('exit', function(code, signal) {
-		if (code || signal) console.log("speciesTyping exited " + code + " " + signal);
+		if (code || signal) console.log("speciesTyping exited " + code + " " + signal + ' at ' + new Date());
 	});
 }
 
@@ -274,20 +274,20 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 	});
 
 	resProfiling.on('close', function(code, signal) {
-		if (code || signal) console.log("resistance profiling closed " + code + " " + signal);
+		if (code || signal) console.log("resistance profiling closed " + code + " " + signal + ' at ' + new Date());
 		hasRPWritingStarted = false;
 		// close output file is not already close and write closing bracket
 		if (!outputFile.closed) { endFile(outputFile); }
 	});
 
 	resProfiling.on('exit', function (code, signal) {
-		if (code || signal) console.log("resistance profiling closed " + code + " " + signal);
+		if (code || signal) console.log("resistance profiling closed " + code + " " + signal + ' at ' + new Date());
 	})
 }
 
 function endFile(wStream) {
 	wStream.end(']', function () {
-		console.log("The log file has been closed.");
+		console.log("The log file has been closed at " + new Date());
 	});
 }
 
