@@ -277,6 +277,10 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		// close output file is not already close and write closing bracket
 		if (!outputFile.closed) { endFile(outputFile); }
 	});
+
+	resProfiling.on('exit', function (code, signal) {
+		if (code || signal) console.log("resistance profiling closed " + code + " " + signal);
+	})
 }
 
 function endFile(wStream) {

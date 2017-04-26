@@ -33,7 +33,7 @@ function run_bwa(pathData, startFrom) {
 
 	var bwaArgs = [
 			'mem', // run bwa mem
-		    '-t 4', // number of threads
+		    '-t 6', // number of threads
 		    '-v 3', // output all normal messages
 		    '-k 11', // min. seed length
 		    '-W 20', // discard a chain if seeded bases shorter than INT
