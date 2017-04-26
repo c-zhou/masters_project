@@ -168,13 +168,13 @@ function bwaListeners(bwa, japsaProc) {
 	});
 
 	bwa.stderr.on('data', function(data) {
-		console.log("bwa stderr: ");
-		console.log(data.toString());
+		// console.log("bwa stderr: ");
+		// console.log(data.toString());
 	});
 
 
 	bwa.stdout.on('data', function(data) {
-		console.log(data.toString());
+		// console.log(data.toString());
 		japsaProc.stdin.write(data);
 	});
 
@@ -199,8 +199,8 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	});
 
 	speciesTyping.stderr.on('data', function(data) {
-		console.log('st stderr:');
-		console.log(data);
+		// console.log('st stderr:');
+		// console.log(data);
 	});
 
 	speciesTyping.stdout.on('data', function(data) {
