@@ -86,7 +86,6 @@ startAnalysisButton.click(function(){
         .call(donut);
 
     socket.on('stdout', function(data) {
-    	console.log("received stdout from st");
     	var probTotal = Number();
     	// add in an "other" species if the probabilities dont add to 1.0
     	data.forEach(function(d) { probTotal += +d.prob; });

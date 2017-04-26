@@ -45,7 +45,7 @@ io.of('/analysis').on('connection', function(socket){
 // =====================================================================================
 
 function runAnalysis(socket){
-	console.log("Starting species typing...");
+	console.log("Starting analysis...");
 	hasSTWritingStarted = false;
 	hasRPWritingStarted = false;
 	processes = [];
@@ -264,6 +264,11 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 				if (error) console.log(error);
 			});
 		}
+	});
+
+	resProfiling.stderr.on('data', function(data) {
+		console.log("resistance profiling stderr:");
+		console.log(data.toString());
 	});
 
 	resProfiling.on('close', function(code, signal) {
