@@ -83,7 +83,6 @@ function run_resProfiling(pathData) {
 		'--output=-', // output to stdout
 	    '--bamFile=-', // read BAM from stdin
 	    '--resDB=' + pathData.pathToResDB, // path to resistance database
-	    '--score=0.0001',
 	    '--tmp=tmp/resTest' // temporary folder so data doesnt need to be stored in memory
 	],
 	    resProfilingOptions = {
