@@ -220,8 +220,8 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	});
 
 	speciesTyping.stderr.on('data', function(data) {
-		// console.log('st stderr:');
-		// console.log(data);
+		console.log('st stderr:');
+		console.log(data);
 	});
 
 	speciesTyping.stdout.on('data', function(data) {
