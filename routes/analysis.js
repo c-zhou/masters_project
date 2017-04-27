@@ -126,7 +126,7 @@ function runAnalysis(socket){
 			console.log("resistance profiling requested...");
 
 			// spawn a bwa instance based on resistance database
-			const bwaRes = middleware.run_bwa(pathData, 'RT', true);
+			const bwaRes = middleware.run_bwa(pathData, 'RP', true);
 			const resProfiling = middleware.run_resProfiling(pathData);
 			bwaListeners(bwaRes, resProfiling);
 			resProfilingListeners(resProfiling, outputResFile, socket);
