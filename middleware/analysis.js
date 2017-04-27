@@ -71,7 +71,7 @@ function run_bwa(pathData, pipeTo, startFrom) {
 function run_speciesTyping(pathData) {
 	console.log('species typing called at ' + new Date());
 
-	var dbPath = path.join(path.dirname(pathData.pathToDB), ST_INDEX_NAME);
+	var dbPath = path.join(pathData.pathToDB, ST_INDEX_NAME);
 	console.log('ST dbPath: ' + dbPath);
 
 	var specTypingArgs = [
