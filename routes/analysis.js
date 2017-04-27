@@ -75,28 +75,25 @@ function runAnalysis(socket){
 		// call npReader
 		const npReader = middleware.run_npReader(pathData);
 		// call bwa. false can be omitted. this indicates bwa is not the starting point
-		const bwa = middleware.run_bwa(pathData, false);
+		const bwa = middleware.run_bwa(pathData, 'ST', false);
 		// call species typing
 		const speciesTyping = middleware.run_speciesTyping(pathData);
 
 		processes.push(npReader, bwa, speciesTyping);
 
 		// if user wants resistance profiling
-		if (pathData.pathToResDB) {
+		if (pathData.resistanceProfiling) {
 			console.log("resistance profiling requested...");
 
-			var mutatedPathData = pathData;
-			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
 			// spawn a bwa instance based on resistance database
-			const bwaRes = middleware.run_bwa(mutatedPathData);
-			const resProfiling = middleware.run_resProfiling(mutatedPathData);
+			const bwaRes = middleware.run_bwa(pathData, 'RP', false);
+			const resProfiling = middleware.run_resProfiling(pathData);
 			npReaderListeners(npReader, [bwa, bwaRes]);
 			bwaListeners(bwaRes, resProfiling);
 			resProfilingListeners(resProfiling, outputResFile, socket);
 
 			//=====================================
 			// used for logging resistance profiling's bwa instance for stderr and stdout
-			// TODO: print path that file i being written to
 			var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
 			    bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
 			bwaRes.stderr.on('data', function (data) {
@@ -118,21 +115,19 @@ function runAnalysis(socket){
 	} else if (['.fastq', '.fq'].indexOf(fileExt) > -1) { // client gave fastq
 		// call bwa. true indicates analysis is starting from bwa and fastq file will be
 		// given to bwa as it's input
-		const bwa = middleware.run_bwa(pathData, true);
+		const bwa = middleware.run_bwa(pathData, 'ST', true);
 		// call species typing
 		const speciesTyping = middleware.run_speciesTyping(pathData);
 
 		processes.push(bwa, speciesTyping);
 
 		// if user wants resistance profiling
-		if (pathData.pathToResDB) {
+		if (pathData.resistanceProfiling) {
 			console.log("resistance profiling requested...");
 
-			var mutatedPathData = pathData;
-			mutatedPathData.pathToDB = mutatedPathData.pathToResDB;
 			// spawn a bwa instance based on resistance database
-			const bwaRes = middleware.run_bwa(mutatedPathData, true);
-			const resProfiling = middleware.run_resProfiling(mutatedPathData);
+			const bwaRes = middleware.run_bwa(pathData, 'RT', true);
+			const resProfiling = middleware.run_resProfiling(pathData);
 			bwaListeners(bwaRes, resProfiling);
 			resProfilingListeners(resProfiling, outputResFile, socket);
 

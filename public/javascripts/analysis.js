@@ -54,6 +54,7 @@ readPathsForm.submit(function(e){
 		pathForOutput: $('#outputPath').val(), // folder to run analysis from
 		outputFile: $('#outputFile').val(), // file name for output
 		pathToResDB: $('#resDBPath input').val()
+		resistanceProfiling: document.getElementById('resProfileCheck').checked
 	});
 
 	$(this).fadeOut(fadeTime, function(){
@@ -75,7 +76,7 @@ startAnalysisButton.click(function(){
 	// initiate plotting
     var donut = donutChart()
         .width(960)
-        .height(500)
+        .height(750)
         .transTime(500)
         .cornerRadius(3)
         .padAngle(0.015)

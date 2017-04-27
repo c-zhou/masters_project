@@ -2,7 +2,10 @@
  * Created by m.hall on 23/3/17.
  */
 const spawn = require('child_process').spawn,
-      path  = require('path');
+      path  = require('path'),
+	  ST_INDEX_NAME = 'speciesIndex',
+	  RP_DB_NAME = 'DB.fasta',
+	  ST_DB_NAME = 'genomeDB.fasta';
 
 
 // child process constructor for npReader
@@ -24,8 +27,14 @@ function run_npReader(pathData) {
 }
 
 // child process constructor for bwa
-function run_bwa(pathData, startFrom) {
+// pipeTo can take values 'ST'for speciesTyping or 'RP' for resistance profiling
+function run_bwa(pathData, pipeTo, startFrom) {
 	console.log('bwa called at ' + new Date());
+
+	var dbPath;
+	if (pipeTo.toUpperCase() === 'ST') dbPath = path.join(pathData.pathToDB, ST_DB_NAME);
+	else if (pipeTo.toUpperCase() === 'RP') dbPath = path.join(pathData.pathToResDB, RP_DB_NAME);
+	else console.log("ERROR: INCORRECT pipeTo OPTION GIVEN!");
 
 	// if user provided fastq, analysis starts from bwa and the input to bwa is set as the fastq
 	// file specified by client. otherwise, input is from stdin (-).
@@ -45,7 +54,7 @@ function run_bwa(pathData, startFrom) {
 		    '-L 0', // penalty for 5'- and 3'-end clipping - optimised for np
 		    '-Y', // use soft clipping for supplementary alignments
 		    '-K 10000', // buffer length in bp (not documented)
-		    pathData.pathToDB, // ref sequence/db
+		    dbPath, // ref sequence/db
 		    readFrom // read file from
 	    ],
 	    bwaOptions = {
@@ -63,7 +72,7 @@ function run_speciesTyping(pathData) {
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
 		    '--bamFile=-', // read BAM from stdin
-		    '--indexFile=' + path.join(path.dirname(pathData.pathToDB), 'speciesIndex'), // index file
+		    '--indexFile=' + path.join(path.dirname(pathData.pathToDB), ST_INDEX_NAME), // index file
 		    '--read=100', // min. number of reads between analysis
 		    '--time=3', // min. number of secs between analysis
 		    '--output=-' // output to stdout
