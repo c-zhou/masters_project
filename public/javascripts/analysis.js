@@ -53,7 +53,7 @@ readPathsForm.submit(function(e){
 		pathToDB: $('#dbPath').val(), // path to database
 		pathForOutput: $('#outputPath').val(), // folder to run analysis from
 		outputFile: $('#outputFile').val(), // file name for output
-		pathToResDB: $('#resDBPath input').val()
+		pathToResDB: $('#resDBPath input').val(),
 		resistanceProfiling: document.getElementById('resProfileCheck').checked
 	});
 
