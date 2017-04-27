@@ -36,6 +36,8 @@ function run_bwa(pathData, pipeTo, startFrom) {
 	else if (pipeTo.toUpperCase() === 'RP') dbPath = path.join(pathData.pathToResDB, RP_DB_NAME);
 	else console.log("ERROR: INCORRECT pipeTo OPTION GIVEN!");
 
+	console.log('bwa dbPath: ' + dbPath);
+
 	// if user provided fastq, analysis starts from bwa and the input to bwa is set as the fastq
 	// file specified by client. otherwise, input is from stdin (-).
 	var readFrom = (startFrom) ? pathData.pathToInput : '-';
@@ -69,10 +71,13 @@ function run_bwa(pathData, pipeTo, startFrom) {
 function run_speciesTyping(pathData) {
 	console.log('species typing called at ' + new Date());
 
+	var dbPath = path.join(path.dirname(pathData.pathToDB), ST_INDEX_NAME);
+	console.log('ST dbPath: ' + dbPath);
+
 	var specTypingArgs = [
 		    '--web', // output is in JSON format for use in the web app viz
 		    '--bamFile=-', // read BAM from stdin
-		    '--indexFile=' + path.join(path.dirname(pathData.pathToDB), ST_INDEX_NAME), // index file
+		    '--indexFile=' + dbPath, // index file
 		    '--read=100', // min. number of reads between analysis
 		    '--time=3', // min. number of secs between analysis
 		    '--output=-' // output to stdout
