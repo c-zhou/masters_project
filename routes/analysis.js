@@ -96,6 +96,7 @@ function runAnalysis(socket){
 
 			//=====================================
 			// used for logging resistance profiling's bwa instance for stderr and stdout
+			// TODO: print path that file i being written to
 			var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
 			    bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
 			bwaRes.stderr.on('data', function (data) {
@@ -134,6 +135,19 @@ function runAnalysis(socket){
 			const resProfiling = middleware.run_resProfiling(mutatedPathData);
 			bwaListeners(bwaRes, resProfiling);
 			resProfilingListeners(resProfiling, outputResFile, socket);
+
+			//=====================================
+			// used for logging resistance profiling's bwa instance for stderr and stdout
+			// TODO: print path that file i being written to
+			var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
+			    bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
+			bwaRes.stderr.on('data', function (data) {
+				bwaResStderrLog.write(data);
+			});
+			bwaRes.stdout.on('data', function (data) {
+				bwaResStdoutLog.write(data);
+			});
+			//=====================================
 
 			processes.push(bwaRes, resProfiling);
 		}
