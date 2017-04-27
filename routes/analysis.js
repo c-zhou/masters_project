@@ -133,7 +133,6 @@ function runAnalysis(socket){
 
 			//=====================================
 			// used for logging resistance profiling's bwa instance for stderr and stdout
-			// TODO: print path that file i being written to
 			var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
 			    bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
 			bwaRes.stderr.on('data', function (data) {
@@ -220,8 +219,8 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 	});
 
 	speciesTyping.stderr.on('data', function(data) {
-		console.log('st stderr:');
-		console.log(data);
+		// console.log('st stderr:');
+		// console.log(data);
 	});
 
 	speciesTyping.stdout.on('data', function(data) {
@@ -292,6 +291,11 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 	resProfiling.stderr.on('data', function(data) {
 		console.log("resistance profiling stderr:");
 		console.log(data.toString());
+	});
+
+	resProfiling.stdin.on('data', function (data) {
+		console.log('Resistance profiling STDIN received:');
+		console.log(data);
 	});
 
 	resProfiling.on('close', function(code, signal) {
