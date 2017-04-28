@@ -1,3 +1,7 @@
+// TODO: add axis labels
+// TODO: add legend (MIC)
+// TODO: tooltip/some way of identifying samples
+
 function parallelCoordinates() {
     var data          = [],
         width,

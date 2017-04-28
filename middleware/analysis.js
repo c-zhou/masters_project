@@ -43,7 +43,7 @@ function run_bwa(pathData, pipeTo, startFrom) {
 	var bwaArgs = [
 			'mem', // run bwa mem
 		    '-t 4', // number of threads
-		    '-v 3', // output all normal messages
+		    // '-v 3', // output all normal messages - debugging purposes
 		    '-k 11', // min. seed length
 		    '-W 20', // discard a chain if seeded bases shorter than INT
 		    '-r 10', // look for internal seeds inside a seed longer than {-k} * FLOAT
@@ -94,7 +94,8 @@ function run_resProfiling(pathData) {
 		'--output=-', // output to stdout
 	    '--bamFile=-', // read BAM from stdin
 	    '--resDB=' + pathData.pathToResDB, // path to resistance database
-	    '--tmp=tmp/resTest' // temporary folder so data doesnt need to be stored in memory
+	    '--time=240', // min. time between analysis
+	    '--tmp=tmp/resTest' // temporary folder so data doesnt need to be stored in memory TMP/ MUST EXIST
 	],
 	    resProfilingOptions = {
 		    cwd: pathData.pathForOutput, // where to run the process
