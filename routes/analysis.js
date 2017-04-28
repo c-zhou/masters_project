@@ -271,6 +271,8 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		// var recentResults = JSON.parse(data);
 		console.log("Resistance profiling stdout:");
 		console.log(data);
+
+
 		socket.emit('resistance', data);
 
 		// if this is the first time writing data, dont add a comma to the start
