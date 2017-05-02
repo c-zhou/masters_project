@@ -108,6 +108,9 @@ startAnalysisButton.click(function(){
 		.width(960)
 		.height(500);
 
+	d3.select('#resistanceTree')
+		.call(resTree);
+
 	var table = [{
 		name: 'detected',
 		parent: null
@@ -144,8 +147,7 @@ startAnalysisButton.click(function(){
 		    .parentId(function (d) { return d.parent; })
 		    (table);
 
-	    console.log(root);
-
+	    resTree.data(root)
 	    // ======================================================
     });
 });
