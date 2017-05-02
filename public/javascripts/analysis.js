@@ -584,6 +584,8 @@ function tree() {
 
 	function chart(selection){
 		selection.each(function() {
+			if (!data) return;
+
 			height = height - margin.top - margin.bottom;
 			width = width - margin.left - margin.right;
 			// append the svg object to the selection
