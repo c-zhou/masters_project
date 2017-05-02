@@ -108,8 +108,7 @@ startAnalysisButton.click(function(){
 		.width(960)
 		.height(500);
 
-	d3.select('#resistanceTree')
-		.call(resTree);
+	var treeCalled = false;
 
 	var table = [{
 		name: 'detected',
@@ -147,7 +146,12 @@ startAnalysisButton.click(function(){
 		    .parentId(function (d) { return d.parent; })
 		    (table);
 
-	    resTree.data(root)
+	    resTree.data(root);
+
+	    if (!treeCalled) {
+	    	d3.select('#resistanceTree').call(resTree);
+	    	treeCalled = true;
+	    }
 	    // ======================================================
     });
 });
@@ -594,29 +598,25 @@ function tree() {
 				.append('g')
 				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-			if (data) {
-				// declares a tree layout and assigns the size of the tree
-				var treemap = d3.tree().size([height, width]);
+			// declares a tree layout and assigns the size of the tree
+			var treemap = d3.tree().size([height, width]);
 
-				// assign parent, children, height, depth
-				var root = d3.hierarchy(data, function (d) {
-					return d.children
-				});
-				root.x0  = height / 2; // left edge of the rectangle
-				root.y0  = 0; // top edge of the triangle
+			// assign parent, children, height, depth
+			var root = d3.hierarchy(data, function(d) { return d.children });
+			root.x0 = height / 2; // left edge of the rectangle
+			root.y0 = 0; // top edge of the triangle
 
-				// collapse after the second level
-				root.children.forEach(collapse);
+			// collapse after the second level
+			root.children.forEach(collapse);
 
-				update(root);
+			update(root);
 
-				// collapse the node and all it's children
-				function collapse(d) {
-					if (d.children) {
-						d._children = d.children;
-						d._children.forEach(collapse);
-						d.children = null;
-					}
+			// collapse the node and all it's children
+			function collapse(d) {
+				if (d.children) {
+					d._children = d.children;
+					d._children.forEach(collapse);
+					d.children = null;
 				}
 			}
 
