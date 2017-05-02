@@ -102,23 +102,23 @@ startAnalysisButton.click(function(){
         donut.data(data);
     });
 
+	// ======================================================
+	// set up tree and select div
+	var resTree = tree()
+		.width(960)
+		.height(500);
+
+	var table = [{
+		name: 'detected',
+		parent: null
+	}];
+	var genes = [];
+	var drugs = [];
+
     // receiving output from resistance profiling
     socket.on('resistance', function(data) {
     	console.log(data);
 
-	    // ======================================================
-
-	    // set up tree and select div
-	    var resTree = tree()
-		    .width(960)
-		    .height(500);
-
-	    var table = [{
-		    name: 'detected',
-		    parent: null
-	    }];
-	    var genes = [];
-	    var drugs = [];
 	    d3.tsvParseRows(data, function (d, i) {
 		    if (d[0].startsWith('#')) return;
 
