@@ -87,48 +87,6 @@ startAnalysisButton.click(function(){
     d3.select('#chartContainer')
         .call(donut);
 
-	// ======================================================
-
-    // set up tree and select div
-	var resTree = tree()
-		.width(960)
-		.height(500);
-
-	var table = [{
-		name: 'detected',
-		parent: null
-	}];
-	var genes = [];
-	var drugs = [];
-	d3.tsvParseRows(text, function (d, i) {
-		if (d[0].startsWith('#')) return;
-
-		if (!genes.find(function(element){ return element === d[5]; })) {
-			table.push({
-				name: d[5],
-				parent: d[6]
-			});
-			genes.push(d[5]);
-		}
-
-		if (!drugs.find(function(element){ return element === d[6]; })) {
-			table.push({
-				name: d[6],
-				parent: "detected"
-			});
-			drugs.push(d[6]);
-		}
-	});
-
-	var root = d3.stratify()
-		.id(function(d) { return d.name; })
-		.parentId(function (d) { return d.parent; })
-		(table);
-
-	console.log(root);
-
-	// ======================================================
-
     socket.on('stdout', function(data) {
     	var probTotal = Number();
     	// add in an "other" species if the probabilities dont add to 1.0
@@ -147,6 +105,48 @@ startAnalysisButton.click(function(){
     // receiving output from resistance profiling
     socket.on('resistance', function(data) {
     	console.log(data);
+
+	    // ======================================================
+
+	    // set up tree and select div
+	    var resTree = tree()
+		    .width(960)
+		    .height(500);
+
+	    var table = [{
+		    name: 'detected',
+		    parent: null
+	    }];
+	    var genes = [];
+	    var drugs = [];
+	    d3.tsvParseRows(data, function (d, i) {
+		    if (d[0].startsWith('#')) return;
+
+		    if (!genes.find(function(element){ return element === d[5]; })) {
+			    table.push({
+				    name: d[5],
+				    parent: d[6]
+			    });
+			    genes.push(d[5]);
+		    }
+
+		    if (!drugs.find(function(element){ return element === d[6]; })) {
+			    table.push({
+				    name: d[6],
+				    parent: "detected"
+			    });
+			    drugs.push(d[6]);
+		    }
+	    });
+
+	    var root = d3.stratify()
+		    .id(function(d) { return d.name; })
+		    .parentId(function (d) { return d.parent; })
+		    (table);
+
+	    console.log(root);
+
+	    // ======================================================
     });
 });
 
