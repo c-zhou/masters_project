@@ -272,6 +272,8 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		// console.log("Resistance profiling stdout:");
 		// console.log(data);
 
+		console.log(data.split('\n'));
+
 
 		socket.emit('resistance', data);
 
