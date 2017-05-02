@@ -94,14 +94,14 @@ function runAnalysis(socket){
 
 			//=====================================
 			// used for logging resistance profiling's bwa instance for stderr and stdout
-			var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
-			    bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
-			bwaRes.stderr.on('data', function (data) {
-				bwaResStderrLog.write(data);
-			});
-			bwaRes.stdout.on('data', function (data) {
-				bwaResStdoutLog.write(data);
-			});
+			// var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
+			//     bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
+			// bwaRes.stderr.on('data', function (data) {
+			// 	bwaResStderrLog.write(data);
+			// });
+			// bwaRes.stdout.on('data', function (data) {
+			// 	bwaResStdoutLog.write(data);
+			// });
 			//=====================================
 
 			processes.push(bwaRes, resProfiling);
@@ -133,14 +133,14 @@ function runAnalysis(socket){
 
 			//=====================================
 			// used for logging resistance profiling's bwa instance for stderr and stdout
-			var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
-			    bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
-			bwaRes.stderr.on('data', function (data) {
-				bwaResStderrLog.write(data);
-			});
-			bwaRes.stdout.on('data', function (data) {
-				bwaResStdoutLog.write(data);
-			});
+			// var bwaResStderrLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stderr.log')),
+			//     bwaResStdoutLog = fs.createWriteStream(path.join(pathData.pathForOutput, 'bwaRes.stdout.log'));
+			// bwaRes.stderr.on('data', function (data) {
+			// 	bwaResStderrLog.write(data);
+			// });
+			// bwaRes.stdout.on('data', function (data) {
+			// 	bwaResStdoutLog.write(data);
+			// });
 			//=====================================
 
 			processes.push(bwaRes, resProfiling);
@@ -187,10 +187,10 @@ function bwaListeners(bwa, japsaProc) {
 		console.log(error);
 	});
 
-	bwa.stderr.on('data', function(data) {
-		// console.log("bwa stderr: ");
-		// console.log(data.toString());
-	});
+	// bwa.stderr.on('data', function(data) {
+	// 	console.log("bwa stderr: ");
+	// 	console.log(data.toString());
+	// });
 
 
 	bwa.stdout.on('data', function(data) {
@@ -218,10 +218,10 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 		console.log(error);
 	});
 
-	speciesTyping.stderr.on('data', function(data) {
-		// console.log('st stderr:');
-		// console.log(data);
-	});
+	// speciesTyping.stderr.on('data', function(data) {
+	// 	console.log('st stderr:');
+	// 	console.log(data);
+	// });
 
 	speciesTyping.stdout.on('data', function(data) {
 		var dataToWrite;
@@ -269,8 +269,8 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		var dataToWrite;
 		// parse output into JSON format and send to client
 		// var recentResults = JSON.parse(data);
-		console.log("Resistance profiling stdout:");
-		console.log(data);
+		// console.log("Resistance profiling stdout:");
+		// console.log(data);
 
 
 		socket.emit('resistance', data);
@@ -290,15 +290,10 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		}
 	});
 
-	resProfiling.stderr.on('data', function(data) {
-		console.log("resistance profiling stderr:");
-		console.log(data.toString());
-	});
-
-	resProfiling.stdin.on('data', function (data) {
-		console.log('Resistance profiling STDIN received:');
-		console.log(data);
-	});
+	// resProfiling.stderr.on('data', function(data) {
+	// 	console.log("resistance profiling stderr:");
+	// 	console.log(data.toString());
+	// });
 
 	resProfiling.on('close', function(code, signal) {
 		if (code || signal) console.log("resistance profiling closed " + code + " " + signal + ' at ' + new Date());
