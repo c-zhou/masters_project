@@ -119,8 +119,9 @@ startAnalysisButton.click(function(){
 
     // receiving output from resistance profiling
     socket.on('resistance', function(data) {
+	    console.log(data);
 	    if (!data.startsWith('#')) {
-			console.log(data);
+
 		    d3.tsvParseRows(data, function (d, i) {
 			    // if (d[0].startsWith('#')) return;
 
