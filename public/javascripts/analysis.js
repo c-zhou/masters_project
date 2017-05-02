@@ -120,7 +120,7 @@ startAnalysisButton.click(function(){
 
     // receiving output from resistance profiling
     socket.on('resistance', function(data) {
-    	console.log(data);
+    	// console.log(data);
 
 	    d3.tsvParseRows(data, function (d, i) {
 		    if (d[0].startsWith('#')) return;
@@ -584,7 +584,6 @@ function tree() {
 
 	function chart(selection){
 		selection.each(function() {
-			if (!data) return;
 
 			height = height - margin.top - margin.bottom;
 			width = width - margin.left - margin.right;
@@ -595,25 +594,29 @@ function tree() {
 				.append('g')
 				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-			// declares a tree layout and assigns the size of the tree
-			var treemap = d3.tree().size([height, width]);
+			if (data) {
+				// declares a tree layout and assigns the size of the tree
+				var treemap = d3.tree().size([height, width]);
 
-			// assign parent, children, height, depth
-			var root = d3.hierarchy(data, function(d) { return d.children });
-			root.x0 = height / 2; // left edge of the rectangle
-			root.y0 = 0; // top edge of the triangle
+				// assign parent, children, height, depth
+				var root = d3.hierarchy(data, function (d) {
+					return d.children
+				});
+				root.x0  = height / 2; // left edge of the rectangle
+				root.y0  = 0; // top edge of the triangle
 
-			// collapse after the second level
-			root.children.forEach(collapse);
+				// collapse after the second level
+				root.children.forEach(collapse);
 
-			update(root);
+				update(root);
 
-			// collapse the node and all it's children
-			function collapse(d) {
-				if (d.children) {
-					d._children = d.children;
-					d._children.forEach(collapse);
-					d.children = null;
+				// collapse the node and all it's children
+				function collapse(d) {
+					if (d.children) {
+						d._children = d.children;
+						d._children.forEach(collapse);
+						d.children = null;
+					}
 				}
 			}
 
