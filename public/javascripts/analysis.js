@@ -609,8 +609,6 @@ function tree() {
 			// collapse after the second level
 			root.children.forEach(collapse);
 
-			update(root);
-
 			// collapse the node and all it's children
 			function collapse(d) {
 				if (d.children) {
@@ -770,7 +768,8 @@ function tree() {
 					update(d);
 				}
 
-			}
+			};
+			update(root);
 		});
 	}
 
