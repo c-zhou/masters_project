@@ -595,6 +595,9 @@ function tree() {
 	    height = 500 - margin.top - margin.bottom,
 	    update;
 
+	var treemap,
+	    root;
+
 	function chart(selection){
 		selection.each(function() {
 
@@ -608,43 +611,18 @@ function tree() {
 				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 			// declares a tree layout and assigns the size of the tree
-			var treemap = d3.tree().size([height, width]);
+			treemap = d3.tree().size([height, width]);
 
-			// // assign parent, children, height, depth
-			// var root = d3.hierarchy(data, function(d) { return d.children });
-			// root.x0 = height / 2; // left edge of the rectangle
-			// root.y0 = 0; // top edge of the triangle
-			//
-			// // collapse after the second level
-			// root.children.forEach(collapse);
-			//
-			// // collapse the node and all it's children
-			// function collapse(d) {
-			// 	if (d.children) {
-			// 		d._children = d.children;
-			// 		d._children.forEach(collapse);
-			// 		d.children = null;
-			// 	}
-			// }
+			// assign parent, children, height, depth
+			root = d3.hierarchy(data, function(d) { return d.children });
+			root.x0 = height / 2; // left edge of the rectangle
+			root.y0 = 0; // top edge of the triangle
 
-			update = function() {
+			// collapse after the second level
+			root.children.forEach(collapse);
 
-				// assign parent, children, height, depth
-				var root = d3.hierarchy(data, function(d) { return d.children });
-				root.x0 = height / 2; // left edge of the rectangle
-				root.y0 = 0; // top edge of the triangle
 
-				// collapse after the second level
-				root.children.forEach(collapse);
-
-				// collapse the node and all it's children
-				function collapse(d) {
-					if (d.children) {
-						d._children = d.children;
-						d._children.forEach(collapse);
-						d.children = null;
-					}
-				}
+			update = function(source) {
 
 				// assigns the x and y position for the nodes
 				var treeData = treemap(root);
@@ -666,7 +644,7 @@ function tree() {
 				var nodeEnter = node.enter().append('g')
 					.attr('class', 'node')
 					.attr('transform', function(d) {
-						return 'translate(' + (root.y0 + margin.top) + ',' + (root.x0 + margin.left) + ')';
+						return 'translate(' + (source.y0 + margin.top) + ',' + (source.x0 + margin.left) + ')';
 					})
 					.on('click', click);
 
@@ -725,7 +703,7 @@ function tree() {
 				var nodeExit = node.exit()
 					.transition().duration(duration)
 					.attr('transform', function(d) {
-						return 'translate(' + (root.y + margin.top) + ',' + (root.x + margin.left) + ')';
+						return 'translate(' + (source.y + margin.top) + ',' + (source.x + margin.left) + ')';
 					})
 					.remove();
 
@@ -747,7 +725,7 @@ function tree() {
 				var linkEnter = link.enter().insert('path', 'g')
 					.attr('class', 'link')
 					.attr('d', function(d) {
-						var o = {x: root.x0 + margin.left, y: root.y0 + margin.top};
+						var o = {x: source.x0 + margin.left, y: source.y0 + margin.top};
 						return diagonal(o, o);
 					});
 
@@ -762,7 +740,7 @@ function tree() {
 				var linkExit = link.exit()
 					.transition().duration(duration)
 					.attr('d', function(d) {
-						var o = {x: root.x, y: root.y};
+						var o = {x: source.x, y: source.y};
 						return diagonal(o, o);
 					})
 					.remove();
@@ -793,9 +771,8 @@ function tree() {
 					}
 					update(d);
 				}
-
 			};
-			update();
+			update(root);
 		});
 	}
 
@@ -820,9 +797,22 @@ function tree() {
 	chart.data = function(value) {
 		if (!arguments.length) return data;
 		data = value;
-		if (typeof update === 'function') update();
+		if (typeof update === 'function') {
+			root = d3.hierarchy(data, function(d) { return d.children; });
+			root.children.forEach(collapse);
+			update(root);
+		}
 		return chart;
 	};
+
+	// collapse the node and all it's children
+	function collapse(d) {
+		if (d.children) {
+			d._children = d.children;
+			d._children.forEach(collapse);
+			d.children = null;
+		}
+	}
 
 	String.prototype.capitalize = function() {
 		return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
