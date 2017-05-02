@@ -615,7 +615,7 @@ function tree() {
 				}
 			}
 
-			function update(source) {
+			update = function(source) {
 
 				// assigns the x and y position for the nodes
 				var treeData = treemap(root);
@@ -790,7 +790,7 @@ function tree() {
 	chart.data = function(value) {
 		if (!arguments.length) return data;
 		data = value;
-		if (typeof updateData === 'function') updateData();
+		if (typeof update === 'function') update(data);
 		return chart;
 	};
 
