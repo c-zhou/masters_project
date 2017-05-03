@@ -123,27 +123,27 @@ startAnalysisButton.click(function(){
 
 	    data.forEach(function(d) {
 	    	if (d) {
-			    d3.tsvParseRows(data, function (d, i) {
+			    d3.tsvParseRows(d, function (row, i) {
 				    // if (d[0].startsWith('#')) return;
 
 				    if (!genes.find(function (element) {
-						    return element === d[5];
+						    return element === row[5];
 					    })) {
 					    table.push({
-						    name: d[5],
-						    parent: d[6]
+						    name: row[5],
+						    parent: row[6]
 					    });
-					    genes.push(d[5]);
+					    genes.push(row[5]);
 				    }
 
 				    if (!drugs.find(function (element) {
-						    return element === d[6];
+						    return element === row[6];
 					    })) {
 					    table.push({
-						    name: d[6],
+						    name: row[6],
 						    parent: "detected"
 					    });
-					    drugs.push(d[6]);
+					    drugs.push(row[6]);
 				    }
 			    });
 		    }
