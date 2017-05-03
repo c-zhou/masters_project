@@ -77,8 +77,8 @@ startAnalysisButton.click(function(){
 
 	// initiate plotting
     var donut = donutChart()
-        .width(960)
-        .height(500)
+        .width(640)
+        .height(333)
         .transTime(400)
         .cornerRadius(3)
         .padAngle(0.015)
@@ -106,8 +106,8 @@ startAnalysisButton.click(function(){
 	// ======================================================
 	// set up tree and select div
 	var resTree = tree()
-		.width(960)
-		.height(500);
+		.width(320)
+		.height(167);
 
 	var treeCalled = false;
 
