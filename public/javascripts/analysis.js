@@ -614,12 +614,12 @@ function tree() {
 				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 			// declares a tree layout and assigns the size of the tree
-			treemap = d3.tree().size([height, width]);
+			treemap = d3.tree().size([width, height]);
 
 			// assign parent, children, height, depth
 			root = d3.hierarchy(data, function(d) { return d.children });
 			root.x0 = height / 2; // left edge of the rectangle
-			root.y0 = 0; // top edge of the triangle
+			root.y0 = 0; // top edge of the rect
 
 			// collapse after the second level
 			root.children.forEach(collapse);
