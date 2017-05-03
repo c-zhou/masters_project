@@ -300,7 +300,7 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		// close output file is not already close and write closing bracket
 		if (!outputFile.closed) {
 			outputFile.end(function() {
-			console.log('Resistance Lof file closed');
+			console.log('Resistance log file closed');
 		});
 		}
 	});

@@ -2,7 +2,7 @@
  * Created by michaelhall on 5/3/17.
  */
 // TODO: add a timer for how long the analysis has been running
-// TODO: add viz for resistance profiling
+// TODO: add links to drugs and gene in resistance profiling tree
 //============================================================
 // Code for opening the websocket and sending/receiving information through it
 // Mostly button listeners and text boxes used to gather this information
