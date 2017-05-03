@@ -806,6 +806,8 @@ function tree() {
 		data = value;
 		if (typeof update === 'function') {
 			root = d3.hierarchy(data, function(d) { return d.children; });
+			root.x0 = height / 2; // left edge of the rectangle
+			root.y0 = 0; // top edge of the triangle
 			root.children.forEach(collapse);
 			update(root);
 		}
