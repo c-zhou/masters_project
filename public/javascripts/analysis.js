@@ -72,6 +72,7 @@ startAnalysisButton.click(function(){
 	$(this).fadeOut(fadeTime, function(){
 		stopAnalysisButton.fadeIn(fadeTime);
 		chartContainer.fadeIn(fadeTime);
+		$('#resistanceTree').fadeIn(fadeTime);
 	});
 
 	// initiate plotting
