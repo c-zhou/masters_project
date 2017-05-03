@@ -121,30 +121,33 @@ startAnalysisButton.click(function(){
     socket.on('resistance', function(data) {
 	    console.log(data);
 
-	    d3.tsvParseRows(data, function (d, i) {
-		    // if (d[0].startsWith('#')) return;
+	    data.forEach(function(d) {
+	    	if (d) {
+			    d3.tsvParseRows(data, function (d, i) {
+				    // if (d[0].startsWith('#')) return;
 
-		    if (!genes.find(function (element) {
-				    return element === d[5];
-			    })) {
-			    table.push({
-				    name: d[5],
-				    parent: d[6]
-			    });
-			    genes.push(d[5]);
-		    }
+				    if (!genes.find(function (element) {
+						    return element === d[5];
+					    })) {
+					    table.push({
+						    name: d[5],
+						    parent: d[6]
+					    });
+					    genes.push(d[5]);
+				    }
 
-		    if (!drugs.find(function (element) {
-				    return element === d[6];
-			    })) {
-			    table.push({
-				    name: d[6],
-				    parent: "detected"
+				    if (!drugs.find(function (element) {
+						    return element === d[6];
+					    })) {
+					    table.push({
+						    name: d[6],
+						    parent: "detected"
+					    });
+					    drugs.push(d[6]);
+				    }
 			    });
-			    drugs.push(d[6]);
 		    }
 	    });
-
 	    var root = d3.stratify()
 		    .id(function (d) {
 			    return d.name;

@@ -273,12 +273,12 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		// console.log(data);
 
 		console.log(data.split('\n').length);
-		var entries = data.split('\n').filter(function(line) { return !line.startsWith('#') });
+		var entries = data.split('\n').filter(function(line) { return !line.startsWith('#') && line });
 
 		console.log(entries);
 
 
-		socket.emit('resistance', data);
+		socket.emit('resistance', entries);
 
 		// if this is the first time writing data, dont add a comma to the start
 		if (hasRPWritingStarted) { dataToWrite = ',' + data; }
