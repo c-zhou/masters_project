@@ -78,7 +78,7 @@ startAnalysisButton.click(function(){
 	// initiate plotting
     var donut = donutChart()
         .width(640)
-        .height(500
+        .height(500)
         .transTime(400)
         .cornerRadius(3)
         .padAngle(0.015)
