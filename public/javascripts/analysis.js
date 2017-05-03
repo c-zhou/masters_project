@@ -119,7 +119,6 @@ startAnalysisButton.click(function(){
 
     // receiving output from resistance profiling
     socket.on('resistance', function(data) {
-	    console.log(data);
 
 	    data.forEach(function(d) {
 	    	if (d) {
@@ -156,8 +155,6 @@ startAnalysisButton.click(function(){
 			    return d.parent;
 		    })
 		    (table);
-
-	    console.log(root);
 
 	    resTree.data(root);
 
