@@ -63,7 +63,6 @@ function runAnalysis(socket){
 		var outputResFilePath = path.join(pathData.pathForOutput, pathData.outputFile +
 			    '_resistance.log'),
 		    outputResFile     = fs.createWriteStream(outputResFilePath);
-		outputResFile.write('[');
 		outputResFile.on('close', function() {
 			console.log("resistance output file closed at " + new Date());
 		});
@@ -279,12 +278,8 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 
 		socket.emit('resistance', entries);
 
-		// if this is the first time writing data, dont add a comma to the start
-		if (hasRPWritingStarted) { dataToWrite = ',' + data; }
-		else {
-			dataToWrite = data;
-			hasRPWritingStarted = true;
-		}
+		dataToWrite = data;
+		hasRPWritingStarted = true;
 
 		//write data to file. written is how many bytes were written from string.
 		if (!outputFile.closed && hasRPWritingStarted) {
@@ -303,7 +298,11 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		if (code || signal) console.log("resistance profiling closed " + code + " " + signal + ' at ' + new Date());
 		hasRPWritingStarted = false;
 		// close output file is not already close and write closing bracket
-		if (!outputFile.closed) { endFile(outputFile); }
+		if (!outputFile.closed) {
+			outputFile.end(function() {
+			console.log('Resistance Lof file closed');
+		});
+		}
 	});
 
 	resProfiling.on('exit', function (code, signal) {

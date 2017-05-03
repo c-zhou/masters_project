@@ -2,7 +2,7 @@
 /*Donut chart styling*/
 body {
     font-family: 'Roboto', sans-serif;
-    color: #333333;
+    /*color: #333333;*/
 }
 
 /* Add shadow effect to chart. If you don't like it, get rid of it. */
@@ -39,11 +39,15 @@ path {
 
 
 #chartContainer {
-position: fixed;
+position: static;
 left: 0px;
 right: 0px;
 top: 200px;
 bottom: 0px;
+}
+
+#resistanceTree {
+    position: static;
 }
 
 /*===========================================================*/
