@@ -614,7 +614,7 @@ function tree() {
 				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 			// declares a tree layout and assigns the size of the tree
-			treemap = d3.tree().size([width, height]);
+			treemap = d3.tree().size([height, width]);
 
 			// assign parent, children, height, depth
 			root = d3.hierarchy(data, function(d) { return d.children });
