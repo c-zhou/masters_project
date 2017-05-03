@@ -160,7 +160,7 @@ startAnalysisButton.click(function(){
 	    resTree.data(root);
 
 	    if (!treeCalled) {
-		    d3.select('#resistanceTree').call(resTree);
+		    d3.select('#chartContainer').call(resTree);
 		    treeCalled = true;
 
 		    // ======================================================
