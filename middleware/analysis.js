@@ -94,7 +94,7 @@ function run_resProfiling(pathData) {
 		'--output=-', // output to stdout
 	    '--bamFile=-', // read BAM from stdin
 	    '--resDB=' + pathData.pathToResDB, // path to resistance database
-	    '--time=500', // min. time between analysis
+	    '--time=240', // min. time between analysis
 	    '--tmp=tmp/resTest' // temporary folder so data doesnt need to be stored in memory TMP/ MUST EXIST
 	],
 	    resProfilingOptions = {

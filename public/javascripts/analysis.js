@@ -678,6 +678,7 @@ function tree() {
 				nodeEnter.append('text')
 					.attr('x', -3)
 					.attr('y', 3)
+					.attr('cursor', 'pointer')
 					.style('font-size', '10px')
 					.text(function(d) {
 						if (d.children) return d.children.length;
