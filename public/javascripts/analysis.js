@@ -77,7 +77,7 @@ startAnalysisButton.click(function(){
 
 	// initiate plotting
     var donut = donutChart()
-        .width(640)
+        .width(960)
         .height(500)
         .transTime(400)
         .cornerRadius(3)
@@ -106,7 +106,7 @@ startAnalysisButton.click(function(){
 	// ======================================================
 	// set up tree and select div
 	var resTree = tree()
-		.width(320)
+		.width(960)
 		.height(500);
 
 	var treeCalled = false;
@@ -268,7 +268,7 @@ function donutChart() {
             // add text labels
             var label = svg.select('.labelName').selectAll('text')
                 .data(pie(data))
-                .enter().append('text')
+              .enter().append('text')
                 .attr('dy', '.35em')
                 .html(updateLabelText)
                 .attr('transform', labelTransform)
