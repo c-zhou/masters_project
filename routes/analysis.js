@@ -270,11 +270,11 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		// parse output into JSON format and send to client
 		// var recentResults = JSON.parse(data);
 		// console.log("Resistance profiling stdout:");
-		// console.log(data);
+		console.log(data);
 
 		var entries = data.split('\n').filter(function(line) { return !line.startsWith('#') && line });
 
-		console.log(entries);
+		// console.log(entries);
 
 
 		socket.emit('resistance', entries);

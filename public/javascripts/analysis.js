@@ -746,8 +746,6 @@ function tree() {
 					.transition().duration(duration)
 					.attr('d', function(d) {
 						var o = {x: source.x, y: source.y};
-						console.log(d);
-						console.log(o);
 						return diagonal(o, o);
 					})
 					.remove();
