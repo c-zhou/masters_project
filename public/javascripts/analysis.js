@@ -758,6 +758,10 @@ function tree() {
 
 				// creates a curved (diagonal) path from parent to the child nodes
 				function diagonal(s, d) {
+					console.log('s:');
+					console.log(s);
+					console.log('d:');
+					console.log(d);
 					path = 'M ' + (s.y + margin.top) + ' ' + (s.x + margin.left) +
 						'C ' + ((s.y + d.y + (margin.top * 2)) / 2) + ' ' + (s.x + margin.left) +
 						', ' + ((s.y + d.y + (margin.top * 2)) / 2) + ' ' + (d.x + margin.left) +
