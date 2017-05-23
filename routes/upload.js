@@ -120,6 +120,14 @@ function downloadFilecURL(socket, data, cb){
                 prevChunk = percComplete
             }
         }
+        else {
+        	console.log(chunk);
+        }
+    });
+
+    curl.on('error', function(error) {
+    	console.log("cURL error:");
+    	console.log(error);
     });
 
 	socket.on('disconnect', function() {
