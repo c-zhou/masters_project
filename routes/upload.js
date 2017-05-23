@@ -1,7 +1,7 @@
 const path        = require('path'),
       spawn       = require('child_process').spawn,
       readline    = require('readline'),
-      UPLOAD_DIR  = path.join(__dirname, "../../uploads/");
+      UPLOAD_DIR  = '/mnt/streamformatics_testing/uploads';
 
 var io         = require('../app.js'),
     fs         = require('fs'), // used to rename file uploads
