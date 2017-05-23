@@ -67,7 +67,7 @@ function downloadFilecURL(socket, data, cb){
 
 	data.urls.forEach(function(item) {
 		// extract filename
-		var fileName = UPLOAD_DIR + path.basename(item);
+		var fileName = path.join(UPLOAD_DIR, path.basename(item));
 
 		// add url to scriptArgs
 		curlArgs.push('-o', fileName, item);
@@ -120,15 +120,8 @@ function downloadFilecURL(socket, data, cb){
                 prevChunk = percComplete
             }
         }
-        else {
-        	console.log(chunk);
-        }
     });
 
-    curl.on('error', function(error) {
-    	console.log("cURL error:");
-    	console.log(error);
-    });
 
 	socket.on('disconnect', function() {
 		console.log("Socket disconnected...");
