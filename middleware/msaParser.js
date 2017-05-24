@@ -20,31 +20,37 @@ var parser = function(fileName, callback) {
 	var data = [];
 
 	// reading file one line at a time
+	var rowIdx = 0;
 	rl.on('line', function(line) {
 		console.log(rl.input.bytesRead);
-		var row = line.split(re);
+		if (rowIdx !== 0) {
 
-		// change any * characters to an indel (-)
-        row[1] = row[1].replace(/\*/gi, "-");
 
-		// get the boundaries for the gene
-		var gene_start = row[1].indexOf("|"),
-			gene_end   = row[1].lastIndexOf("|");
+			var row = line.split(re);
 
-		// make sure two unique gene boundaries have been detected if any have been detected at all
-		if (gene_end || gene_start) {
-			console.assert(gene_end !== gene_start, "Unexpected gene boundaries");
-		}
+			// change any * characters to an indel (-)
+			row[1] = row[1].replace(/\*/gi, "-");
 
-		// construct the data entry for this row
-		var obj = {
-			sampleID: row[0],
-			sequence: row[1].replace(/\|/gi, '').split(''), // remove all (gi) |s from the sequence
-			gene_start: gene_start + 1,
-			gene_end: gene_end - 1
-		};
+			// get the boundaries for the gene
+			var gene_start = row[1].indexOf("|"),
+			    gene_end   = row[1].lastIndexOf("|");
 
-		data.push(obj);
+			// make sure two unique gene boundaries have been detected if any have been detected at all
+			if (gene_end || gene_start) {
+				console.assert(gene_end !== gene_start, "Unexpected gene boundaries");
+			}
+
+			// construct the data entry for this row
+			var obj = {
+				sampleID: row[0],
+				sequence: row[1].replace(/\|/gi, '').split(''), // remove all (gi) |s from the sequence
+				gene_start: gene_start + 1,
+				gene_end: gene_end - 1
+			};
+
+			data.push(obj);
+			rowIdx++;
+		} else rowIdx++;
 	});
 
 	rl.on('close', function() {
