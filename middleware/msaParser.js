@@ -22,7 +22,7 @@ var parser = function(fileName, callback) {
 	// reading file one line at a time
 	var rowIdx = 0;
 	rl.on('line', function(line) {
-		console.log(rl.input.bytesRead);
+		// console.log(rl.input.bytesRead);
 		if (rowIdx !== 0) {
 
 

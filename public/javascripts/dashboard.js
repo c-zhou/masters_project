@@ -24,10 +24,10 @@ function parallelCoordinates() {
 
 
     //=======================================================================
-    // SCALES FOR THE AXES - 2 indicates use for context pane
+    // SCALES FOR THE AXES
     var xTop = d3.scaleLinear(), // top axis on the sequence pane
         xBottom = d3.scaleLinear(), // main x axis
-        // padding makes lines the points up with the y axis ticks
+        // padding lines the points up with the y axis ticks
         yTop = d3.scaleBand().paddingInner(1).paddingOuter(0.25),
         yBottom = d3.scaleBand().paddingInner(1).paddingOuter(0.25),
         yEntropy = d3.scaleLinear(), // y axis for the entropy pane
@@ -40,7 +40,7 @@ function parallelCoordinates() {
     // used for lines in the sequence pane
     var line = function(d) {
         return d3.line()
-            .curve(d3.curveMonotoneY)
+            // .curve(d3.curveMonotoneY)
             .x(function (d) { return xTop(d.position); })
             .y(function (d) { return yTop(d.bases); })
             (d.values);
