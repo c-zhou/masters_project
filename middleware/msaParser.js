@@ -31,8 +31,10 @@ var parser = function(fileName, callback) {
 		var gene_start = row[1].indexOf("|"),
 			gene_end   = row[1].lastIndexOf("|");
 
-		// make sure two unique gene boundaries have been detected
-		console.assert(gene_end !== gene_start, "Unexpected gene boundaries");
+		// make sure two unique gene boundaries have been detected if any have been detected at all
+		if (gene_end || gene_start) {
+			console.assert(gene_end !== gene_start, "Unexpected gene boundaries");
+		}
 
 		// construct the data entry for this row
 		var obj = {
