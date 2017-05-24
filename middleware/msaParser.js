@@ -21,7 +21,7 @@ var parser = function(fileName, callback) {
 
 	// reading file one line at a time
 	rl.on('line', function(line) {
-		console.log(rl.bytesRead);
+		console.log(rl.input.bytesRead);
 		var row = line.split(re);
 
 		// change any * characters to an indel (-)
