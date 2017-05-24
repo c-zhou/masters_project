@@ -48,7 +48,7 @@ var parser = function(fileName, callback) {
 
 		var tData = transform(data);
 
-		console.log(tData);
+		console.log(tData.data);
 
 		return callback(tData); // when done, run the given callback function on the data
 	});
