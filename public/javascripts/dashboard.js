@@ -270,23 +270,20 @@ function parallelCoordinates() {
 	        //========================================================================
 			// ADDING GENE BOUNDARIES
 	        // adding gene boundaries to sequence pane
-	        var boundariesTop = sequencePane.append('g')
-		        .attr('class', 'boundary')
-	          .append('line');
+	        var boundariesTop = sequencePane.append('line')
+		        .attr('class', 'boundary');
 
 	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
 
 	        // adding gene boundaries to entropy pane
-	        var boundariesMid = entropyPane.append('g')
-		        .attr('class', 'boundary')
-	          .append('line');
+	        var boundariesMid = entropyPane.append('line')
+		        .attr('class', 'boundary');
 
 	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
 
 	        // adding gene boundaries to context pane
-	        var boundariesBottom = context.append('g')
-		        .attr('class', 'boundaryContext')
-	          .append('line');
+	        var boundariesBottom = context.append('line')
+		        .attr('class', 'boundaryContext');
 
 	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
 	        //========================================================================
