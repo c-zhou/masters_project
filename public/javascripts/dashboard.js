@@ -305,6 +305,8 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
+	            var transform = d3.zoomTransform(this);
+	            updateGeneBoundaries(transform);
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
@@ -314,7 +316,6 @@ function parallelCoordinates() {
                 sequencePane.select('.x.axis.top').call(xAxisTopSeq);
                 sequencePane.select('.x.axis.bottom').call(xAxisBottomFocus);
                 entropyPane.select('.x.axis.entropy').call(xAxisBottomFocus);
-	            updateGeneBoundaries(xTop);
             }
             //========================================================================
         });
@@ -459,12 +460,10 @@ function parallelCoordinates() {
 		});
 	}
 
-	function updateGeneBoundaries(xScale) {
-		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
-			d3.selectAll('.boundary line')
-				.attr("x1", xScale(pos))
-				.attr("x2", xScale(pos));
-			});
+	function updateGeneBoundaries(transform) {
+		svg.selectAll('.boundary')
+			.attr('transform', transform)
+			.attr('stroke-width', 1 / transform.k);
 	}
 
     // calculate the shannon entropy (variance) for the data
