@@ -306,7 +306,8 @@ function parallelCoordinates() {
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
 	            var transform = d3.zoomTransform(this);
-	            updateGeneBoundaries(transform);
+	            d3.selectAll('.boundary line')
+		            .attr('d', function(d) {console.log(d);});
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
@@ -463,7 +464,7 @@ function parallelCoordinates() {
 	function updateGeneBoundaries(transform) {
     	console.log(transform);
 		d3.selectAll('.boundary line')
-			.attr('x1', function(d) { console.log(this.x1); return +d - transform.x })
+			.attr('x1', function(d) { console.log(this); return +d - transform.x })
 			.attr('x2', function(d) { return +d - transform.x });
 			// .attr('stroke-width', 1 / transform.k**2 + 'px');
 	}
