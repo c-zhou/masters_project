@@ -291,12 +291,8 @@ function parallelCoordinates() {
 	        function drawGeneBoundaries(xScale, paneHeight, g) {
 	        	g.data([mapping.geneStart, mapping.geneEnd])
 			        .enter().append('line')
-			        .attr('x1', function(d) {console.log(d);});
-
-	        	// gene start line
-		        g.append('line')
-			        .attr("x1", xScale(pos))
-			        .attr("x2", xScale(pos))
+			        .attr('x1', function(d) {return xScale(d);})
+			        .attr('x2', function(d) {return xScale(d);})
 			        .attr("y1", 0)
 			        .attr("y2", paneHeight)
 			        .style('stroke-opacity', 0.75)
@@ -304,17 +300,28 @@ function parallelCoordinates() {
 			        .style('stroke', 'black')
 			        .style('stroke-dasharray', '5, 5, 1, 5');
 
-		        // gene end line
-
-		        g.append('line')
-			        .attr("x1", xScale(pos))
-			        .attr("x2", xScale(pos))
-			        .attr("y1", 0)
-			        .attr("y2", paneHeight)
-			        .style('stroke-opacity', 0.75)
-			        .style('stroke-width', '2px')
-			        .style('stroke', 'black')
-			        .style('stroke-dasharray', '5, 5, 1, 5');
+	        	// // gene start line
+		        // g.append('line')
+			     //    .attr("x1", xScale(pos))
+			     //    .attr("x2", xScale(pos))
+			     //    .attr("y1", 0)
+			     //    .attr("y2", paneHeight)
+			     //    .style('stroke-opacity', 0.75)
+			     //    .style('stroke-width', '2px')
+			     //    .style('stroke', 'black')
+			     //    .style('stroke-dasharray', '5, 5, 1, 5');
+		        //
+		        // // gene end line
+		        //
+		        // g.append('line')
+			     //    .attr("x1", xScale(pos))
+			     //    .attr("x2", xScale(pos))
+			     //    .attr("y1", 0)
+			     //    .attr("y2", paneHeight)
+			     //    .style('stroke-opacity', 0.75)
+			     //    .style('stroke-width', '2px')
+			     //    .style('stroke', 'black')
+			     //    .style('stroke-dasharray', '5, 5, 1, 5');
 	        }
 
             //========================================================================
