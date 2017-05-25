@@ -216,8 +216,8 @@ function parallelCoordinates() {
 			        .attr("x2", xBottom(pos))
 			        .attr("y1", 0)
 			        .attr("y2", heightTop)
-			        .style('stroke-width', '5px')
-			        .style('stroke', 'pink');
+			        .style('stroke-width', '2px')
+			        .style('stroke-dasharray', '5, 5, 1, 5');
 	        });
             //========================================================================
 
