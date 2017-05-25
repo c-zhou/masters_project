@@ -463,7 +463,7 @@ function parallelCoordinates() {
 	function updateGeneBoundaries(transform) {
     	console.log(transform);
 		d3.selectAll('.boundary line')
-			.attr('x1', function(d) { return +d - transform.x })
+			.attr('x1', function(d) { console.log(d); return +d - transform.x })
 			.attr('x2', function(d) { return +d - transform.x });
 			// .attr('stroke-width', 1 / transform.k**2 + 'px');
 	}
