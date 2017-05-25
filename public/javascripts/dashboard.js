@@ -276,13 +276,13 @@ function parallelCoordinates() {
 	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
 
 	        // adding gene boundaries to entropy pane
-	        var boundariesMid = entropyPane.append('line')
+	        var boundariesMid = entropyPane.append('g')
 		        .attr('class', 'boundary');
 
 	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
 
 	        // adding gene boundaries to context pane
-	        var boundariesBottom = context.append('line')
+	        var boundariesBottom = context.append('g')
 		        .attr('class', 'boundaryContext');
 
 	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
