@@ -464,7 +464,7 @@ function parallelCoordinates() {
 			d3.selectAll('.boundary line')
 				.attr("x1", xScale(pos))
 				.attr("x2", xScale(pos));
-		}
+			});
 	}
 
     // calculate the shannon entropy (variance) for the data
