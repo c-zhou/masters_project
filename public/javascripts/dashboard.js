@@ -289,10 +289,11 @@ function parallelCoordinates() {
 	        //========================================================================
 
 	        function drawGeneBoundaries(xScale, paneHeight, g) {
-	        	g.datum([mapping.geneStart, mapping.geneEnd])
-			        .enter().append('line')
-			        .attr('x1', function(d) {return xScale(d);})
-			        .attr('x2', function(d) {return xScale(d);})
+	        	// gene start line
+		        g.append('line')
+			        .attr('class', 'start')
+			        .attr("x1", xScale(mapping.geneStart))
+			        .attr("x2", xScale(mapping.geneStart))
 			        .attr("y1", 0)
 			        .attr("y2", paneHeight)
 			        .style('stroke-opacity', 0.75)
@@ -300,28 +301,17 @@ function parallelCoordinates() {
 			        .style('stroke', 'black')
 			        .style('stroke-dasharray', '5, 5, 1, 5');
 
-	        	// // gene start line
-		        // g.append('line')
-			     //    .attr("x1", xScale(pos))
-			     //    .attr("x2", xScale(pos))
-			     //    .attr("y1", 0)
-			     //    .attr("y2", paneHeight)
-			     //    .style('stroke-opacity', 0.75)
-			     //    .style('stroke-width', '2px')
-			     //    .style('stroke', 'black')
-			     //    .style('stroke-dasharray', '5, 5, 1, 5');
-		        //
-		        // // gene end line
-		        //
-		        // g.append('line')
-			     //    .attr("x1", xScale(pos))
-			     //    .attr("x2", xScale(pos))
-			     //    .attr("y1", 0)
-			     //    .attr("y2", paneHeight)
-			     //    .style('stroke-opacity', 0.75)
-			     //    .style('stroke-width', '2px')
-			     //    .style('stroke', 'black')
-			     //    .style('stroke-dasharray', '5, 5, 1, 5');
+		        // gene end line
+		        g.append('line')
+			        .attr('class', 'end')
+			        .attr("x1", xScale(mapping.geneEnd))
+			        .attr("x2", xScale(mapping.geneEnd))
+			        .attr("y1", 0)
+			        .attr("y2", paneHeight)
+			        .style('stroke-opacity', 0.75)
+			        .style('stroke-width', '2px')
+			        .style('stroke', 'black')
+			        .style('stroke-dasharray', '5, 5, 1, 5');
 	        }
 
             //========================================================================
@@ -341,9 +331,12 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
-                d3.selectAll('.boundary line')
+                d3.selectAll('.boundary .start')
 	                .attr("x1", xTop(mapping.geneStart))
 	                .attr("x2", xTop(mapping.geneStart));
+	            d3.selectAll('.boundary .end')
+		            .attr("x1", xTop(mapping.geneEnd))
+		            .attr("x2", xTop(mapping.geneEnd));
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
