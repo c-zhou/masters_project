@@ -229,6 +229,8 @@ function parallelCoordinates() {
 				        .attr("x2", xScale(pos))
 				        .attr("y1", 0)
 				        .attr("y2", paneHeight)
+				        .attr('z-index', 3)
+				        .style('stroke-opacity', 0.75)
 				        .style('stroke-width', '2px')
 				        .style('stroke', 'black')
 				        .style('stroke-dasharray', '5, 5, 1, 5');
