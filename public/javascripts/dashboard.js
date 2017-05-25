@@ -461,7 +461,7 @@ function parallelCoordinates() {
 	}
 
 	function updateGeneBoundaries(transform) {
-		svg.selectAll('.boundary')
+		d3.selectAll('.boundary')
 			.attr('transform', transform)
 			.attr('stroke-width', 1 / transform.k);
 	}
