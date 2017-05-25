@@ -314,7 +314,7 @@ function parallelCoordinates() {
                 sequencePane.select('.x.axis.top').call(xAxisTopSeq);
                 sequencePane.select('.x.axis.bottom').call(xAxisBottomFocus);
                 entropyPane.select('.x.axis.entropy').call(xAxisBottomFocus);
-	            updateGeneBoundaries(xBottom);
+	            updateGeneBoundaries(xTop);
             }
             //========================================================================
         });
