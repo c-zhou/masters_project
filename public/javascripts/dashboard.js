@@ -270,18 +270,10 @@ function parallelCoordinates() {
 	        //========================================================================
 			// ADDING GENE BOUNDARIES
 	        // adding gene boundaries to sequence pane
-	        var boundariesTop = sequencePane.append('line')
-		        .attr('class', 'boundary')
-		        .attr("x1", xBottom(mapping.geneStart))
-		        .attr("x2", xBottom(mapping.geneStart))
-		        .attr("y1", 0)
-		        .attr("y2", heightTop)
-		        .style('stroke-opacity', 0.75)
-		        .style('stroke-width', '2px')
-		        .style('stroke', 'black')
-		        .style('stroke-dasharray', '5, 5, 1, 5');
+	        var boundariesTop = sequencePane.append('g')
+		        .attr('class', 'boundary');
 
-	        // drawGeneBoundaries(xBottom, heightTop, boundariesTop);
+	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
 	        //
 	        // // adding gene boundaries to entropy pane
 	        // var boundariesMid = entropyPane.append('line')
@@ -296,19 +288,19 @@ function parallelCoordinates() {
 	        // drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
 	        //========================================================================
 
-	        // function drawGeneBoundaries(xScale, paneHeight, g) {
-		     //    console.log(g);
-		     //    [mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
-			 //        g.attr("x1", xScale(pos))
-				//         .attr("x2", xScale(pos))
-				//         .attr("y1", 0)
-				//         .attr("y2", paneHeight)
-				//         .style('stroke-opacity', 0.75)
-				//         .style('stroke-width', '2px')
-				//         .style('stroke', 'black')
-				//         .style('stroke-dasharray', '5, 5, 1, 5');
-		     //    });
-	        // }
+	        function drawGeneBoundaries(xScale, paneHeight, g) {
+		        console.log(g);
+		        [mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
+			        g.attr("x1", xScale(pos))
+				        .attr("x2", xScale(pos))
+				        .attr("y1", 0)
+				        .attr("y2", paneHeight)
+				        .style('stroke-opacity', 0.75)
+				        .style('stroke-width', '2px')
+				        .style('stroke', 'black')
+				        .style('stroke-dasharray', '5, 5, 1, 5');
+		        });
+	        }
 
             //========================================================================
             // FUNCTIONS THAT CONTROL THE BRUSHING AND ZOOMING FUNCTIONALITY
@@ -327,7 +319,7 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
-                d3.selectAll('.boundary')
+                d3.selectAll('.boundary line')
 	                .attr("x1", xTop(mapping.geneStart))
 	                .attr("x2", xTop(mapping.geneStart));
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
