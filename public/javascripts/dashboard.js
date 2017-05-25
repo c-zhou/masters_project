@@ -272,8 +272,8 @@ function parallelCoordinates() {
 	        // adding gene boundaries to sequence pane
 	        var boundariesTop = sequencePane.append('line')
 		        .attr('class', 'boundary')
-		        .attr("x1", xScale(mapping.geneStart))
-		        .attr("x2", xScale(mapping.geneStart))
+		        .attr("x1", xBottom(mapping.geneStart))
+		        .attr("x2", xBottom(mapping.geneStart))
 		        .attr("y1", 0)
 		        .attr("y2", paneHeight)
 		        .style('stroke-opacity', 0.75)
