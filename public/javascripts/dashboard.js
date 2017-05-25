@@ -271,19 +271,22 @@ function parallelCoordinates() {
 			// ADDING GENE BOUNDARIES
 	        // adding gene boundaries to sequence pane
 	        var boundariesTop = sequencePane.append('g')
-		        .attr('class', 'boundary');
+		        .attr('class', 'boundary')
+	          .append('line');
 
 	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
 
 	        // adding gene boundaries to entropy pane
 	        var boundariesMid = entropyPane.append('g')
-		        .attr('class', 'boundary');
+		        .attr('class', 'boundary')
+	          .append('line');
 
 	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
 
 	        // adding gene boundaries to context pane
 	        var boundariesBottom = context.append('g')
-		        .attr('class', 'boundaryContext');
+		        .attr('class', 'boundaryContext')
+	          .append('line');
 
 	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
 	        //========================================================================
@@ -306,8 +309,8 @@ function parallelCoordinates() {
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
 	            var transform = d3.zoomTransform(this);
-	            d3.selectAll('.boundary line')
-		            .attr('x1', function(d) {console.log(d);});
+	            drawGeneBoundaries(xBottom, heightTop, boundariesTop);
+	            drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
@@ -448,7 +451,8 @@ function parallelCoordinates() {
 
 	function drawGeneBoundaries(xScale, paneHeight, g) {
 		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
-			g.append('line')
+			// g.append('line')
+			g
 			// .attr('class', 'threshold')
 				.attr("x1", xScale(pos))
 				.attr("x2", xScale(pos))
