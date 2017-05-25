@@ -218,7 +218,9 @@ function parallelCoordinates() {
 
 	        // adding gene boundaries to context pane
 	        var boundariesBottom = context.append('g')
-		        .attr('class', heightBottom, boundariesBottom);
+		        .attr('class', 'boundary');
+
+	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
             //========================================================================
 
 	        function drawGeneBoundaries(xScale, paneHeight, g) {
