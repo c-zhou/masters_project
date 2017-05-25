@@ -271,22 +271,44 @@ function parallelCoordinates() {
 			// ADDING GENE BOUNDARIES
 	        // adding gene boundaries to sequence pane
 	        var boundariesTop = sequencePane.append('line')
-		        .attr('class', 'boundary');
+		        .attr('class', 'boundary')
+		        .attr("x1", xScale(mapping.geneStart))
+		        .attr("x2", xScale(mapping.geneStart))
+		        .attr("y1", 0)
+		        .attr("y2", paneHeight)
+		        .style('stroke-opacity', 0.75)
+		        .style('stroke-width', '2px')
+		        .style('stroke', 'black')
+		        .style('stroke-dasharray', '5, 5, 1, 5');
 
-	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
-
-	        // adding gene boundaries to entropy pane
-	        var boundariesMid = entropyPane.append('line')
-		        .attr('class', 'boundary');
-
-	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
-
-	        // adding gene boundaries to context pane
-	        var boundariesBottom = context.append('line')
-		        .attr('class', 'boundaryContext');
-
-	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
+	        // drawGeneBoundaries(xBottom, heightTop, boundariesTop);
+	        //
+	        // // adding gene boundaries to entropy pane
+	        // var boundariesMid = entropyPane.append('line')
+		     //    .attr('class', 'boundary');
+	        //
+	        // drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
+	        //
+	        // // adding gene boundaries to context pane
+	        // var boundariesBottom = context.append('line')
+		     //    .attr('class', 'boundaryContext');
+	        //
+	        // drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
 	        //========================================================================
+
+	        // function drawGeneBoundaries(xScale, paneHeight, g) {
+		     //    console.log(g);
+		     //    [mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
+			 //        g.attr("x1", xScale(pos))
+				//         .attr("x2", xScale(pos))
+				//         .attr("y1", 0)
+				//         .attr("y2", paneHeight)
+				//         .style('stroke-opacity', 0.75)
+				//         .style('stroke-width', '2px')
+				//         .style('stroke', 'black')
+				//         .style('stroke-dasharray', '5, 5, 1, 5');
+		     //    });
+	        // }
 
             //========================================================================
             // FUNCTIONS THAT CONTROL THE BRUSHING AND ZOOMING FUNCTIONALITY
@@ -305,9 +327,6 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
-	            var transform = d3.zoomTransform(this);
-	            drawGeneBoundaries(xBottom, heightTop, boundariesTop);
-	            drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
@@ -445,21 +464,6 @@ function parallelCoordinates() {
 
     // gridlines in y axis function
     function make_y_gridlines(scale) { return d3.axisLeft(scale).ticks(5); }
-
-	function drawGeneBoundaries(xScale, paneHeight, g) {
-    	console.log(g);
-		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
-			// g.append('line')
-			g.attr("x1", xScale(pos))
-				.attr("x2", xScale(pos))
-				.attr("y1", 0)
-				.attr("y2", paneHeight)
-				.style('stroke-opacity', 0.75)
-				.style('stroke-width', '2px')
-				.style('stroke', 'black')
-				.style('stroke-dasharray', '5, 5, 1, 5');
-		});
-	}
 
     // calculate the shannon entropy (variance) for the data
     function shannonEntropy(data) {
