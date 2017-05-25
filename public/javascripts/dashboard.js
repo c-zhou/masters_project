@@ -314,6 +314,9 @@ function parallelCoordinates() {
                 sequencePane.select('.x.axis.top').call(xAxisTopSeq);
                 sequencePane.select('.x.axis.bottom').call(xAxisBottomFocus);
                 entropyPane.select('.x.axis.entropy').call(xAxisBottomFocus);
+	            drawGeneBoundaries(xBottom, heightTop, boundariesTop);
+	            drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
+	            drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
             }
             //========================================================================
         });
