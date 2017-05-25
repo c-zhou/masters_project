@@ -307,7 +307,7 @@ function parallelCoordinates() {
                 updateChart();
 	            var transform = d3.zoomTransform(this);
 	            d3.selectAll('.boundary line')
-		            .attr('d', function(d) {console.log(d);});
+		            .attr('x1', function(d) {console.log(d);});
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
