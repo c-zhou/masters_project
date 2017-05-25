@@ -275,7 +275,7 @@ function parallelCoordinates() {
 		        .attr("x1", xBottom(mapping.geneStart))
 		        .attr("x2", xBottom(mapping.geneStart))
 		        .attr("y1", 0)
-		        .attr("y2", paneHeight)
+		        .attr("y2", heightTop)
 		        .style('stroke-opacity', 0.75)
 		        .style('stroke-width', '2px')
 		        .style('stroke', 'black')
