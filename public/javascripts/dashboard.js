@@ -463,8 +463,8 @@ function parallelCoordinates() {
 	function updateGeneBoundaries(transform) {
     	console.log(transform);
 		d3.selectAll('.boundary')
-			.attr('transform', transform)
-			.attr('stroke-width', 1 / transform.k**2 + 'px');
+			.attr('transform', transform);
+			// .attr('stroke-width', 1 / transform.k**2 + 'px');
 	}
 
     // calculate the shannon entropy (variance) for the data
