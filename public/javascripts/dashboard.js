@@ -449,9 +449,7 @@ function parallelCoordinates() {
 	function drawGeneBoundaries(xScale, paneHeight, g) {
 		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
 			// g.append('line')
-			g
-			// .attr('class', 'threshold')
-				.attr("x1", xScale(pos))
+			g.attr("x1", xScale(pos))
 				.attr("x2", xScale(pos))
 				.attr("y1", 0)
 				.attr("y2", paneHeight)
