@@ -274,18 +274,18 @@ function parallelCoordinates() {
 		        .attr('class', 'boundary');
 
 	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
-	        //
-	        // // adding gene boundaries to entropy pane
-	        // var boundariesMid = entropyPane.append('line')
-		     //    .attr('class', 'boundary');
-	        //
-	        // drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
-	        //
-	        // // adding gene boundaries to context pane
-	        // var boundariesBottom = context.append('line')
-		     //    .attr('class', 'boundaryContext');
-	        //
-	        // drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
+
+	        // adding gene boundaries to entropy pane
+	        var boundariesMid = entropyPane.append('line')
+		        .attr('class', 'boundary');
+
+	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
+
+	        // adding gene boundaries to context pane
+	        var boundariesBottom = context.append('line')
+		        .attr('class', 'boundaryContext');
+
+	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
 	        //========================================================================
 
 	        function drawGeneBoundaries(xScale, paneHeight, g) {
@@ -296,8 +296,8 @@ function parallelCoordinates() {
 			        .attr("x2", xScale(mapping.geneStart))
 			        .attr("y1", 0)
 			        .attr("y2", paneHeight)
-			        .style('stroke-opacity', 0.75)
-			        .style('stroke-width', '2px')
+			        .style('stroke-opacity', 0.8)
+			        .style('stroke-width', '3px')
 			        .style('stroke', 'black')
 			        .style('stroke-dasharray', '5, 5, 1, 5');
 
@@ -308,8 +308,8 @@ function parallelCoordinates() {
 			        .attr("x2", xScale(mapping.geneEnd))
 			        .attr("y1", 0)
 			        .attr("y2", paneHeight)
-			        .style('stroke-opacity', 0.75)
-			        .style('stroke-width', '2px')
+			        .style('stroke-opacity', 0.8)
+			        .style('stroke-width', '3px')
 			        .style('stroke', 'black')
 			        .style('stroke-dasharray', '5, 5, 1, 5');
 	        }
