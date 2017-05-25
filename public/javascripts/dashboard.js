@@ -271,6 +271,7 @@ function parallelCoordinates() {
 			// ADDING GENE BOUNDARIES
 	        // adding gene boundaries to sequence pane
 	        var boundariesTop = sequencePane.append('g')
+		        .data([mapping.geneStart, mapping.geneEnd])
 		        .attr('class', 'boundary');
 
 	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
@@ -289,8 +290,7 @@ function parallelCoordinates() {
 	        //========================================================================
 
 	        function drawGeneBoundaries(xScale, paneHeight, g) {
-	        	g.data([mapping.geneStart, mapping.geneEnd])
-			        .enter().append('line')
+	        	g.enter().append('line')
 			        .attr('x1', function(d) {return xScale(d);})
 			        .attr('x2', function(d) {return xScale(d);})
 			        .attr("y1", 0)
