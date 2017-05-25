@@ -203,44 +203,6 @@ function parallelCoordinates() {
             entropyPane.append("g")
                 .attr("class", "grid")
                 .call(make_y_gridlines(yEntropy).tickSize(-width).tickFormat(""));
-
-            // adding gene boundaries to sequence pane
-	        var boundariesTop = sequencePane.append('g')
-		        .attr('class', 'boundary');
-
-	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
-
-	        // adding gene boundaries to entropy pane
-	        var boundariesMid = entropyPane.append('g')
-		        .attr('class', 'boundary');
-
-	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
-
-	        // adding gene boundaries to context pane
-	        var boundariesBottom = context.append('g')
-		        .attr('class', 'boundary');
-
-	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
-            //========================================================================
-
-	        function drawGeneBoundaries(xScale, paneHeight, g) {
-		        [mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
-			        g.append('line')
-			        // .attr('class', 'threshold')
-				        .attr("x1", xScale(pos))
-				        .attr("x2", xScale(pos))
-				        .attr("y1", 0)
-				        .attr("y2", paneHeight)
-				        .attr('z-index', 3)
-				        .style('stroke-opacity', 0.75)
-				        .style('stroke-width', '2px')
-				        .style('stroke', 'black')
-				        .style('stroke-dasharray', '5, 5, 1, 5');
-		        });
-	        }
-
-
-
             //========================================================================
             // DRAW LINES IN FOCUS PANES
             // add the entropy line
@@ -305,6 +267,26 @@ function parallelCoordinates() {
                 .style('stroke', colour || 'steelblue');
             //========================================================================
 
+	        //========================================================================
+			// ADDING GENE BOUNDARIES
+	        // adding gene boundaries to sequence pane
+	        var boundariesTop = sequencePane.append('g')
+		        .attr('class', 'boundary');
+
+	        drawGeneBoundaries(xBottom, heightTop, boundariesTop);
+
+	        // adding gene boundaries to entropy pane
+	        var boundariesMid = entropyPane.append('g')
+		        .attr('class', 'boundary');
+
+	        drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
+
+	        // adding gene boundaries to context pane
+	        var boundariesBottom = context.append('g')
+		        .attr('class', 'boundary');
+
+	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
+	        //========================================================================
 
             //========================================================================
             // FUNCTIONS THAT CONTROL THE BRUSHING AND ZOOMING FUNCTIONALITY
@@ -460,6 +442,21 @@ function parallelCoordinates() {
 
     // gridlines in y axis function
     function make_y_gridlines(scale) { return d3.axisLeft(scale).ticks(5); }
+
+	function drawGeneBoundaries(xScale, paneHeight, g) {
+		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
+			g.append('line')
+			// .attr('class', 'threshold')
+				.attr("x1", xScale(pos))
+				.attr("x2", xScale(pos))
+				.attr("y1", 0)
+				.attr("y2", paneHeight)
+				.style('stroke-opacity', 0.75)
+				.style('stroke-width', '2px')
+				.style('stroke', 'black')
+				.style('stroke-dasharray', '5, 5, 1, 5');
+		});
+	}
 
     // calculate the shannon entropy (variance) for the data
     function shannonEntropy(data) {
