@@ -327,6 +327,9 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
+                d3.selectAll('.boundary')
+	                .attr("x1", xBottom(mapping.geneStart))
+	                .attr("x2", xBottom(mapping.geneStart));
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
