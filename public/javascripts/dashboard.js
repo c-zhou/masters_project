@@ -314,9 +314,7 @@ function parallelCoordinates() {
                 sequencePane.select('.x.axis.top').call(xAxisTopSeq);
                 sequencePane.select('.x.axis.bottom').call(xAxisBottomFocus);
                 entropyPane.select('.x.axis.entropy').call(xAxisBottomFocus);
-	            drawGeneBoundaries(xBottom, heightTop, boundariesTop);
-	            drawGeneBoundaries(xBottom, heightMiddle, boundariesMid);
-	            drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
+	            updateGeneBoundaries(xBottom);
             }
             //========================================================================
         });
@@ -459,6 +457,14 @@ function parallelCoordinates() {
 				.style('stroke', 'black')
 				.style('stroke-dasharray', '5, 5, 1, 5');
 		});
+	}
+
+	function updateGeneBoundaries(xScale) {
+		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
+			d3.selectAll('.boundary line')
+				.attr("x1", xScale(pos))
+				.attr("x2", xScale(pos));
+		}
 	}
 
     // calculate the shannon entropy (variance) for the data
