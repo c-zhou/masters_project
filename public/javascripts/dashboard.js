@@ -205,7 +205,7 @@ function parallelCoordinates() {
                 .call(make_y_gridlines(yEntropy).tickSize(-width).tickFormat(""));
 
             // adding gene boundaries
-	        console.log(data[0]);
+	        console.log(mapping);
             //========================================================================
 
 

@@ -44,8 +44,8 @@ var parser = function(fileName, callback) {
 			var obj = {
 				sampleID: row[0],
 				sequence: row[1].replace(/\|/gi, '').split(''), // remove all (gi) |s from the sequence
-				gene_start: gene_start + 1,
-				gene_end: gene_end - 1
+				geneStart: gene_start + 1,
+				geneEnd: gene_end - 1
 			};
 
 			data.push(obj);
@@ -79,7 +79,9 @@ function transform(data) {
         columns.push(id);
         mapping[id] = {
             sequence: seq.join(''), // store the sample's sequence as a string for mapping
-            MIC: obj.MIC
+            MIC: obj.MIC,
+	        geneStart: obj.geneStart,
+	        geneEnd: obj.geneEnd
         };
 
         // loop through each base in sequence and add it to the corresponding position in rows
