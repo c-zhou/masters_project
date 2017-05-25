@@ -205,7 +205,20 @@ function parallelCoordinates() {
                 .call(make_y_gridlines(yEntropy).tickSize(-width).tickFormat(""));
 
             // adding gene boundaries
-	        console.log(mapping);
+	        var boundaries = sequencePane.append('g')
+		        .attr('class', 'boundary');
+
+	        // add vertical line(s) at fold-change threshold (and negative fold-change)
+	        [mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
+		        boundaries.append('line')
+			        // .attr('class', 'threshold')
+			        .attr("x1", xBottom(pos))
+			        .attr("x2", xBottom(pos))
+			        .attr("y1", 0)
+			        .attr("y2", heightTop)
+			        .style('stroke-width', '5px')
+			        .style('stroke', 'pink');
+	        });
             //========================================================================
 
 
