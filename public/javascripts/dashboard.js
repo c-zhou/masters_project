@@ -447,6 +447,7 @@ function parallelCoordinates() {
     function make_y_gridlines(scale) { return d3.axisLeft(scale).ticks(5); }
 
 	function drawGeneBoundaries(xScale, paneHeight, g) {
+    	console.log(g);
 		[mapping.geneStart, mapping.geneEnd].forEach(function(pos) {
 			// g.append('line')
 			g.attr("x1", xScale(pos))
