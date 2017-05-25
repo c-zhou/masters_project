@@ -203,6 +203,9 @@ function parallelCoordinates() {
             entropyPane.append("g")
                 .attr("class", "grid")
                 .call(make_y_gridlines(yEntropy).tickSize(-width).tickFormat(""));
+
+            // adding gene boundaries
+	        console.log(data[0]);
             //========================================================================
 
 
