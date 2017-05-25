@@ -62,7 +62,11 @@ var parser = function(fileName, callback) {
 };
 
 function transform(data) {
-    var mapping = {}, // hold mapping from sampleID to MIC etc.
+	// TODO: find a way to avoid hard-coding gene boundaries from first element
+    var mapping = {
+	        geneStart: data[0].geneStart, // assume gene boundaries are the same
+	        geneEnd: data[0].geneEnd
+        }, // hold mapping from sampleID to MIC etc. and gene boundaries
         rows = [], // this will hold the new data structure
         columns = ["position"],
     	sequence = "sequence",
@@ -79,9 +83,7 @@ function transform(data) {
         columns.push(id);
         mapping[id] = {
             sequence: seq.join(''), // store the sample's sequence as a string for mapping
-            MIC: obj.MIC,
-	        geneStart: obj.geneStart,
-	        geneEnd: obj.geneEnd
+            MIC: obj.MIC
         };
 
         // loop through each base in sequence and add it to the corresponding position in rows
