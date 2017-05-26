@@ -142,7 +142,7 @@ function parallelCoordinates() {
                 .attr('class', 'zoom')
                 .attr('width', width)
                 .attr('height', focusHeight)
-                .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')');
+                // .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')');
                 // .call(zoom);
 	        svg.call(zoom);
             //========================================================================
@@ -244,11 +244,9 @@ function parallelCoordinates() {
                 .call(xAxisContext);
 
             context.append('g')
-                .attr('class', 'brush');
-                // .call(brush)
-                // .call(brush.move, xTop.range());
-            svg.call(brush)
-	            .call(brush.move, xTop.range());
+                .attr('class', 'brush')
+                .call(brush)
+                .call(brush.move, xTop.range());
 
             // add the entropy line
             context.append('path')
