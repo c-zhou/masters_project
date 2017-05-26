@@ -138,10 +138,10 @@ function parallelCoordinates() {
 
             // transparent window over focus that allows zooming. THIS MUST COME AFTER THE
             // FOCUS AND CONTEXT PANES HAVE BEEN APPENDED
-            svg.append('rect')
-                .attr('class', 'zoom')
-                .attr('width', width)
-                .attr('height', focusHeight)
+            // svg.append('rect')
+            //     .attr('class', 'zoom')
+            //     .attr('width', width)
+            //     .attr('height', focusHeight)
                 // .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')');
                 // .call(zoom);
 	        svg.call(zoom);
