@@ -456,11 +456,7 @@ function parallelCoordinates() {
 			.attr("x1", xScale(mapping.geneStart))
 			.attr("x2", xScale(mapping.geneStart))
 			.attr("y1", 0)
-			.attr("y2", paneHeight)
-			.style('stroke-opacity', 0.8)
-			.style('stroke-width', '2px')
-			.style('stroke', 'black')
-			.style('stroke-dasharray', '5, 5, 1, 5');
+			.attr("y2", paneHeight);
 
 		// gene end line
 		g.append('line')
@@ -468,11 +464,7 @@ function parallelCoordinates() {
 			.attr("x1", xScale(mapping.geneEnd))
 			.attr("x2", xScale(mapping.geneEnd))
 			.attr("y1", 0)
-			.attr("y2", paneHeight)
-			.style('stroke-opacity', 0.8)
-			.style('stroke-width', '2px')
-			.style('stroke', 'black')
-			.style('stroke-dasharray', '5, 5, 1, 5');
+			.attr("y2", paneHeight);
 	}
 
     // calculate the shannon entropy (variance) for the data

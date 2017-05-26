@@ -55,6 +55,18 @@
     pointer-events: all;
 }
 
+
+/*=============================*/
+/*Gene boundary line styling*/
 .boundary line {
     clip-path: url(#clip);
 }
+
+.start line,
+.end line {
+    stroke-opacity: 0.8;
+    stroke-width: 2px;
+    stroke: #000;
+    stroke-dasharray: 5, 5, 1, 5;
+}
+/*=============================*/
