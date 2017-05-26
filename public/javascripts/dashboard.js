@@ -226,7 +226,8 @@ function parallelCoordinates() {
                 .attr('class', 'line')
                 .attr('stroke-opacity', 0.15)
                 .attr('d', line)
-                .style('stroke', colour || 'steelblue');
+                .style('stroke', colour || 'steelblue')
+	            .on('mouseenter', function(){console.log("enter");});
             //========================================================================
 
             //========================================================================
