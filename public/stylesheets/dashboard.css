@@ -62,8 +62,8 @@
     clip-path: url(#clip);
 }
 
-.start line,
-.end line {
+.start,
+.end {
     stroke-opacity: 0.8;
     stroke-width: 2px;
     stroke: #000;
