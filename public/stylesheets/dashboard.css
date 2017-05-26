@@ -54,3 +54,7 @@
     fill: none;
     pointer-events: all;
 }
+
+.boundary line {
+    clip-path: url(#clip);
+}
