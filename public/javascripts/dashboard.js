@@ -142,8 +142,9 @@ function parallelCoordinates() {
                 .attr('class', 'zoom')
                 .attr('width', width)
                 .attr('height', focusHeight)
-                .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')')
-                .call(zoom);
+                .attr('transform', 'translate(' + marginTop.left + ',' + marginTop.top + ')');
+                // .call(zoom);
+	        svg.call(zoom);
             //========================================================================
 
 
