@@ -237,7 +237,7 @@ function speciesTypingListeners(speciesTyping, outputFile, socket) {
 
 		//write data to file. written is how many bytes were written from string.
 		if (!outputFile.closed && hasSTWritingStarted) {
-			outputFile.write(dataToWrite, function (error, written, string) {
+			outputFile.write(dataToWrite, function (error) {
 				if (error) console.log(error);
 			});
 		}
@@ -283,16 +283,16 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 
 		//write data to file. written is how many bytes were written from string.
 		if (!outputFile.closed && hasRPWritingStarted) {
-			outputFile.write(dataToWrite, function (error, written, string) {
+			outputFile.write(dataToWrite, function (error) {
 				if (error) console.log(error);
 			});
 		}
 	});
 
-	resProfiling.stderr.on('data', function(data) {
-		console.log("resistance profiling stderr:");
-		console.log(data.toString());
-	});
+	// resProfiling.stderr.on('data', function(data) {
+	// 	console.log("resistance profiling stderr:");
+	// 	console.log(data.toString());
+	// });
 
 	resProfiling.on('close', function(code, signal) {
 		if (code || signal) console.log("resistance profiling closed " + code + " " + signal + ' at ' + new Date());

@@ -331,12 +331,7 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
-                d3.selectAll('.boundary .start')
-	                .attr("x1", xTop(mapping.geneStart))
-	                .attr("x2", xTop(mapping.geneStart));
-	            d3.selectAll('.boundary .end')
-		            .attr("x1", xTop(mapping.geneEnd))
-		            .attr("x2", xTop(mapping.geneEnd));
+
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
@@ -346,6 +341,12 @@ function parallelCoordinates() {
                 sequencePane.select('.x.axis.top').call(xAxisTopSeq);
                 sequencePane.select('.x.axis.bottom').call(xAxisBottomFocus);
                 entropyPane.select('.x.axis.entropy').call(xAxisBottomFocus);
+	            d3.selectAll('.boundary .start')
+		            .attr("x1", xTop(mapping.geneStart))
+		            .attr("x2", xTop(mapping.geneStart));
+	            d3.selectAll('.boundary .end')
+		            .attr("x1", xTop(mapping.geneEnd))
+		            .attr("x2", xTop(mapping.geneEnd));
             }
             //========================================================================
         });
