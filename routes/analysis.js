@@ -289,10 +289,10 @@ function resProfilingListeners(resProfiling, outputFile, socket) {
 		}
 	});
 
-	// resProfiling.stderr.on('data', function(data) {
-	// 	console.log("resistance profiling stderr:");
-	// 	console.log(data.toString());
-	// });
+	resProfiling.stderr.on('data', function(data) {
+		console.log("resistance profiling stderr:");
+		console.log(data.toString());
+	});
 
 	resProfiling.on('close', function(code, signal) {
 		if (code || signal) console.log("resistance profiling closed " + code + " " + signal + ' at ' + new Date());

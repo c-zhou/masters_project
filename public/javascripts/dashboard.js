@@ -297,7 +297,7 @@ function parallelCoordinates() {
 			        .attr("y1", 0)
 			        .attr("y2", paneHeight)
 			        .style('stroke-opacity', 0.8)
-			        .style('stroke-width', '3px')
+			        .style('stroke-width', '2px')
 			        .style('stroke', 'black')
 			        .style('stroke-dasharray', '5, 5, 1, 5');
 
@@ -309,7 +309,7 @@ function parallelCoordinates() {
 			        .attr("y1", 0)
 			        .attr("y2", paneHeight)
 			        .style('stroke-opacity', 0.8)
-			        .style('stroke-width', '3px')
+			        .style('stroke-width', '2px')
 			        .style('stroke', 'black')
 			        .style('stroke-dasharray', '5, 5, 1, 5');
 	        }
