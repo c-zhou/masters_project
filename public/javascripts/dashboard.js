@@ -288,32 +288,6 @@ function parallelCoordinates() {
 	        drawGeneBoundaries(xBottom, heightBottom, boundariesBottom);
 	        //========================================================================
 
-	        function drawGeneBoundaries(xScale, paneHeight, g) {
-	        	// gene start line
-		        g.append('line')
-			        .attr('class', 'start')
-			        .attr("x1", xScale(mapping.geneStart))
-			        .attr("x2", xScale(mapping.geneStart))
-			        .attr("y1", 0)
-			        .attr("y2", paneHeight)
-			        .style('stroke-opacity', 0.8)
-			        .style('stroke-width', '2px')
-			        .style('stroke', 'black')
-			        .style('stroke-dasharray', '5, 5, 1, 5');
-
-		        // gene end line
-		        g.append('line')
-			        .attr('class', 'end')
-			        .attr("x1", xScale(mapping.geneEnd))
-			        .attr("x2", xScale(mapping.geneEnd))
-			        .attr("y1", 0)
-			        .attr("y2", paneHeight)
-			        .style('stroke-opacity', 0.8)
-			        .style('stroke-width', '2px')
-			        .style('stroke', 'black')
-			        .style('stroke-dasharray', '5, 5, 1, 5');
-	        }
-
             //========================================================================
             // FUNCTIONS THAT CONTROL THE BRUSHING AND ZOOMING FUNCTIONALITY
             function brushed() {
@@ -331,7 +305,6 @@ function parallelCoordinates() {
                 var t = d3.event.transform;
                 xTop.domain(t.rescaleX(xBottom).domain());
                 updateChart();
-
                 context.select('.brush').call(brush.move, xTop.range().map(t.invertX, t));
             }
 
@@ -475,6 +448,32 @@ function parallelCoordinates() {
 
     // gridlines in y axis function
     function make_y_gridlines(scale) { return d3.axisLeft(scale).ticks(5); }
+
+	function drawGeneBoundaries(xScale, paneHeight, g) {
+		// gene start line
+		g.append('line')
+			.attr('class', 'start')
+			.attr("x1", xScale(mapping.geneStart))
+			.attr("x2", xScale(mapping.geneStart))
+			.attr("y1", 0)
+			.attr("y2", paneHeight)
+			.style('stroke-opacity', 0.8)
+			.style('stroke-width', '2px')
+			.style('stroke', 'black')
+			.style('stroke-dasharray', '5, 5, 1, 5');
+
+		// gene end line
+		g.append('line')
+			.attr('class', 'end')
+			.attr("x1", xScale(mapping.geneEnd))
+			.attr("x2", xScale(mapping.geneEnd))
+			.attr("y1", 0)
+			.attr("y2", paneHeight)
+			.style('stroke-opacity', 0.8)
+			.style('stroke-width', '2px')
+			.style('stroke', 'black')
+			.style('stroke-dasharray', '5, 5, 1, 5');
+	}
 
     // calculate the shannon entropy (variance) for the data
     function shannonEntropy(data) {
