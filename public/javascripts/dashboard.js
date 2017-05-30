@@ -241,9 +241,6 @@ function parallelCoordinates() {
 				            tipEnter(pathData);
 			            }
 		            }
-	            })
-	            .on('dblclick', function() {
-		            return tooltip.style('visibility', 'hidden');
 	            });
 
             // hide tooltip when double-clicking anywhere
@@ -255,7 +252,10 @@ function parallelCoordinates() {
 	        var tooltip = d3.select("body")
 		        .append("div")
 		        .attr('class', 'tooltip')
-		        .style('visibility', 'hidden');
+		        .style('visibility', 'hidden')
+		        .on('dblclick', function() {
+			        return tooltip.style('visibility', 'hidden');
+		        });
 
 	        function tipEnter(d) {
 		        var html = '';
