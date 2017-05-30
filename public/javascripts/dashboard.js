@@ -241,12 +241,15 @@ function parallelCoordinates() {
 				            tipEnter(pathData);
 			            }
 		            }
+	            })
+	            .on('dblclick', function() {
+		            return tooltip.style('visibility', 'hidden');
 	            });
 
             // hide tooltip when double-clicking anywhere
-	        d3.select('body').on('dblclick', function() {
-	            return tooltip.style('visibility', 'hidden');
-	        });
+            // d3.select('body').on('dblclick', function() {
+	         //    return tooltip.style('visibility', 'hidden');
+            // });
             //========================================================================
 
 	        var tooltip = d3.select("body")
