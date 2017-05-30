@@ -256,8 +256,8 @@ function parallelCoordinates() {
 
 	        function tipEnter(d) {
 		        var html = '';
+		        d = d.filter(function(n){ return n; });
 		        d.forEach(function(el) {
-		        	el = el.filter(function(n){ return n; });
 			        html += '<strong>' + "ID" + '</strong>: ' + el.id + '<br/>';
 		        });
 		        tooltip.style('visibility', 'visible')
