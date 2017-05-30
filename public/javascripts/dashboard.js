@@ -255,6 +255,7 @@ function parallelCoordinates() {
 		        .style('visibility', 'hidden');
 
 	        function tipEnter(d) {
+	        	console.log(d);
 		        var html = '';
 		        d.forEach(function(el) {
 			        html += '<strong>' + "ID" + '</strong>: ' + el.id + '<br/>';
