@@ -27,9 +27,10 @@
 /*styling for the lines representing the sequence for each sample*/
 .line {
     fill: none;
-    stroke-width: 2px;
+    stroke-width: 3px;
     shape-rendering: geometricPrecision;
     clip-path: url(#clip);
+    pointer-events: visibleStroke; /*only events on stroke of path will register*/
 }
 
 .context.line {
@@ -68,5 +69,30 @@
     stroke-width: 2px;
     stroke: #000;
     stroke-dasharray: 5, 5, 1, 5;
+}
+/*=============================*/
+
+/*=============================*/
+/*Tooltip styling*/
+.tooltip {
+    position: absolute;
+    z-index: 10;
+    background-color: #000;
+    color: #fff;
+    padding: 2px 7px;
+    visibility: hidden;
+    opacity: 0.75;
+    border-radius: 2px;
+}
+
+.tooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%; /* To the left of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #000 transparent transparent;
 }
 /*=============================*/

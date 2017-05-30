@@ -228,8 +228,64 @@ function parallelCoordinates() {
                 .attr('stroke-opacity', 0.15)
                 .attr('d', line)
                 .style('stroke', colour || 'steelblue')
-	            .on('mouseenter', function(d){console.log(d.id);});
+	            .on('click', function() {
+		            var pathData = extractPathData(d3.event);
+		            if (tooltip.style('visibility') === 'hidden') {
+			            if (pathData) {
+				            tipEnter(pathData);
+				            tipMove();
+			            }
+		            } else {
+			            tipMove();
+			            if (pathData) {
+				            tipEnter(pathData);
+			            }
+		            }
+	            });
+
+            // hide tooltip when double-clicking anywhere
+	        d3.select('body').on('dblclick', function() {
+	            return tooltip.style('visibility', 'hidden');
+	        });
             //========================================================================
+
+	        var tooltip = d3.select("body")
+		        .append("div")
+		        .attr('class', 'tooltip')
+		        .style('visibility', 'hidden');
+
+	        function tipEnter(d) {
+		        var html = '';
+		        d.forEach(function(el) {
+			        html += '<strong>' + "ID" + '</strong>: ' + el.id + '<br/>';
+		        });
+		        tooltip.style('visibility', 'visible')
+			        .style('font-size', '11px')
+			        .html(html);
+	        }
+
+	        function tipMove() {
+		        tooltip.style("top", (event.pageY - 5) + "px")
+			        .style("left", (event.pageX + 20) + "px");
+	        }
+
+	        function extractPathData(e) {
+		        var pathData = [],
+		            paths    = d3.selectAll(document.elementsFromPoint(e.x, e.y))
+			            .filter('path');
+		        if (paths._groups) {
+			        paths._groups.forEach(function (group) {
+				        group.forEach(function (path) {
+					        var d = d3.select(path).data();
+					        d.forEach(function (obj) {
+						        pathData.push(obj);
+					        });
+				        });
+			        });
+		        }
+		        return pathData;
+	        }
+
 
             //========================================================================
 
