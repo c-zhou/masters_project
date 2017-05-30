@@ -1,6 +1,6 @@
 // TODO: add axis labels
 // TODO: add legend (MIC)
-// TODO: tooltip/some way of identifying samples
+// TODO: brushing doesn't reset position on focus pane.
 
 function parallelCoordinates() {
     var data          = [],
@@ -174,10 +174,15 @@ function parallelCoordinates() {
                 .attr('transform', 'translate(0,' + heightTop + ')')
                 .call(xAxisBottomFocus);
 
-            // add y axis to left and right in sequence pane
+            // add y axis to left and right in sequence pane and axis title to the left
             sequencePane.append('g')
                 .attr('class', 'y axis left')
-                .call(yAxisLeftSeq);
+                .call(yAxisLeftSeq)
+              .append('text')
+	            .attr('text-anchor', 'middle')
+	            .attr('stroke', '#333')
+	            .attr('transform', 'translate(' + -(marginTop.left / 2) + ',' + height / 2 + ') rotate(270)')
+	            .text('Nucleotide');
 
             sequencePane.append('g')
                 .attr('class', 'y axis right')
@@ -198,7 +203,12 @@ function parallelCoordinates() {
             // add entropy y axis
             entropyPane.append('g')
                 .attr('class', 'y axis entropy')
-                .call(yAxisEntropy);
+                .call(yAxisEntropy)
+              .append('text')
+	            .attr('text-anchor', 'middle')
+	            .attr('stroke', '#333')
+	            .attr('transform', 'translate(' + -(marginTop.left / 2) + ',' + height / 2 + ') rotate(270)')
+	            .text('Variation (Shannon entropy)');
 
             // make entropy y gridline
             entropyPane.append("g")
@@ -243,12 +253,13 @@ function parallelCoordinates() {
 		            }
 	            });
 
-            // hide tooltip when double-clicking anywhere
-            // d3.select('body').on('dblclick', function() {
-	         //    return tooltip.style('visibility', 'hidden');
-            // });
             //========================================================================
 
+
+	        //========================================================================
+	        // ADD TOOLTIP
+
+	        // double-clicking tooltip will hide it
 	        var tooltip = d3.select("body")
 		        .append("div")
 		        .attr('class', 'tooltip')
@@ -290,7 +301,6 @@ function parallelCoordinates() {
 		        return pathData;
 	        }
 
-
             //========================================================================
 
 
@@ -301,7 +311,12 @@ function parallelCoordinates() {
             context.append('g')
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + heightBottom + ')')
-                .call(xAxisContext);
+                .call(xAxisContext)
+              .append('text')
+	            .attr('text-anchor', 'middle')
+	            .attr('transform', 'translate(' + width / 2 + ',' + (marginBottom.bottom / 1.5) + ')')
+	            .style('stroke', '#333')
+	            .text("Position");
 
             context.append('g')
                 .attr('class', 'brush')
