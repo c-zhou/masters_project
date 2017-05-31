@@ -25,7 +25,6 @@ var parser = function(fileName, callback) {
 		// console.log(rl.input.bytesRead);
 		if (rowIdx !== 0) {
 
-
 			var row = line.split(re);
 
 			// change any * characters to an indel (-)
@@ -45,7 +44,8 @@ var parser = function(fileName, callback) {
 				sampleID: row[0],
 				sequence: row[1].replace(/\|/gi, '').split(''), // remove all (gi) |s from the sequence
 				geneStart: gene_start + 1,
-				geneEnd: gene_end - 1
+				geneEnd: gene_end - 1,
+				MIC: row[2]
 			};
 
 			data.push(obj);

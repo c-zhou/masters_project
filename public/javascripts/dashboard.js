@@ -1,4 +1,3 @@
-// TODO: add axis labels
 // TODO: add legend (MIC)
 // TODO: brushing doesn't reset position on focus pane.
 
@@ -280,7 +279,7 @@ function parallelCoordinates() {
 	        }
 
 	        function tipMove() {
-		        tooltip.style("top", (event.pageY - 5) + "px")
+		        tooltip.style("top", (event.pageY) + "px")
 			        .style("left", (event.pageX + 20) + "px");
 	        }
 
