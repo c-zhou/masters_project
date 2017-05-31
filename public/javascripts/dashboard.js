@@ -279,7 +279,7 @@ function parallelCoordinates() {
 	        }
 
 	        function tipMove() {
-		        tooltip.style("top", (event.pageY - 10) + "px")
+		        tooltip.style("top", (event.pageY - 8) + "px")
 			        .style("left", (event.pageX + 20) + "px");
 	        }
 

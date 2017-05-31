@@ -90,7 +90,7 @@
 .tooltip::after {
     content: " ";
     position: absolute;
-    top: 10%;
+    top: 8%;
     right: 100%; /* To the left of the tooltip */
     margin-top: -5px;
     border-width: 5px;
