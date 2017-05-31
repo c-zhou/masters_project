@@ -315,7 +315,7 @@ function parallelCoordinates() {
               .append('text')
 	            .attr('class', 'axisTitle')
 	            .attr('text-anchor', 'middle')
-	            .attr('transform', 'translate(' + width / 2 + ',' + (marginBottom.bottom / 1.5) + ')')
+	            .attr('transform', 'translate(' + width / 2 + ',' + marginBottom.bottom + ')')
 	            .text("Position");
 
             context.append('g')
