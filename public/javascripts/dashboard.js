@@ -6,8 +6,8 @@ function parallelCoordinates() {
     var data          = [],
         width,
         marginTop        = {top: 20, right: 30, bottom: 250, left: 50}, // margin for sequence pane
-        marginBottom       = {top: 430, right: 30, bottom: 30, left: 50}, // margin for context pane
-        marginMiddle       = {top: 290, right: 30, bottom: 110, left: 40}, // margin for entropy pane
+        marginBottom       = {top: 430, right: 30, bottom: 30, left: 40}, // margin for context pane
+        marginMiddle       = {top: 290, right: 30, bottom: 110, left: 50}, // margin for entropy pane
         heightTop,
         domain        = ["A", "T", "C", "G", "-"], // y domain
         mapping       = [], // data that maps the sample id to MIC, sequence etc
