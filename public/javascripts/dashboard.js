@@ -181,7 +181,7 @@ function parallelCoordinates() {
               .append('text')
 	            .attr('text-anchor', 'middle')
 	            .attr('stroke', '#333')
-	            .attr('transform', 'translate(' + -(marginTop.left / 2) + ',' + height / 2 + ') rotate(270)')
+	            .attr('transform', 'translate(' + -(marginTop.left / 2) + ',' + heightTop / 2 + ') rotate(270)')
 	            .text('Nucleotide');
 
             sequencePane.append('g')
@@ -207,7 +207,7 @@ function parallelCoordinates() {
               .append('text')
 	            .attr('text-anchor', 'middle')
 	            .attr('stroke', '#333')
-	            .attr('transform', 'translate(' + -(marginTop.left / 2) + ',' + height / 2 + ') rotate(270)')
+	            .attr('transform', 'translate(' + -(marginMiddle.left / 2) + ',' + heightMiddle / 2 + ') rotate(270)')
 	            .text('Variation (Shannon entropy)');
 
             // make entropy y gridline
