@@ -179,8 +179,8 @@ function parallelCoordinates() {
                 .attr('class', 'y axis left')
                 .call(yAxisLeftSeq)
               .append('text')
+	            .attr('class', 'axisTitle')
 	            .attr('text-anchor', 'middle')
-	            // .attr('stroke', '#333')
 	            .attr('transform', 'translate(' + -(marginTop.left * 0.625) + ',' + heightTop / 2 + ') rotate(270)')
 	            .text('Nucleotide');
 
@@ -205,8 +205,8 @@ function parallelCoordinates() {
                 .attr('class', 'y axis entropy')
                 .call(yAxisEntropy)
               .append('text')
+	            .attr('class', 'axisTitle')
 	            .attr('text-anchor', 'middle')
-	            // .attr('stroke', '#333')
 	            .attr('transform', 'translate(' + -(marginMiddle.left * 0.625) + ',' + heightMiddle / 2 + ') rotate(270)')
 	            .text('Variation (entropy)');
 
@@ -313,9 +313,9 @@ function parallelCoordinates() {
                 .attr('transform', 'translate(0,' + heightBottom + ')')
                 .call(xAxisContext)
               .append('text')
+	            .attr('class', 'axisTitle')
 	            .attr('text-anchor', 'middle')
 	            .attr('transform', 'translate(' + width / 2 + ',' + (marginBottom.bottom / 1.5) + ')')
-	            .style('stroke', '#333')
 	            .text("Position");
 
             context.append('g')

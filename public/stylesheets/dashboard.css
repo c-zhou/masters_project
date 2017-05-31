@@ -3,10 +3,6 @@
     font-size: .8em;
 }
 
-.axis {
-    stroke: #222;
-}
-
 .x.axis.top {
     stroke-opacity: 0.2;
     stroke: #222;
@@ -22,6 +18,11 @@
 .y.axis.entropy {
     font-size: .9em;
     font-weight: normal;
+}
+
+.axisTitle {
+    fill: #222;
+    font-size: 0.9em;
 }
 
 /*styling for the lines representing the sequence for each sample*/
