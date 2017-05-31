@@ -5,8 +5,8 @@
 function parallelCoordinates() {
     var data          = [],
         width,
-        marginTop        = {top: 20, right: 30, bottom: 250, left: 40}, // margin for sequence pane
-        marginBottom       = {top: 430, right: 30, bottom: 30, left: 40}, // margin for context pane
+        marginTop        = {top: 20, right: 30, bottom: 250, left: 50}, // margin for sequence pane
+        marginBottom       = {top: 430, right: 30, bottom: 30, left: 50}, // margin for context pane
         marginMiddle       = {top: 290, right: 30, bottom: 110, left: 40}, // margin for entropy pane
         heightTop,
         domain        = ["A", "T", "C", "G", "-"], // y domain
@@ -180,8 +180,8 @@ function parallelCoordinates() {
                 .call(yAxisLeftSeq)
               .append('text')
 	            .attr('text-anchor', 'middle')
-	            .attr('stroke', '#333')
-	            .attr('transform', 'translate(' + -(marginTop.left / 2) + ',' + heightTop / 2 + ') rotate(270)')
+	            // .attr('stroke', '#333')
+	            .attr('transform', 'translate(' + -(marginTop.left * 0.625) + ',' + heightTop / 2 + ') rotate(270)')
 	            .text('Nucleotide');
 
             sequencePane.append('g')
@@ -206,9 +206,9 @@ function parallelCoordinates() {
                 .call(yAxisEntropy)
               .append('text')
 	            .attr('text-anchor', 'middle')
-	            .attr('stroke', '#333')
-	            .attr('transform', 'translate(' + -(marginMiddle.left / 2) + ',' + heightMiddle / 2 + ') rotate(270)')
-	            .text('Variation (Shannon entropy)');
+	            // .attr('stroke', '#333')
+	            .attr('transform', 'translate(' + -(marginMiddle.left * 0.625) + ',' + heightMiddle / 2 + ') rotate(270)')
+	            .text('Variation (entropy)');
 
             // make entropy y gridline
             entropyPane.append("g")
