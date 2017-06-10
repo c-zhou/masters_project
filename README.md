@@ -43,3 +43,5 @@ npm install
 ```
 
 To run the server locally you can either run `nodemon` or `node app.js` from the root directory of the repository.
+
+By default this server should be accessible on port 3000. Open a web browser and enter `localhost:3000/` into the address bar.
